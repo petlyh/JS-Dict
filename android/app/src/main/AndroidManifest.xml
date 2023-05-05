@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.petlyh.jsdict">
+
+   <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
-        android:label="jsdict"
+        android:label="JS-Dict"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
