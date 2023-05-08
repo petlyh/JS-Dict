@@ -50,7 +50,7 @@ class Parser {
       }
     }
 
-    final wordElements = document.querySelectorAll("div.concept_light");
+    final wordElements = document.querySelectorAll("div.concepts > div.concept_light");
 
     if (wordElements.isNotEmpty) {
       for (final wordElement in wordElements) {
