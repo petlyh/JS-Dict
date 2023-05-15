@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:jsdict/client/client.dart';
 import 'package:jsdict/screens/search_screen.dart';
+import 'package:jsdict/singletons.dart';
 
 void main() {
-  GetIt.I.registerLazySingleton<JishoClient>(() => JishoClient());
-
+  setClient();
   runApp(const JsDictApp());
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:jsdict/client/client.dart';
 import 'package:jsdict/models.dart';
+import 'package:jsdict/singletons.dart';
+import 'package:jsdict/widgets/loader.dart';
 import 'package:jsdict/widgets/result_list.dart';
 
 class ResultPage extends StatelessWidget {
@@ -34,35 +34,17 @@ class ResultPage extends StatelessWidget {
       return placeholder;
     }
 
-    return FutureBuilder(
-      future: GetIt.I<JishoClient>().searchTag(query, type),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return LoaderWidget(
+      future: getClient().searchTag(query, type),
+      handler: (data) {
+        if (data!.hasNoMatches(type)) {
           return Container(
             margin: const EdgeInsets.all(20.0),
-            child: const CircularProgressIndicator()
+            child: const Text("No matches found")
           );
         }
-        if (snapshot.connectionState == ConnectionState.none) {
-          return placeholder;
-        }
-        if (snapshot.hasError) {
-          return Container(
-            margin: const EdgeInsets.all(20.0),
-            child: Text(snapshot.error.toString())
-          );
-        }
-        if (snapshot.hasData) {
-          if (snapshot.data!.hasNoMatches(type)) {
-            return Container(
-              margin: const EdgeInsets.all(20.0),
-              child: const Text("No matches found")
-            );
-          }
 
-          return ResultListWidget(searchResponse: snapshot.data!, type: type);
-        }
-        return const Text("Something went wrong");
+        return ResultListWidget(searchResponse: data, type: type);
       }
     );
   }
