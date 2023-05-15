@@ -13,53 +13,21 @@ class Parser {
   SearchResponse _createSearchResponse(final Document document) {
     var searchResponse = SearchResponse(true);
 
-    final kanjiDetailElements = document.querySelectorAll("div.kanji.details");
-
-    if (kanjiDetailElements.isNotEmpty) {
-      for (final kanjiDetailElement in kanjiDetailElements) {
-        final kanji = _kanjiDetailsEntry(kanjiDetailElement);
-        searchResponse.kanjiResults.add(kanji);
-      }
+    searchResponse.kanjiResults = _findEntries(document, _kanjiDetailsEntry, "div.kanji.details");
+    if (searchResponse.kanjiResults.isNotEmpty) {
       return searchResponse;
     }
 
-    final kanjiElements = document.querySelectorAll("div.kanji_light_block > div.entry.kanji_light");
-
-    if (kanjiElements.isNotEmpty) {
-      for (final kanjiElement in kanjiElements) {
-        final kanji = _kanjiEntry(kanjiElement);
-        searchResponse.kanjiResults.add(kanji);
-      }
-    }
-
-    final sentenceElements = document.querySelectorAll("div.sentences_block > ul > li.entry.sentence");
-
-    if (sentenceElements.isNotEmpty) {
-      for (final sentenceElement in sentenceElements) {
-        final sentence = _sentenceEntry(sentenceElement);
-        searchResponse.sentenceResults.add(sentence);
-      }
-    }
-
-    final nameElements = document.querySelectorAll("div.names_block > div.names > div.concept_light");
-
-    if (nameElements.isNotEmpty) {
-      for (final nameElement in nameElements) {
-        final name = _nameEntry(nameElement);
-        searchResponse.nameResults.add(name);
-      }
-    }
-
-    final wordElements = document.querySelectorAll("div.concepts > .concept_light, div.exact_block > .concept_light");
-
-    if (wordElements.isNotEmpty) {
-      for (final wordElement in wordElements) {
-        final word = _wordEntry(wordElement);
-        searchResponse.wordResults.add(word);
-      }
-    }
+    searchResponse.kanjiResults = _findEntries(document, _kanjiEntry, "div.kanji_light_block > div.entry.kanji_light");
+    searchResponse.sentenceResults = _findEntries(document, _sentenceEntry, "div.sentences_block > ul > li.entry.sentence");
+    searchResponse.nameResults = _findEntries(document, _nameEntry, "div.names_block > div.names > div.concept_light");
+    searchResponse.wordResults = _findEntries(document, _wordEntry, "div.concepts > .concept_light, div.exact_block > .concept_light");
 
     return searchResponse;
+  }
+
+  List<T> _findEntries<T>(Document document, T Function(Element) handler, String selector) {
+    return document.querySelectorAll(selector).map(handler).toList();
   }
 
   Name _nameEntry(final Element element) {
