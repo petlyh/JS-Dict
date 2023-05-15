@@ -244,8 +244,9 @@ class Parser {
         continue;
       }
 
-      var indexElement = definitionElement.querySelector("span.meaning-definition-section_divider");
-      if (indexElement == null) {
+      var notesElement = definitionElement.querySelector("div.meaning-representation_notes > span");
+      if (notesElement != null) {
+        word.notes = notesElement.text.trim();
         continue;
       }
 
@@ -260,11 +261,6 @@ class Parser {
       definition.meanings = meaningsElement!.innerHtml.trim().split("; ");
 
       word.definitions.add(definition);
-    }
-
-    var notesElement = element.querySelector("div.meaning-representation_notes > span");
-    if (notesElement != null) {
-      word.notes = notesElement.text.trim();
     }
 
     return word;
