@@ -238,7 +238,8 @@ class Parser {
     var definitionElements = element.querySelectorAll("div.meaning-wrapper");
 
     for (var definitionElement in definitionElements) {
-      if (definitionElement.previousElementSibling!.text == "Other forms") {
+      var previousElement = definitionElement.previousElementSibling;
+      if (previousElement?.text == "Other forms") {
         word.otherForms = _parseOtherForms(definitionElement);
         continue;
       }
@@ -249,10 +250,15 @@ class Parser {
       }
 
       var definition = Definition();
-      var tagsText = definitionElement.previousElementSibling!.text;
-      definition.types = tagsText.replaceAll("\\(.+=\\)", "").split(", ").map((e) => e.trim()).toList();
+
+      if (previousElement != null) {
+        var tagsText = definitionElement.previousElementSibling!.text;
+        definition.types = tagsText.replaceAll("\\(.+=\\)", "").split(", ").map((e) => e.trim()).toList();
+      }
+
       var meaningsElement = definitionElement.querySelector("span.meaning-meaning");
       definition.meanings = meaningsElement!.innerHtml.trim().split("; ");
+
       word.definitions.add(definition);
     }
 
