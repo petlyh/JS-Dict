@@ -27,4 +27,9 @@ class Fetcher {
     var url = Uri.parse("$wordUrl/$encodedWord");
     return await client.get(url);
   }
+
+  Future<http.Response> sentenceDetails(final String sentenceId) async {
+    var url = Uri.parse("$baseUrl/sentences/$sentenceId");
+    return await client.get(url);
+  }
 }

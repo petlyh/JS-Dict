@@ -61,6 +61,14 @@ class Parser {
     return kanji;
   }
 
+
+  Sentence sentenceDetails(final Document document) {
+    final sentenceElement = document.querySelector("div.sentence_content")!;
+    var sentence = _sentenceEntry(sentenceElement);
+    sentence.kanji = _findEntries(document, _kanjiEntry, "div.kanji_light_block > div.entry.kanji_light");
+    return sentence;
+  }
+
   Sentence _sentenceEntry(final Element element) {
     final english = element.querySelector("span.english")!.innerHtml.trim();
     final japaneseNodes = element.querySelector("ul.japanese_sentence")!.nodes;
@@ -69,8 +77,8 @@ class Parser {
     final copyrightElement = element.querySelector("span.inline_copyright a");
     final copyright = SentenceCopyright(copyrightElement!.innerHtml.trim(), copyrightElement.attributes["href"]!);
 
-    final link = element.querySelector("a.light-details_link")!.attributes["href"]!;
-    final id = link.split("/").last;
+    final linkElement = element.querySelector("a.light-details_link");
+    final id = linkElement != null ? linkElement.attributes["href"]!.split("/").last : "";
 
     return Sentence.copyright(id, japanese, english, copyright);
   }

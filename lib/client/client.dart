@@ -3,10 +3,10 @@ library jisho_dart;
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
+import 'package:jsdict/models.dart';
 
 import 'fetcher.dart';
 import 'parser.dart';
-import '../models.dart';
 
 class JishoClient {
   Fetcher fetcher = Fetcher();
@@ -46,5 +46,10 @@ class JishoClient {
   Future<Word> wordDetails(final String word) async {
     var futureResponse = fetcher.wordDetails(word);
     return _handleResponse(futureResponse).then((document) => parser.wordDetails(document));
+  }
+
+  Future<Sentence> sentenceDetails(final String sentenceId) async {
+    var futureResponse = fetcher.sentenceDetails(sentenceId);
+    return _handleResponse(futureResponse).then((document) => parser.sentenceDetails(document));
   }
 }

@@ -212,6 +212,8 @@ class Sentence implements JishoTag {
   final String english;
   final SentenceCopyright? copyright;
 
+  List<Kanji> kanji = [];
+
   Sentence(this.id, this.japanese, this.english) : copyright = null;
   Sentence.copyright(this.id, this.japanese, this.english, this.copyright);
   Sentence.empty() : id = "", japanese = [], english = "", copyright = null;
