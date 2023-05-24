@@ -37,7 +37,7 @@ class ResultPage extends StatelessWidget {
     return LoaderWidget(
       future: getClient().searchTag(query, type),
       handler: (data) {
-        if (data!.hasNoMatches(type)) {
+        if (data.hasNoMatches(type)) {
           return Container(
             margin: const EdgeInsets.all(20.0),
             child: const Text("No matches found")

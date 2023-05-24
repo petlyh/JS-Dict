@@ -14,13 +14,13 @@ class ResultListWidget extends StatelessWidget {
   Widget Function(BuildContext, int) getItemBuilder() {
     switch (type.runtimeType) {
       case Word:
-        return (context, index) => WordItem(word: searchResponse.wordResults[index]);
+        return (_, index) => WordItem(word: searchResponse.wordResults[index]);
       case Kanji:
-        return (context, index) => KanjiItem(kanji: searchResponse.kanjiResults[index]);
+        return (_, index) => KanjiItem(kanji: searchResponse.kanjiResults[index]);
       case Sentence:
-        return (context, index) => SentenceItem(sentence: searchResponse.sentenceResults[index]);
+        return (_, index) => SentenceItem(sentence: searchResponse.sentenceResults[index]);
       case Name:
-        return (context, index) => NameItem(name: searchResponse.nameResults[index]);
+        return (_, index) => NameItem(name: searchResponse.nameResults[index]);
       default:
         throw Exception("Unknown type");
     }

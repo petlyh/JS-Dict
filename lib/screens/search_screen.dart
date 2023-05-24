@@ -74,7 +74,6 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         body: TabBarView(
           children: [
-            // const Center(child: Icon(Icons.abc, size: 128.0)),
             ResultPage(query: query, type: Word.empty()),
             ResultPage(query: query, type: Kanji.empty()),
             ResultPage(query: query, type: Name.empty()),
