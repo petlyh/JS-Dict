@@ -1,6 +1,8 @@
 import 'package:html/dom.dart';
 import 'package:jsdict/models.dart';
 
+import 'furigana.dart';
+
 class Parser {
   SearchResponse search(final Document document) {
     if (document.getElementById("no-matches") != null) {
@@ -71,8 +73,7 @@ class Parser {
 
   Sentence _sentenceEntry(final Element element) {
     final english = element.querySelector("span.english")!.innerHtml.trim();
-    final japaneseNodes = element.querySelector("ul.japanese_sentence")!.nodes;
-    final japanese = _createFurigana(japaneseNodes);
+    final japanese = parseSentenceFurigana(element);
 
     final copyrightElement = element.querySelector("span.inline_copyright a");
     final copyright = SentenceCopyright(copyrightElement!.innerHtml.trim(), copyrightElement.attributes["href"]!);
@@ -81,28 +82,6 @@ class Parser {
     final id = linkElement != null ? linkElement.attributes["href"]!.split("/").last : "";
 
     return Sentence.copyright(id, japanese, english, copyright);
-  }
-
-  Furigana _createFurigana(final NodeList nodes) {
-    Furigana furigana = [];
-
-    for (var node in nodes) {
-      if (node.nodeType == Node.TEXT_NODE) {
-        furigana.add(FuriganaPart.textOnly(node.text!.trim()));
-      } else if (node.nodeType == Node.ELEMENT_NODE) {
-        final element = (node as Element);
-        final text = element.querySelector("span.unlinked")!.innerHtml.trim();
-        final furiganaElement = element.querySelector("span.furigana");
-        if (furiganaElement == null) {
-          furigana.add(FuriganaPart.textOnly(text));
-        } else {
-          final furiganaText = furiganaElement.innerHtml.trim();
-          furigana.add(FuriganaPart(text, furiganaText));
-        }
-      }
-    }
-
-    return furigana;
   }
 
   Kanji? kanjiDetails(final Document document) {
@@ -183,9 +162,8 @@ class Parser {
   }
 
   Word _wordEntry(final Element element) {
-    var wordElement = element.querySelector("div.concept_light-representation > span.text");
-    var wordText = wordElement!.nodes.map((node) => FuriganaPart.textOnly(node.text!.trim())).toList();
-    var word = Word(wordText);
+    final furigana = parseWordFurigana(element);
+    var word = Word(furigana);
 
     var commonElement = element.querySelector("span.concept_light-common");
     if (commonElement != null) {

@@ -40,6 +40,7 @@ dependencies:
   ruby_text: ^3.0.1
   url_launcher: ^6.1.10
   get_it: ^7.3.0
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:
