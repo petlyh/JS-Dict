@@ -20,7 +20,7 @@ class SentenceItem extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SentenceDetailsScreen(sentence)))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SentenceDetailsScreen(sentence.id)))
         },
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: RubyText(sentence.japanese.toRubyData()),

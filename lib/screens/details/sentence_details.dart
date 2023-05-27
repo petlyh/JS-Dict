@@ -7,16 +7,16 @@ import 'package:jsdict/widgets/loader.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 class SentenceDetailsScreen extends StatelessWidget {
-  const SentenceDetailsScreen(this.searchSentence, {super.key});
+  const SentenceDetailsScreen(this.sentenceId, {super.key});
 
-  final Sentence searchSentence;
+  final String sentenceId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Sentence Details")),
       body: LoaderWidget(
-        future: getClient().sentenceDetails(searchSentence.id),
+        future: getClient().sentenceDetails(sentenceId),
         handler: (sentence) {
           return SingleChildScrollView(
             child: Container(
