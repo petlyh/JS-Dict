@@ -84,6 +84,14 @@ class Radical {
       meanings = [];
 }
 
+class ReadingCompound {
+  final String compound;
+  final String reading;
+  final List<String> meanings;
+
+  ReadingCompound(this.compound, this.reading, this.meanings);
+}
+
 class Kanji implements JishoTag {
   final String kanji;
   
@@ -101,6 +109,9 @@ class Kanji implements JishoTag {
   Radical radical = Radical.empty();
   
   int? frequency;
+
+  List<ReadingCompound> onReadingCompounds = [];
+  List<ReadingCompound> kunReadingCompounds = [];
   
   Kanji(this.kanji);
   Kanji.empty() : kanji = "";

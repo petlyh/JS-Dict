@@ -139,7 +139,33 @@ class Parser {
       kanjiDetails.frequency = int.parse(frequencyElement.innerHtml);
     }
 
+    kanjiDetails.onReadingCompounds = _findReadingCompounds(element, "On");
+    kanjiDetails.kunReadingCompounds = _findReadingCompounds(element, "Kun");
+
     return kanjiDetails;
+  }
+
+  List<ReadingCompound> _findReadingCompounds(Element element, String type) {
+    var compoundColumns = element.querySelectorAll("div.row.compounds > div.columns");
+
+    try {
+      final column = compoundColumns.firstWhere((element) => element.querySelector("h2")!.innerHtml.contains("$type reading compounds"));
+      final compoundElements = column.querySelectorAll("ul > li");
+      assert(compoundElements.isNotEmpty);
+
+      return compoundElements.map((element) {
+        final lines = element.text.trim().split("\n");
+        assert(lines.length == 3);
+
+        final compound = lines[0].trim();
+        final reading = lines[1].trim().replaceAll("【", "").replaceAll("】", "");
+        final meanings = lines[2].trim().split(", ");
+
+        return ReadingCompound(compound, reading, meanings);
+      }).toList();
+    } on StateError catch (_) {
+      return [];
+    }
   }
 
   List<OtherForm> _parseOtherForms(final Element element) {
