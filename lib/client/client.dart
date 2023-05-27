@@ -38,7 +38,7 @@ class JishoClient {
     return search("$query #${type.getTag()}");
   }
 
-  Future<Kanji?> kanjiDetails(final String kanji) async {
+  Future<Kanji> kanjiDetails(final String kanji) async {
     var futureResponse = fetcher.kanjiDetails(kanji);
     return _handleResponse(futureResponse).then((document) => parser.kanjiDetails(document));
   }

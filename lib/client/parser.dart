@@ -84,11 +84,11 @@ class Parser {
     return Sentence.copyright(id, japanese, english, copyright);
   }
 
-  Kanji? kanjiDetails(final Document document) {
+  Kanji kanjiDetails(final Document document) {
     final kanjiDetailElement = document.querySelector("div.kanji.details");
 
     if (kanjiDetailElement == null) {
-      return null;
+      throw Exception("Kanji not found");
     }
 
     return _kanjiDetailsEntry(kanjiDetailElement);
@@ -222,6 +222,11 @@ class Parser {
 
   Word wordDetails(final Document document) {
     var wordEntryElement = document.querySelector("div.concept_light");
-    return _wordEntry(wordEntryElement!);
+
+    if (wordEntryElement == null) {
+      throw Exception("Word not found");
+    }
+
+    return _wordEntry(wordEntryElement);
   }
 }
