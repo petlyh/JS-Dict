@@ -25,12 +25,12 @@ class SentenceDetailsScreen extends StatelessWidget {
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       children: [
-                        RubyText(sentence.japanese.toRubyData(), style: const TextStyle(fontSize: 24)),
+                        RubyText(sentence.japanese.toRubyData(), style: const TextStyle(fontSize: 18)),
                         const SizedBox(height: 20),
-                        Text(sentence.english, style: const TextStyle(fontSize: 24)),
+                        Text(sentence.english, style: const TextStyle(fontSize: 18)),
                         const SizedBox(height: 20),
                         CopyrightText(sentence.copyright!),
                       ],
