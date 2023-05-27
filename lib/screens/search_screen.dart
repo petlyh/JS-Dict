@@ -38,6 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: TextField(
             focusNode: searchFocusNode,
