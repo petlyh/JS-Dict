@@ -31,6 +31,8 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
+  static const placeholder = Center(child: Text("JS-Dict", style: TextStyle(fontSize: 32.0)));
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -62,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
               },
               icon: const Icon(Icons.settings))
           ],
-          bottom: const TabBar(
+          bottom: query.isEmpty ? null : const TabBar(
             isScrollable: true,
             tabs: [
               Tab(text: "Words"),
@@ -72,14 +74,16 @@ class _SearchScreenState extends State<SearchScreen> {
             ]
           ),
         ),
-        body: TabBarView(
-          children: [
-            ResultPage(query: query, type: Word.empty()),
-            ResultPage(query: query, type: Kanji.empty()),
-            ResultPage(query: query, type: Name.empty()),
-            ResultPage(query: query, type: Sentence.empty()),
-          ]
-        ),
+        body: query.isEmpty ?
+          placeholder :
+          TabBarView(
+            children: [
+              ResultPage(query: query, type: Word.empty()),
+              ResultPage(query: query, type: Kanji.empty()),
+              ResultPage(query: query, type: Name.empty()),
+              ResultPage(query: query, type: Sentence.empty()),
+            ]
+          ),
       ),
     );
   }

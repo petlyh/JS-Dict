@@ -10,8 +10,6 @@ class ResultPage extends StatelessWidget {
   final String query;
   final JishoTag type;
 
-  static const placeholder = Center(child: Text("JS-Dict", style: TextStyle(fontSize: 32.0)));
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -21,31 +19,23 @@ class ResultPage extends StatelessWidget {
             flex: 1,
             child: Container(
               margin: const EdgeInsets.all(8.0),
-              child: getContentWidget()
+              child: LoaderWidget(
+                future: getClient().searchTag(query, type),
+                handler: (data) {
+                  if (data.hasNoMatches(type)) {
+                    return Container(
+                      margin: const EdgeInsets.all(20.0),
+                      child: const Text("No matches found")
+                    );
+                  }
+
+                  return ResultListWidget(searchResponse: data, type: type);
+                }
+              ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget getContentWidget() {
-    if (query.isEmpty) {
-      return placeholder;
-    }
-
-    return LoaderWidget(
-      future: getClient().searchTag(query, type),
-      handler: (data) {
-        if (data.hasNoMatches(type)) {
-          return Container(
-            margin: const EdgeInsets.all(20.0),
-            child: const Text("No matches found")
-          );
-        }
-
-        return ResultListWidget(searchResponse: data, type: type);
-      }
     );
   }
 }
