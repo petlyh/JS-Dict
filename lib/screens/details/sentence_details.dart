@@ -37,7 +37,7 @@ class SentenceDetailsScreen extends StatelessWidget {
                     )
                   ),
                   ListView.builder(
-                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: sentence.kanji.length,
                     itemBuilder: (_, index) => KanjiItem(kanji: sentence.kanji[index])
