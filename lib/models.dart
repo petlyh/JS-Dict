@@ -78,10 +78,6 @@ class Radical {
   final List<String> meanings;
   
   Radical(this.character, this.meanings);
-  
-  Radical.empty()
-    : character = "",
-      meanings = [];
 }
 
 class ReadingCompound {
@@ -103,10 +99,10 @@ class Kanji implements JishoTag {
   int grade = -1;
   JLPTLevel jlptLevel = JLPTLevel.none;
 
-  List<String>? parts;
-  List<String>? variants;
+  List<String> parts = [];
+  List<String> variants = [];
   
-  Radical radical = Radical.empty();
+  Radical? radical;
   
   int? frequency;
 
