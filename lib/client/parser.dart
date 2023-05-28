@@ -139,6 +139,13 @@ class Parser {
       kanjiDetails.frequency = int.parse(frequencyElement.innerHtml);
     }
 
+    var radicalElement = element.querySelector("div.radicals > dl > dd > span");
+    if (radicalElement != null) {
+      var character = radicalElement.nodes.firstWhere((node) => node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty).text!.trim();
+      var meanings = radicalElement.querySelector("span.radical_meaning")!.text.trim().split(", ");
+      kanjiDetails.radical = Radical(character, meanings);
+    }
+
     kanjiDetails.onReadingCompounds = _findReadingCompounds(element, "On");
     kanjiDetails.kunReadingCompounds = _findReadingCompounds(element, "Kun");
 
