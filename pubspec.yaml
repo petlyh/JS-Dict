@@ -38,6 +38,7 @@ dependencies:
   url_launcher: ^6.1.10
   get_it: ^7.3.0
   collection: ^1.17.0
+  expansion_tile_card: ^3.0.0
 
 dev_dependencies:
   flutter_test:
