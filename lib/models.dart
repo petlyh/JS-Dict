@@ -88,15 +88,39 @@ class ReadingCompound {
   ReadingCompound(this.compound, this.reading, this.meanings);
 }
 
+class KanjiType {}
+
+class Jinmeiyou extends KanjiType {
+  @override
+  String toString() {
+    return "Jinmeiyō";
+  }
+}
+
+class Jouyou extends KanjiType {
+  static const juniorHighGrade = 8;
+
+  final int grade;
+  Jouyou(this.grade) : assert((grade >= 1 && grade <= 6) || grade == juniorHighGrade);
+  Jouyou.juniorHigh() : grade = juniorHighGrade;
+
+  @override
+  String toString() {
+    final gradePart = grade == juniorHighGrade ? "junior high" : "grade $grade";
+    return "Jōyō $gradePart";
+  }
+}
+
 class Kanji implements JishoTag {
   final String kanji;
   
   List<String> meanings = [];
   List<String> kunReadings = [];
   List<String> onReadings = [];
+
+  KanjiType? type;
   
   int strokeCount = -1;
-  int grade = -1;
   JLPTLevel jlptLevel = JLPTLevel.none;
 
   List<String> parts = [];

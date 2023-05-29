@@ -34,8 +34,8 @@ class KanjiItem extends StatelessWidget {
       info.add("JLPT ${kanji.jlptLevel}");
     }
 
-    if (kanji.grade != -1) {
-      info.add("grade ${kanji.grade}");
+    if (kanji.type != null) {
+      info.add(kanji.type.toString());
     }
 
     return info.join(", ");

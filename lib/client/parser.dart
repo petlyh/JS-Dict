@@ -60,6 +60,8 @@ class Parser {
     final info = element.querySelector("div.info")!.innerHtml;
     kanji.jlptLevel = JLPTLevel.findInText(info);
 
+    kanji.type = _getKanjiType(info);
+
     return kanji;
   }
 
@@ -109,10 +111,7 @@ class Parser {
       kanjiDetails.jlptLevel = JLPTLevel.fromString(jlptLevelElement.innerHtml);
     }
 
-    var gradeElement = element.querySelector("div.grade > strong");
-    if (gradeElement != null && gradeElement.innerHtml.contains("grade")) {
-      kanjiDetails.grade = int.parse(gradeElement.innerHtml.split(" ")[1]);
-    }
+    kanjiDetails.type = _getKanjiType(element.querySelector("div.grade")!.text);
 
     var kunElements = element.querySelectorAll("div.kanji-details__main-readings > dl.kun_yomi > dd > a");
     if (kunElements.isNotEmpty) {
@@ -150,6 +149,23 @@ class Parser {
     kanjiDetails.kunReadingCompounds = _findReadingCompounds(element, "Kun");
 
     return kanjiDetails;
+  }
+
+  KanjiType? _getKanjiType(String text) {
+    if (text.contains("Jōyō")) {
+      if (text.contains("junior high")) {
+        return Jouyou.juniorHigh();
+      }
+
+      final grade = RegExp(r"grade (\d+)").firstMatch(text)!.group(1)!;
+      return Jouyou(int.parse(grade));
+    }
+    
+    if (text.contains("Jinmeiyō")) {
+      return Jinmeiyou();
+    }
+
+    return null;
   }
 
   List<ReadingCompound> _findReadingCompounds(Element element, String type) {
