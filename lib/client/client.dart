@@ -1,5 +1,7 @@
 library jisho_dart;
 
+import 'dart:io';
+
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
@@ -22,8 +24,8 @@ class JishoClient {
   Future<Document> _handleResponse(Future<http.Response> futureResponse) async {
     var response = await futureResponse;
 
-    if (response.statusCode != 200) {
-      throw Exception("HTTP response status not 200");
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException("Unsuccessful response status: ${response.statusCode}");
     }
 
     return parse(response.body);
