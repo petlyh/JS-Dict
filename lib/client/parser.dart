@@ -266,6 +266,12 @@ class Parser {
       word.definitions.add(definition);
     }
 
+    var detailsLink = element.querySelector("a.light-details_link");
+    if (detailsLink != null) {
+      var detailsUrl = detailsLink.attributes["href"]!;
+      word.id = Uri.decodeComponent(detailsUrl.split("/").last);
+    }
+
     return word;
   }
 

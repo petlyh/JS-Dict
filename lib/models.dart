@@ -199,6 +199,9 @@ class Word implements JishoTag {
   // Kanji in the word
   List<Kanji>? wordKanji;
 
+  // Form of word used to get details page
+  String? id;
+
   Word(this.word);
   Word.empty() : word = [];
 
