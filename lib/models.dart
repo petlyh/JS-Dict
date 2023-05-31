@@ -217,7 +217,7 @@ class FuriganaPart {
 
 typedef Furigana = List<FuriganaPart>;
 
-extension FuriganaMethods on List<FuriganaPart> {
+extension FuriganaMethods on Furigana {
   String getText() {
     return map((part) => part.text.trim()).join().trim();
   }
