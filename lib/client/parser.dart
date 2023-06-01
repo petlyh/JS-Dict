@@ -282,6 +282,8 @@ class Parser {
       throw Exception("Word not found");
     }
 
-    return _wordEntry(wordEntryElement);
+    var word = _wordEntry(wordEntryElement);
+    word.kanji = _findEntries(document, _kanjiEntry, "div.kanji_light_block > div.entry.kanji_light");
+    return word;
   }
 }
