@@ -234,6 +234,8 @@ extension FuriganaMethods on Furigana {
   }
 }
 
+Furigana furiganaFromText(String text) => [FuriganaPart.textOnly(text)];
+
 class SentenceCopyright {
   final String name;
   final String url;
