@@ -191,7 +191,7 @@ class Word implements JishoTag {
 
   String notes = "";
 
-  List<Kanji>? wordKanji;
+  List<Kanji> kanji = [];
 
   // Form of word used to get details page
   String? id;
