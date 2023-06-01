@@ -183,20 +183,14 @@ class Word implements JishoTag {
   List<Definition> definitions = [];
   List<OtherForm> otherForms = [];
 
-  /// `true` if the word has the "Common word" tag.
   bool commonWord = false;
-  /// WaniKani level, between `1` and `60`. Set to `-1` if not applicable.
   int wanikaniLevel = -1;
-  /// JLPT level of the word.
   JLPTLevel jlptLevel = JLPTLevel.none;
 
-  /// URL to an audio file. Empty string if there is none.
   String audioUrl = "";
 
-  /// Word notes
   String notes = "";
 
-  // Kanji in the word
   List<Kanji>? wordKanji;
 
   // Form of word used to get details page
