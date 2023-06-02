@@ -49,7 +49,7 @@ class WordDetailsScreen extends StatelessWidget {
             title: const Text("Definitions"),
             children: intersperce(
               word.definitions.map((definition) => ListTile(
-                title: Text(definition.meanings.join(", ")),
+                title: Text(definition.meanings.join("; ")),
                 subtitle: Text(definition.types.join(", ")),
               )).toList(),
               const Divider(),
