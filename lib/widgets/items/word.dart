@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jsdict/models.dart';
+import 'package:jsdict/screens/details/word_details.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 class WordItem extends StatelessWidget {
@@ -11,7 +12,9 @@ class WordItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: () => {},
+        onTap: () => {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WordDetailsScreen(word.id!)))
+        },
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: RubyText(word.word.toRubyData()),
         subtitle: Column(
