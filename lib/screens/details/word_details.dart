@@ -38,10 +38,10 @@ class WordDetailsScreen extends StatelessWidget {
               rubyStyle: const TextStyle(fontSize: 14),
             ),
           ),
-          InfoChipList([
-            word.commonWord ? "Common" : null,
-            word.jlptLevel != JLPTLevel.none ? "JLPT ${word.jlptLevel.toString()}" : null,
-            word.wanikaniLevel != -1 ? "WaniKani Lv. ${word.wanikaniLevel}" : null,
+          InfoChipList.color([
+            (word.commonWord ? "Common" : null, null),
+            (word.jlptLevel != JLPTLevel.none ? "JLPT ${word.jlptLevel.toString()}" : null, Colors.blue),
+            (word.wanikaniLevel != -1 ? "WaniKani Lv. ${word.wanikaniLevel}" : null, Colors.blue),
           ]),
           const SizedBox(height: 16),
           ExpansionTileCard(
