@@ -1,5 +1,6 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
+import 'package:jsdict/intersperce.dart';
 import 'package:jsdict/models.dart';
 
 class ReadingCompoundsList extends StatelessWidget {
@@ -18,21 +19,7 @@ class ReadingCompoundsList extends StatelessWidget {
 
     return ExpansionTileCard(
       title: Text("$type reading compounds"),
-      children: intersperce<Widget>(itemList, const Divider()),
+      children: intersperce(itemList, const Divider()),
     );
-  }
-
-  List<T> intersperce<T>(List<T> list, T item) {
-    if (list.length < 2) {
-      return list;
-    }
-    
-    final insertCount = list.length - 1;
-    
-    for (var i = 0; i < insertCount; i++) {
-      list.insert(1 + i*2, item);
-    }
-
-    return list;
   }
 }
