@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:jsdict/client/client.dart';
 
 class LoaderWidget<T> extends StatelessWidget {
   const LoaderWidget({
@@ -47,6 +48,10 @@ class LoaderWidget<T> extends StatelessWidget {
   }
 
   String errorMessage(Object error) {
+    if (error is NotFoundException) {
+      return "Page not found";
+    }
+
     if (error is SocketException || error is ClientException) {
         return "A network error occured.\nCheck your connection.";
     }

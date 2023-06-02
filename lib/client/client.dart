@@ -10,6 +10,18 @@ import 'package:jsdict/models.dart';
 import 'fetcher.dart';
 import 'parser.dart';
 
+class NotFoundException implements HttpException {
+  @override
+  final Uri? uri;
+  @override
+  String get message => "Not Found: ${Uri.decodeFull(uri.toString())}";
+
+  @override
+  String toString() => message;
+
+  NotFoundException(this.uri);
+}
+
 class JishoClient {
   Fetcher fetcher = Fetcher();
   Parser parser = Parser();
@@ -25,6 +37,10 @@ class JishoClient {
     var response = await futureResponse;
 
     if (response.statusCode != HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.notFound) {
+        throw NotFoundException(response.request!.url);
+      }
+
       throw HttpException("Unsuccessful response status: ${response.statusCode}");
     }
 
