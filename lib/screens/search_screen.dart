@@ -55,6 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   searchFocusNode.requestFocus(),
                   searchController.clear()
                 },
+                tooltip: "Clear",
               )
             ),
           ),
@@ -63,7 +64,9 @@ class _SearchScreenState extends State<SearchScreen> {
               onPressed: () => {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingScreen()))
               },
-              icon: const Icon(Icons.settings))
+              icon: const Icon(Icons.settings),
+              tooltip: "Settings",
+            ),
           ],
           bottom: query.isEmpty ? null : const TabBar(
             isScrollable: true,
