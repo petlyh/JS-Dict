@@ -255,9 +255,13 @@ class Parser {
 
       var definition = Definition();
 
-      if (previousElement != null) {
+      if (previousElement != null && previousElement.classes.contains("meaning-tags")) {
         var tagsText = definitionElement.previousElementSibling!.text;
-        definition.types = tagsText.replaceAll("\\(.+=\\)", "").split(", ").map((e) => e.trim()).toList();
+        definition.types = tagsText.split(", ").map((e) => e.trim()).toList();
+      }
+
+      if (definition.types.isEmpty && word.definitions.isNotEmpty) {
+        definition.types = word.definitions.last.types;
       }
 
       var meaningsElement = definitionElement.querySelector("span.meaning-meaning");
