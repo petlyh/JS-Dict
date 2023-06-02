@@ -39,7 +39,7 @@ class KanjiDetailsScreen extends StatelessWidget {
     }
 
     if (kanji.onReadings.isNotEmpty) {
-      infoText.add(Text("Kun: ${kanji.onReadings.join("、 ")}"));
+      infoText.add(Text("On: ${kanji.onReadings.join("、 ")}"));
     }
 
     if (kanji.radical != null) {
