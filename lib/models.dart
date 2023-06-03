@@ -1,3 +1,4 @@
+import 'package:jsdict/inflection.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 class SearchResponse {
@@ -195,6 +196,9 @@ class Word implements JishoTag {
 
   // Form of word used to get details page
   String? id;
+
+  String inflectionId = "";
+  InflectionType? get inflectionType => inflectionId.isNotEmpty ? getInflectionType(word.getText(), inflectionId) : null;
 
   Word(this.word);
   Word.empty() : word = [];

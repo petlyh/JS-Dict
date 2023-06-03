@@ -276,6 +276,11 @@ class Parser {
       word.id = Uri.decodeComponent(detailsUrl.split("/").last);
     }
 
+    var inflectionElement = element.querySelector("a.show_inflection_table");
+    if (inflectionElement != null) {
+      word.inflectionId = inflectionElement.attributes["data-pos"]!;
+    }
+
     return word;
   }
 
