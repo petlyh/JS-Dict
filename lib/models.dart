@@ -200,6 +200,8 @@ class Word implements JishoTag {
   String inflectionId = "";
   InflectionType? get inflectionType => inflectionId.isNotEmpty ? getInflectionType(word.getText(), inflectionId) : null;
 
+  List<Collocation> collocations = [];
+
   Word(this.word);
   Word.empty() : word = [];
 
@@ -207,6 +209,13 @@ class Word implements JishoTag {
   String getTag() {
     return "words";
   }
+}
+
+class Collocation {
+  final String word;
+  final String meaning;
+
+  Collocation(this.word, this.meaning);
 }
 
 class FuriganaPart {

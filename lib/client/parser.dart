@@ -281,6 +281,18 @@ class Parser {
       word.inflectionId = inflectionElement.attributes["data-pos"]!;
     }
 
+    try {
+      var collocationsElement = element.querySelectorAll(".concept_light-status_link").firstWhere((e) => e.text.contains("collocation"));
+      var collocationsModalId = collocationsElement.attributes["data-reveal-id"]!;
+      var collocationElements = element.querySelectorAll("#$collocationsModalId > ul > li > a");
+
+      word.collocations = collocationElements.map((e) {
+        var split = e.text.trim().split(" - ");
+        assert(split.length == 2);
+        return Collocation(split[0], split[1]);
+      }).toList();
+    } on StateError catch (_) {}
+
     return word;
   }
 

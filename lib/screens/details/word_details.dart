@@ -64,6 +64,21 @@ class WordDetailsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 4),
       ]);
+    } else if (word.collocations.isNotEmpty) {
+      columnItems.addAll([
+        const SizedBox(height: 4),
+        ExpansionTileCard(
+          title: const Text("Collocations"),
+          children: intersperce(
+            word.collocations.map((collocation) => ListTile(
+              title: Text(collocation.word),
+              subtitle: Text(collocation.meaning),
+            )).toList(),
+            const Divider(),
+          ),
+        ),
+        const SizedBox(height: 4),
+      ]);
     } else {
       columnItems.add(const SizedBox(height: 8));
     }
