@@ -4,7 +4,7 @@ import 'package:jsdict/models.dart';
 import 'package:jsdict/singletons.dart';
 import 'package:jsdict/widgets/info_chip_list.dart';
 import 'package:jsdict/widgets/loader.dart';
-import 'package:jsdict/widgets/reading_compounds_list.dart';
+import 'package:jsdict/widgets/compound_list.dart';
 
 class KanjiDetailsScreen extends StatelessWidget {
   const KanjiDetailsScreen(this.searchKanji, {super.key});
@@ -91,12 +91,12 @@ class KanjiDetailsScreen extends StatelessWidget {
       items.add(const Divider());
     }
 
-    if (kanji.onReadingCompounds.isNotEmpty) {
-      items.add(ReadingCompoundsList("On", kanji.onReadingCompounds));
+    if (kanji.onCompounds.isNotEmpty) {
+      items.add(CompoundList("On", kanji.onCompounds));
     }
 
-    if (kanji.kunReadingCompounds.isNotEmpty) {
-      items.add(ReadingCompoundsList("Kun", kanji.kunReadingCompounds));
+    if (kanji.kunCompounds.isNotEmpty) {
+      items.add(CompoundList("Kun", kanji.kunCompounds));
     }
 
     return items;

@@ -145,8 +145,8 @@ class Parser {
       kanjiDetails.radical = Radical(character, meanings);
     }
 
-    kanjiDetails.onReadingCompounds = _findReadingCompounds(element, "On");
-    kanjiDetails.kunReadingCompounds = _findReadingCompounds(element, "Kun");
+    kanjiDetails.onCompounds = _findCompounds(element, "On");
+    kanjiDetails.kunCompounds = _findCompounds(element, "Kun");
 
     return kanjiDetails;
   }
@@ -168,7 +168,7 @@ class Parser {
     return null;
   }
 
-  List<ReadingCompound> _findReadingCompounds(Element element, String type) {
+  List<Compound> _findCompounds(Element element, String type) {
     var compoundColumns = element.querySelectorAll("div.row.compounds > div.columns");
 
     try {
@@ -184,7 +184,7 @@ class Parser {
         final reading = lines[1].trim().replaceAll("【", "").replaceAll("】", "");
         final meanings = lines[2].trim().split(", ");
 
-        return ReadingCompound(compound, reading, meanings);
+        return Compound(compound, reading, meanings);
       }).toList();
     } on StateError catch (_) {
       return [];
