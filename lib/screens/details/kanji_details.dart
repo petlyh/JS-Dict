@@ -54,7 +54,7 @@ class KanjiDetailsScreen extends StatelessWidget {
       Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(kanji.kanji, style: const TextStyle(fontSize: 48)),
+        child: Text(kanji.kanji, style: const TextStyle(fontSize: 40)),
       ),
       InfoChipList.color([
         ("${kanji.strokeCount} strokes", null),
