@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:html/dom.dart';
+import 'package:jsdict/client/parsing_helper.dart';
 import 'package:jsdict/models.dart';
 
 Furigana parseSentenceFurigana(final Element element) {
@@ -27,10 +28,9 @@ Furigana parseWordFurigana(final Element element) {
     return parseRubyFurigana(element);
   }
 
-  final furiganaParts = element
-      .querySelectorAll("div.concept_light-representation > span.furigana > span")
-      .map((element) => element.text.trim())
-      .toList();
+  final furiganaParts = element.collectAll(
+      "div.concept_light-representation > span.furigana > span",
+      (e) => e.text.trim());
 
   final textParts = element
       .querySelector("div.concept_light-representation > span.text")!
@@ -52,12 +52,12 @@ Furigana parseWordFurigana(final Element element) {
 }
 
 Furigana parseRubyFurigana(final Element element) {
-  final furiganaParts = element
-      .querySelectorAll("div.concept_light-representation > span.furigana > *")
-      .map((e) => e.localName == "ruby"
-          ? e.querySelector("rt")!.text.trim()
-          : e.text.trim())
-      .toList();
+  final furiganaParts = element.collectAll(
+    "div.concept_light-representation > span.furigana > *",
+    (e) => e.localName == "ruby"
+        ? e.querySelector("rt")!.text.trim()
+        : e.text.trim(),
+  );
 
   final textParts = element
       .querySelector("div.concept_light-representation > span.text")!

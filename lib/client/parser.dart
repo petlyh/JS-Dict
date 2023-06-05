@@ -1,4 +1,5 @@
 import 'package:html/dom.dart';
+import 'package:jsdict/client/parsing_helper.dart';
 import 'package:jsdict/models.dart';
 
 import 'furigana.dart';
@@ -14,136 +15,93 @@ class Parser {
 
   SearchResponse _createSearchResponse(final Document document) {
     var searchResponse = SearchResponse(true);
+    final body = document.body!;
 
-    searchResponse.kanjiResults = _findEntries(document, _kanjiDetailsEntry, "div.kanji.details");
+    searchResponse.kanjiResults = body.collectAll("div.kanji.details", _kanjiDetailsEntry);
     if (searchResponse.kanjiResults.isNotEmpty) {
       return searchResponse;
     }
 
-    searchResponse.kanjiResults = _findEntries(document, _kanjiEntry, "div.kanji_light_block > div.entry.kanji_light");
-    searchResponse.sentenceResults = _findEntries(document, _sentenceEntry, "div.sentences_block > ul > li.entry.sentence");
-    searchResponse.nameResults = _findEntries(document, _nameEntry, "div.names_block > div.names > div.concept_light");
-    searchResponse.wordResults = _findEntries(document, _wordEntry, "div.concepts > .concept_light, div.exact_block > .concept_light");
+    searchResponse.kanjiResults = body.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
+    searchResponse.sentenceResults = body.collectAll("div.sentences_block > ul > li.entry.sentence", _sentenceEntry);
+    searchResponse.nameResults = body.collectAll("div.names_block > div.names > div.concept_light", _nameEntry);
+    searchResponse.wordResults = body.collectAll("div.concepts > .concept_light, div.exact_block > .concept_light", _wordEntry);
 
     return searchResponse;
   }
 
-  List<T> _findEntries<T>(Document document, T Function(Element) handler, String selector) {
-    return document.querySelectorAll(selector).map(handler).toList();
-  }
-
   Name _nameEntry(final Element element) {
-    final readingElement = element.querySelector("div.concept_light-readings");
-    final reading = readingElement!.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " ");
-
-    final meaningElements = element.querySelectorAll("span.meaning-meaning");
-    final meanings = meaningElements.map((e) => e.text.trim()).toList();
+    final reading = element.collect("div.concept_light-readings", (e) => e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
+    final meanings = element.collectAll("span.meaning-meaning", (e) => e.text.trim());
 
     return Name(reading, meanings);
   }
 
   Kanji _kanjiEntry(final Element element) {
-    final literal = element.querySelector("div.literal_block > span > a")!.innerHtml.trim();
+    final literal = element.collect("div.literal_block > span > a", (e) => e.innerHtml.trim())!;
     var kanji = Kanji(literal);
 
-    final meaningElements = element.querySelectorAll("div.meanings > span");
-    kanji.meanings = meaningElements.map((e) => e.innerHtml.trim().replaceAll(",", "")).toList();
+    kanji.meanings = element.collectAll("div.meanings > span", (e) => e.innerHtml.trim().replaceAll(",", ""));
+    kanji.kunReadings = element.collectAll("div.kun > span.japanese_gothic > a", (e) => e.innerHtml.trim());
+    kanji.onReadings = element.collectAll("div.on > span.japanese_gothic > a", (e) => e.innerHtml.trim());
 
-    final kunElements = element.querySelectorAll("div.kun > span.japanese_gothic > a");
-    kanji.kunReadings = kunElements.map((e) => e.innerHtml.trim()).toList();
-
-    final onElements = element.querySelectorAll("div.on > span.japanese_gothic > a");
-    kanji.onReadings = onElements.map((e) => e.innerHtml.trim()).toList();
-
-    kanji.strokeCount = int.parse(element.querySelector(".strokes")!.innerHtml.split(" ").first);
-
-    final info = element.querySelector("div.info")!.innerHtml;
-    kanji.jlptLevel = JLPTLevel.findInText(info);
-
-    kanji.type = _getKanjiType(info);
+    kanji.strokeCount = element.collect(".strokes", (e) => int.parse(e.innerHtml.split(" ").first))!;
+    kanji.jlptLevel = element.collect("div.info", (e) => JLPTLevel.findInText(e.innerHtml)) ?? JLPTLevel.none;
+    kanji.type = element.collect<KanjiType?>("div.info", _getKanjiType);
 
     return kanji;
   }
 
 
   Sentence sentenceDetails(final Document document) {
-    final sentenceElement = document.querySelector("div.sentence_content")!;
-    var sentence = _sentenceEntry(sentenceElement);
-    sentence.kanji = _findEntries(document, _kanjiEntry, "div.kanji_light_block > div.entry.kanji_light");
+    final sentence = document.body!.collect("div.sentence_content", _sentenceEntry)!;
+    sentence.kanji = document.body!.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
+
     return sentence;
   }
 
   Sentence _sentenceEntry(final Element element) {
-    final english = element.querySelector("span.english")!.innerHtml.trim();
+    final english = element.collect("span.english", (e) => e.innerHtml.trim())!;
     final japanese = parseSentenceFurigana(element);
 
-    final copyrightElement = element.querySelector("span.inline_copyright a");
-    final copyright = SentenceCopyright(copyrightElement!.innerHtml.trim(), copyrightElement.attributes["href"]!);
-
-    final linkElement = element.querySelector("a.light-details_link");
-    final id = linkElement != null ? linkElement.attributes["href"]!.split("/").last : "";
+    final copyright = element.collect("span.inline_copyright a", (e) => SentenceCopyright(e.innerHtml.trim(), e.attributes["href"]!));
+    final id = element.collect("a.light-details_link", (e) => e.attributes["href"]!.split("/").last) ?? "";
 
     return Sentence.copyright(id, japanese, english, copyright);
   }
 
   Kanji kanjiDetails(final Document document) {
-    final kanjiDetailElement = document.querySelector("div.kanji.details");
+    final kanji = document.body!.collect("div.kanji.details", _kanjiDetailsEntry);
 
-    if (kanjiDetailElement == null) {
+    if (kanji == null) {
       throw Exception("Kanji not found");
     }
 
-    return _kanjiDetailsEntry(kanjiDetailElement);
+    return kanji;
   }
 
   Kanji _kanjiDetailsEntry(final Element element) {
-    var kanji = element.querySelector("h1.character")!.innerHtml;
-    var kanjiDetails = Kanji(kanji);
+    final kanjiDetails = Kanji(element.collect("h1.character", (e) => e.innerHtml.trim())!);
 
-    var meanings = element.querySelector(".kanji-details__main-meanings")!.innerHtml;
-    kanjiDetails.meanings = meanings.trim().split(", ");
+    kanjiDetails.meanings = element.collect(".kanji-details__main-meanings", (e) => e.innerHtml.trim().split(", "))!;
 
-    var strokeCount = element.querySelector(".kanji-details__stroke_count > strong")!.innerHtml;
-    kanjiDetails.strokeCount = int.parse(strokeCount);
+    kanjiDetails.strokeCount = element.collect(".kanji-details__stroke_count > strong", (e) => int.parse(e.innerHtml.trim()))!;
+    kanjiDetails.jlptLevel = element.collect("div.jlpt > strong", (e) => JLPTLevel.fromString(e.innerHtml.trim())) ?? JLPTLevel.none;
+    kanjiDetails.type = element.collect<KanjiType?>("div.grade", _getKanjiType);
 
-    var jlptLevelElement = element.querySelector("div.jlpt > strong");
-    if (jlptLevelElement != null) {
-      kanjiDetails.jlptLevel = JLPTLevel.fromString(jlptLevelElement.innerHtml);
-    }
+    kanjiDetails.kunReadings = element.collectAll("div.kanji-details__main-readings > dl.kun_yomi > dd > a", (e) => e.innerHtml.trim());
+    kanjiDetails.onReadings = element.collectAll("div.kanji-details__main-readings > dl.on_yomi > dd > a", (e) => e.innerHtml.trim());
 
-    kanjiDetails.type = _getKanjiType(element.querySelector("div.grade")!.text);
+    kanjiDetails.parts = element.collectAll("div.radicals > dl > dd > a", (e) => e.innerHtml.trim());
+    kanjiDetails.variants = element.collectAll("dl.variants > dd > a", (e) => e.innerHtml.trim());
 
-    var kunElements = element.querySelectorAll("div.kanji-details__main-readings > dl.kun_yomi > dd > a");
-    if (kunElements.isNotEmpty) {
-      kanjiDetails.kunReadings = kunElements.map((e) => e.innerHtml).toList();
-    }
+    kanjiDetails.frequency = element.collect("div.frequency > strong", (e) => int.parse(e.innerHtml.trim()));
 
-    var onElements = element.querySelectorAll("div.kanji-details__main-readings > dl.on_yomi > dd > a");
-    if (onElements.isNotEmpty) {
-      kanjiDetails.onReadings = onElements.map((e) => e.innerHtml).toList();
-    }
-
-    var partsElements = element.querySelectorAll("div.radicals > dl > dd > a");
-    if (partsElements.isNotEmpty) {
-      kanjiDetails.parts = partsElements.map((e) => e.innerHtml).toList();
-    }
-
-    var variantsElements = element.querySelectorAll("dl.variants > dd > a");
-    if (variantsElements.isNotEmpty) {
-      kanjiDetails.variants = variantsElements.map((e) => e.innerHtml).toList();
-    }
-
-    var frequencyElement = element.querySelector("div.frequency > strong");
-    if (frequencyElement != null) {
-      kanjiDetails.frequency = int.parse(frequencyElement.innerHtml);
-    }
-
-    var radicalElement = element.querySelector("div.radicals > dl > dd > span");
-    if (radicalElement != null) {
-      var character = radicalElement.nodes.firstWhere((node) => node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty).text!.trim();
-      var meanings = radicalElement.querySelector("span.radical_meaning")!.text.trim().split(", ");
-      kanjiDetails.radical = Radical(character, meanings);
-    }
+    kanjiDetails.radical = element.collect("div.radicals > dl > dd > span", (e) {
+      final character = e.nodes.firstWhere((node) => node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty).text!.trim();
+      final meanings = e.querySelector("span.radical_meaning")!.text.trim().split(", ");
+      return Radical(character, meanings);
+    });
 
     kanjiDetails.onCompounds = _findCompounds(element, "On");
     kanjiDetails.kunCompounds = _findCompounds(element, "Kun");
@@ -151,7 +109,9 @@ class Parser {
     return kanjiDetails;
   }
 
-  KanjiType? _getKanjiType(String text) {
+  KanjiType? _getKanjiType(Element element) {
+    final text = element.text;
+
     if (text.contains("Jōyō")) {
       if (text.contains("junior high")) {
         return Jouyou.juniorHigh();
@@ -169,15 +129,11 @@ class Parser {
   }
 
   List<Compound> _findCompounds(Element element, String type) {
-    var compoundColumns = element.querySelectorAll("div.row.compounds > div.columns");
-
-    try {
-      final column = compoundColumns.firstWhere((element) => element.querySelector("h2")!.innerHtml.contains("$type reading compounds"));
-      final compoundElements = column.querySelectorAll("ul > li");
-      assert(compoundElements.isNotEmpty);
-
-      return compoundElements.map((element) {
-        final lines = element.text.trim().split("\n");
+    return element.collectWhere(
+      "div.row.compounds > div.columns",
+      (e) => e.querySelector("h2")!.innerHtml.contains("$type reading compounds"),
+      (column) => column.collectAll("ul > li", (e) {
+        final lines = e.text.trim().split("\n");
         assert(lines.length == 3);
 
         final compound = lines[0].trim();
@@ -185,58 +141,38 @@ class Parser {
         final meanings = lines[2].trim().split(", ");
 
         return Compound(compound, reading, meanings);
-      }).toList();
-    } on StateError catch (_) {
-      return [];
-    }
+      }),
+    ) ?? [];
   }
 
   List<OtherForm> _parseOtherForms(final Element element) {
-    var formElements = element.querySelectorAll("span.break-unit");
-    List<OtherForm> otherForms = [];
-
-    for (var formElement in formElements) {
-      var formText = formElement.text.trim();
-      formText = formText.replaceFirst("】", "");
-      var formTextSplit = formText.split(" 【");
-      var form = formTextSplit.first;
-      var reading = "";
-      if (formTextSplit.length == 2) {
-        reading = formTextSplit.last;
-      }
-      otherForms.add(OtherForm(form, reading));
-    }
-
-    return otherForms;
+    return element.collectAll("span.break-unit", (e) {
+      final split = e.text.trim().replaceFirst("】", "").split(" 【");
+      final form = split.first;
+      final reading = split.length == 2 ? split.last : "";
+      return OtherForm(form, reading);
+    });
   }
 
   Word _wordEntry(final Element element) {
     final furigana = parseWordFurigana(element);
-    var word = Word(furigana);
+    final word = Word(furigana);
 
-    var commonElement = element.querySelector("span.concept_light-common");
-    if (commonElement != null) {
-      word.commonWord = true;
-    }
+    word.commonWord = element.querySelector("span.concept_light-common") != null;
 
-    var audioElement = element.querySelector("audio > source");
-    if (audioElement != null) {
-      word.audioUrl = "https:${audioElement.attributes["src"]!}";
-    }
+    word.audioUrl = element.collect("audio > source", (e) => "https:${e.attributes["src"]!}") ?? "";
 
-    var tagElements = element.querySelectorAll("span.concept_light-tag");
+    word.jlptLevel = element.collectWhere(
+      "span.concept_light-tag",
+      (e) => e.innerHtml.contains("JLPT"),
+      (e) => JLPTLevel.fromString(e.innerHtml.trim().split(" ")[1]),
+    ) ?? JLPTLevel.none;
 
-    for (var tagElement in tagElements) {
-      if (tagElement.innerHtml.contains("JLPT")) {
-        word.jlptLevel = JLPTLevel.fromString(tagElement.innerHtml.split(" ")[1]);
-        continue;
-      }
-
-      if (tagElement.children.isNotEmpty) {
-        word.wanikaniLevel = int.parse(tagElement.children.first.innerHtml.split(" ")[2]);
-        continue;
-      }
-    }
+    word.wanikaniLevel = element.collectWhere(
+      "span.concept_light-tag",
+      (e) => e.innerHtml.contains("Wanikani"),
+      (e) => int.parse(e.children.first.innerHtml.trim().split(" ")[2]),
+    ) ?? -1;
 
     var definitionElements = element.querySelectorAll("div.meaning-wrapper");
 
@@ -270,41 +206,34 @@ class Parser {
       word.definitions.add(definition);
     }
 
-    var detailsLink = element.querySelector("a.light-details_link");
-    if (detailsLink != null) {
-      var detailsUrl = detailsLink.attributes["href"]!;
-      word.id = Uri.decodeComponent(detailsUrl.split("/").last);
-    }
+    word.id = element.collect("a.light-details_link", (e) => Uri.decodeComponent(e.attributes["href"]!.split("/").last));
 
-    var inflectionElement = element.querySelector("a.show_inflection_table");
-    if (inflectionElement != null) {
-      word.inflectionId = inflectionElement.attributes["data-pos"]!;
-    }
+    word.inflectionId = element.collect("a.show_inflection_table", (e) => e.attributes["data-pos"]!) ?? "";
 
-    try {
-      var collocationsElement = element.querySelectorAll(".concept_light-status_link").firstWhere((e) => e.text.contains("collocation"));
-      var collocationsModalId = collocationsElement.attributes["data-reveal-id"]!;
-      var collocationElements = element.querySelectorAll("#$collocationsModalId > ul > li > a");
-
-      word.collocations = collocationElements.map((e) {
-        var split = e.text.trim().split(" - ");
-        assert(split.length == 2);
-        return Collocation(split[0], split[1]);
-      }).toList();
-    } on StateError catch (_) {}
+    word.collocations = element.collectWhere(
+      ".concept_light-status_link",
+      (e) => e.text.contains("collocation"),
+      (e) {
+        final selector = "#${e.attributes["data-reveal-id"]!} > ul > li > a";
+        return element.collectAll(selector, (e2) {
+          final split = e2.text.trim().split(" - ");
+          assert(split.length == 2);
+          return Collocation(split[0], split[1]);
+        });
+      },
+    ) ?? [];
 
     return word;
   }
 
   Word wordDetails(final Document document) {
-    var wordEntryElement = document.querySelector("div.concept_light");
+    final word = document.body!.collect("div.concept_light", _wordEntry);
 
-    if (wordEntryElement == null) {
+    if (word == null) {
       throw Exception("Word not found");
     }
 
-    var word = _wordEntry(wordEntryElement);
-    word.kanji = _findEntries(document, _kanjiEntry, "div.kanji_light_block > div.entry.kanji_light");
+    word.kanji = document.body!.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
     return word;
   }
 }
