@@ -32,6 +32,11 @@ Furigana parseWordFurigana(final Element element) {
       "div.concept_light-representation > span.furigana > span",
       (e) => e.text.trim());
 
+  if (furiganaParts.length == 1) {
+    final text = element.collect("div.concept_light-representation > span.text", (e) => e.text.trim())!;
+    return [FuriganaPart(text, furiganaParts.first)];
+  }
+
   final textParts = element
       .querySelector("div.concept_light-representation > span.text")!
       .nodes
