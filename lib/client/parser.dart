@@ -5,7 +5,7 @@ import 'package:jsdict/models.dart';
 import 'furigana.dart';
 
 class Parser {
-  SearchResponse search(final Document document) {
+  static SearchResponse search(final Document document) {
     if (document.getElementById("no-matches") != null) {
       return SearchResponse(false);
     }
@@ -13,7 +13,7 @@ class Parser {
     return _createSearchResponse(document);
   }
 
-  SearchResponse _createSearchResponse(final Document document) {
+  static SearchResponse _createSearchResponse(final Document document) {
     var searchResponse = SearchResponse(true);
     final body = document.body!;
 
@@ -30,14 +30,14 @@ class Parser {
     return searchResponse;
   }
 
-  Name _nameEntry(final Element element) {
+  static Name _nameEntry(final Element element) {
     final reading = element.collect("div.concept_light-readings", (e) => e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
     final meanings = element.collectAll("span.meaning-meaning", (e) => e.text.trim());
 
     return Name(reading, meanings);
   }
 
-  Kanji _kanjiEntry(final Element element) {
+  static Kanji _kanjiEntry(final Element element) {
     final literal = element.collect("div.literal_block > span > a", (e) => e.innerHtml.trim())!;
     var kanji = Kanji(literal);
 
@@ -53,14 +53,14 @@ class Parser {
   }
 
 
-  Sentence sentenceDetails(final Document document) {
+  static Sentence sentenceDetails(final Document document) {
     final sentence = document.body!.collect("div.sentence_content", _sentenceEntry)!;
     sentence.kanji = document.body!.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
 
     return sentence;
   }
 
-  Sentence _sentenceEntry(final Element element) {
+  static Sentence _sentenceEntry(final Element element) {
     final english = element.collect("span.english", (e) => e.innerHtml.trim())!;
     final japanese = parseSentenceFurigana(element);
 
@@ -70,7 +70,7 @@ class Parser {
     return Sentence.copyright(id, japanese, english, copyright);
   }
 
-  Kanji kanjiDetails(final Document document) {
+  static Kanji kanjiDetails(final Document document) {
     final kanji = document.body!.collect("div.kanji.details", _kanjiDetailsEntry);
 
     if (kanji == null) {
@@ -80,7 +80,7 @@ class Parser {
     return kanji;
   }
 
-  Kanji _kanjiDetailsEntry(final Element element) {
+  static Kanji _kanjiDetailsEntry(final Element element) {
     final kanjiDetails = Kanji(element.collect("h1.character", (e) => e.innerHtml.trim())!);
 
     kanjiDetails.meanings = element.collect(".kanji-details__main-meanings", (e) => e.innerHtml.trim().split(", "))!;
@@ -109,7 +109,7 @@ class Parser {
     return kanjiDetails;
   }
 
-  KanjiType? _getKanjiType(Element element) {
+  static KanjiType? _getKanjiType(Element element) {
     final text = element.text;
 
     if (text.contains("Jōyō")) {
@@ -128,7 +128,7 @@ class Parser {
     return null;
   }
 
-  List<Compound> _findCompounds(Element element, String type) {
+  static List<Compound> _findCompounds(Element element, String type) {
     return element.collectWhere(
       "div.row.compounds > div.columns",
       (e) => e.querySelector("h2")!.innerHtml.contains("$type reading compounds"),
@@ -145,7 +145,7 @@ class Parser {
     ) ?? [];
   }
 
-  List<OtherForm> _parseOtherForms(final Element element) {
+  static List<OtherForm> _parseOtherForms(final Element element) {
     return element.collectAll("span.break-unit", (e) {
       final split = e.text.trim().replaceFirst("】", "").split(" 【");
       final form = split.first;
@@ -154,7 +154,7 @@ class Parser {
     });
   }
 
-  Word _wordEntry(final Element element) {
+  static Word _wordEntry(final Element element) {
     final furigana = parseWordFurigana(element);
     final word = Word(furigana);
 
@@ -226,7 +226,7 @@ class Parser {
     return word;
   }
 
-  Word wordDetails(final Document document) {
+  static Word wordDetails(final Document document) {
     final word = document.body!.collect("div.concept_light", _wordEntry);
 
     if (word == null) {

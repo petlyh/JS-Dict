@@ -24,7 +24,6 @@ class NotFoundException implements HttpException {
 class JishoClient {
   static const baseUrl = "https://jisho.org";
 
-  final Parser _parser = Parser();
   final http.Client _client;
 
   JishoClient() : _client = http.Client();
@@ -50,7 +49,7 @@ class JishoClient {
   Future<SearchResponse> search(final String query, {final int page = 1}) {
     final pagePart = page > 1 ? "?page=$page" : "";
     final path = _searchPath(query) + pagePart;
-    return _getHtml(path).then((document) => _parser.search(document));
+    return _getHtml(path).then((document) => Parser.search(document));
   }
 
   Future<SearchResponse> searchTag(final String query, final JishoTag type, {final int page = 1}) {
@@ -59,15 +58,15 @@ class JishoClient {
 
   Future<Kanji> kanjiDetails(final String kanji) async {
     final path = _searchPath("$kanji #kanji");
-    return _getHtml(path).then((document) => _parser.kanjiDetails(document));
+    return _getHtml(path).then((document) => Parser.kanjiDetails(document));
   }
 
   Future<Word> wordDetails(final String word) async {
     final path = "/word/${Uri.encodeComponent(word)}";
-    return _getHtml(path).then((document) => _parser.wordDetails(document));
+    return _getHtml(path).then((document) => Parser.wordDetails(document));
   }
 
   Future<Sentence> sentenceDetails(final String sentenceId) async {
-    return _getHtml("/sentences/$sentenceId").then((document) => _parser.sentenceDetails(document));
+    return _getHtml("/sentences/$sentenceId").then((document) => Parser.sentenceDetails(document));
   }
 }
