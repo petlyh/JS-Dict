@@ -13,28 +13,13 @@ class ResultListWidget<T> extends StatelessWidget {
   Widget Function(BuildContext, int) getItemBuilder() {
     switch (T) {
       case Word:
-        return (_, index) => WordItem(word: searchResponse.wordResults[index]);
+        return (_, index) => WordItem(word: searchResponse.results[index]);
       case Kanji:
-        return (_, index) => KanjiItem(kanji: searchResponse.kanjiResults[index]);
+        return (_, index) => KanjiItem(kanji: searchResponse.results[index]);
       case Sentence:
-        return (_, index) => SentenceItem(sentence: searchResponse.sentenceResults[index]);
+        return (_, index) => SentenceItem(sentence: searchResponse.results[index]);
       case Name:
-        return (_, index) => NameItem(name: searchResponse.nameResults[index]);
-      default:
-        throw Exception("Unknown type");
-    }
-  }
-
-  int getItemCount() {
-    switch (T) {
-      case Word:
-        return searchResponse.wordResults.length;
-      case Kanji:
-        return searchResponse.kanjiResults.length;
-      case Sentence:
-        return searchResponse.sentenceResults.length;
-      case Name:
-        return searchResponse.nameResults.length;
+        return (_, index) => NameItem(name: searchResponse.results[index]);
       default:
         throw Exception("Unknown type");
     }
@@ -45,7 +30,7 @@ class ResultListWidget<T> extends StatelessWidget {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount: getItemCount(),
+      itemCount: searchResponse.results.length,
       itemBuilder: getItemBuilder(),
     );
   }

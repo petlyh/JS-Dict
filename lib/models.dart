@@ -1,28 +1,16 @@
 import 'package:jsdict/inflection.dart';
 import 'package:ruby_text/ruby_text.dart';
 
-class SearchResponse {
+class SearchResponse<T> {
   String correction = "";
   String suggestion = "";
 
-  List<Word> wordResults = [];
-  List<Kanji> kanjiResults = [];
-  List<Sentence> sentenceResults = [];
-  List<Name> nameResults = [];
+  List<T> results = [];
 
-  bool hasNoMatches<T>() {
-    switch (T) {
-      case Kanji:
-        return kanjiResults.isEmpty;
-      case Sentence:
-        return sentenceResults.isEmpty;
-      case Name:
-        return nameResults.isEmpty;
-      case Word:
-        return wordResults.isEmpty;
+  void addResults(List list) {
+    if (list is List<T>) {
+      results.addAll(list);
     }
-
-    throw Exception("Unknown type");
   }
 }
 

@@ -5,21 +5,27 @@ import 'package:jsdict/models.dart';
 import 'furigana.dart';
 
 class Parser {
-  static SearchResponse search(final Document document) {
-    var searchResponse = SearchResponse();
+  static SearchResponse search<T>(final Document document) {
+    var response = SearchResponse<T>();
     final body = document.body!;
 
-    searchResponse.kanjiResults = body.collectAll("div.kanji.details", _kanjiDetailsEntry);
-    if (searchResponse.kanjiResults.isNotEmpty) {
-      return searchResponse;
+    switch (T) {
+      case Kanji:
+        response.addResults(body.collectAll<Kanji>("div.kanji.details", _kanjiDetailsEntry));
+        if (response.results.isNotEmpty) break;
+        response.addResults(body.collectAll<Kanji>("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry));
+        break;
+      case Word:
+        response.addResults(body.collectAll<Word>("div.concepts > .concept_light, div.exact_block > .concept_light", _wordEntry));
+        break;
+      case Sentence:
+        response.addResults(body.collectAll<Sentence>("div.sentences_block > ul > li.entry.sentence", _sentenceEntry));
+        break;
+      case Name:
+        response.addResults(body.collectAll<Name>("div.names_block > div.names > div.concept_light", _nameEntry));
     }
 
-    searchResponse.kanjiResults = body.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
-    searchResponse.sentenceResults = body.collectAll("div.sentences_block > ul > li.entry.sentence", _sentenceEntry);
-    searchResponse.nameResults = body.collectAll("div.names_block > div.names > div.concept_light", _nameEntry);
-    searchResponse.wordResults = body.collectAll("div.concepts > .concept_light, div.exact_block > .concept_light", _wordEntry);
-
-    return searchResponse;
+    return response;
   }
 
   static Name _nameEntry(final Element element) {

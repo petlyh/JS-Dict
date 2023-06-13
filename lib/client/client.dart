@@ -46,12 +46,6 @@ class JishoClient {
 
   String _searchPath(String query) => "/search/${Uri.encodeComponent(query)}";
 
-  Future<SearchResponse> search(final String query, {final int page = 1}) {
-    final pagePart = page > 1 ? "?page=$page" : "";
-    final path = _searchPath(query) + pagePart;
-    return _getHtml(path).then((document) => Parser.search(document));
-  }
-
   final Map<Type, String> _typeTags = {
     Kanji: "kanji",
     Word: "words",
@@ -59,8 +53,10 @@ class JishoClient {
     Name: "names"
   };
 
-  Future<SearchResponse> searchType<T>(final String query, {final int page = 1}) {
-    return search("$query #${_typeTags[T]}");
+  Future<SearchResponse> search<T>(final String query, {final int page = 1}) {
+    final pagePart = page > 1 ? "?page=$page" : "";
+    final path = _searchPath("$query #${_typeTags[T]}") + pagePart;
+    return _getHtml(path).then((document) => Parser.search<T>(document));
   }
 
   Future<Kanji> kanjiDetails(final String kanji) async {

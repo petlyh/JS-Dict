@@ -18,9 +18,9 @@ class ResultPage<T> extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.all(8.0),
               child: LoaderWidget(
-                future: getClient().searchType<T>(query),
+                future: getClient().search<T>(query),
                 handler: (data) {
-                  if (data.hasNoMatches<T>()) {
+                  if (data.results.isEmpty) {
                     return Container(
                       margin: const EdgeInsets.all(20.0),
                       child: const Text("No matches found")
