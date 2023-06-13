@@ -2,8 +2,6 @@ import 'package:jsdict/inflection.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 class SearchResponse {
-  bool found;
-
   String correction = "";
   String suggestion = "";
 
@@ -11,8 +9,6 @@ class SearchResponse {
   List<Kanji> kanjiResults = [];
   List<Sentence> sentenceResults = [];
   List<Name> nameResults = [];
-  
-  SearchResponse(this.found);
 
   bool hasNoMatches<T>() {
     switch (T) {

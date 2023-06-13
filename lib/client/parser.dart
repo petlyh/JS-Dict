@@ -6,15 +6,7 @@ import 'furigana.dart';
 
 class Parser {
   static SearchResponse search(final Document document) {
-    if (document.getElementById("no-matches") != null) {
-      return SearchResponse(false);
-    }
-
-    return _createSearchResponse(document);
-  }
-
-  static SearchResponse _createSearchResponse(final Document document) {
-    var searchResponse = SearchResponse(true);
+    var searchResponse = SearchResponse();
     final body = document.body!;
 
     searchResponse.kanjiResults = body.collectAll("div.kanji.details", _kanjiDetailsEntry);
