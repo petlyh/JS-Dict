@@ -14,8 +14,8 @@ class SearchResponse {
   
   SearchResponse(this.found);
 
-  bool hasNoMatches(JishoTag type) {
-    switch (type.runtimeType) {
+  bool hasNoMatches<T>() {
+    switch (T) {
       case Kanji:
         return kanjiResults.isEmpty;
       case Sentence:
@@ -30,12 +30,7 @@ class SearchResponse {
   }
 }
 
-abstract class JishoTag {
-  /* Returns the Jisho tag corresponding to the type, without the # */
-  String getTag();
-}
-
-enum JLPTLevel implements JishoTag {
+enum JLPTLevel {
   n1, n2, n3, n4, n5, none;
 
   @override
@@ -66,11 +61,6 @@ enum JLPTLevel implements JishoTag {
     final match = pattern.firstMatch(text.toUpperCase());
     if (match == null) return none;
     return fromString(match.group(1)!);
-  }
-
-  @override
-  String getTag() {
-    return "jlpt-${toString().toLowerCase()}";
   }
 }
 
@@ -112,7 +102,7 @@ class Jouyou extends KanjiType {
   }
 }
 
-class Kanji implements JishoTag {
+class Kanji {
   final String kanji;
   
   List<String> meanings = [];
@@ -135,12 +125,6 @@ class Kanji implements JishoTag {
   List<Compound> kunCompounds = [];
   
   Kanji(this.kanji);
-  Kanji.empty() : kanji = "";
-
-  @override
-  String getTag() {
-    return "kanji";
-  }
 }
 
 class OtherForm {
@@ -179,7 +163,7 @@ class Definition {
   }
 }
 
-class Word implements JishoTag {
+class Word {
   final Furigana word;
   List<Definition> definitions = [];
   List<OtherForm> otherForms = [];
@@ -203,12 +187,6 @@ class Word implements JishoTag {
   List<Collocation> collocations = [];
 
   Word(this.word);
-  Word.empty() : word = [];
-
-  @override
-  String getTag() {
-    return "words";
-  }
 }
 
 class Collocation {
@@ -249,7 +227,7 @@ class SentenceCopyright {
   SentenceCopyright(this.name, this.url);
 }
 
-class Sentence implements JishoTag {
+class Sentence {
   final String id;
   final Furigana japanese;
   final String english;
@@ -259,23 +237,11 @@ class Sentence implements JishoTag {
 
   Sentence(this.id, this.japanese, this.english) : copyright = null;
   Sentence.copyright(this.id, this.japanese, this.english, this.copyright);
-  Sentence.empty() : id = "", japanese = [], english = "", copyright = null;
-
-  @override
-  String getTag() {
-    return "sentences";
-  }
 }
 
-class Name implements JishoTag {
+class Name {
   final String reading;
   final List<String> meanings;
 
   Name(this.reading, this.meanings);
-  Name.empty(): reading = "", meanings = [];
-
-  @override
-  String getTag() {
-    return "names";
-  }
 }

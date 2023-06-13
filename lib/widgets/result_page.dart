@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:jsdict/models.dart';
 import 'package:jsdict/singletons.dart';
 import 'package:jsdict/widgets/loader.dart';
 import 'package:jsdict/widgets/result_list.dart';
 
-class ResultPage extends StatelessWidget {
-  const ResultPage({super.key, required this.query, required this.type});
+class ResultPage<T> extends StatelessWidget {
+  const ResultPage({super.key, required this.query});
 
   final String query;
-  final JishoTag type;
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +18,16 @@ class ResultPage extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.all(8.0),
               child: LoaderWidget(
-                future: getClient().searchTag(query, type),
+                future: getClient().searchType<T>(query),
                 handler: (data) {
-                  if (data.hasNoMatches(type)) {
+                  if (data.hasNoMatches<T>()) {
                     return Container(
                       margin: const EdgeInsets.all(20.0),
                       child: const Text("No matches found")
                     );
                   }
 
-                  return ResultListWidget(searchResponse: data, type: type);
+                  return ResultListWidget<T>(searchResponse: data);
                 }
               ),
             ),

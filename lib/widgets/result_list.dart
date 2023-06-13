@@ -5,14 +5,13 @@ import 'package:jsdict/widgets/items/sentence.dart';
 import 'package:jsdict/widgets/items/name.dart';
 import 'package:jsdict/widgets/items/word.dart';
 
-class ResultListWidget extends StatelessWidget {
-  const ResultListWidget({super.key, required this.searchResponse, required this.type});
+class ResultListWidget<T> extends StatelessWidget {
+  const ResultListWidget({super.key, required this.searchResponse});
 
   final SearchResponse searchResponse;
-  final JishoTag type;
 
   Widget Function(BuildContext, int) getItemBuilder() {
-    switch (type.runtimeType) {
+    switch (T) {
       case Word:
         return (_, index) => WordItem(word: searchResponse.wordResults[index]);
       case Kanji:
@@ -27,7 +26,7 @@ class ResultListWidget extends StatelessWidget {
   }
 
   int getItemCount() {
-    switch (type.runtimeType) {
+    switch (T) {
       case Word:
         return searchResponse.wordResults.length;
       case Kanji:

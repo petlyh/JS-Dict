@@ -82,10 +82,10 @@ class _SearchScreenState extends State<SearchScreen> {
           placeholder :
           TabBarView(
             children: [
-              ResultPage(query: query, type: Word.empty()),
-              ResultPage(query: query, type: Kanji.empty()),
-              ResultPage(query: query, type: Name.empty()),
-              ResultPage(query: query, type: Sentence.empty()),
+              ResultPage<Word>(query: query),
+              ResultPage<Kanji>(query: query),
+              ResultPage<Name>(query: query),
+              ResultPage<Sentence>(query: query),
             ]
           ),
       ),

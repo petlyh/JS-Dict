@@ -52,8 +52,15 @@ class JishoClient {
     return _getHtml(path).then((document) => Parser.search(document));
   }
 
-  Future<SearchResponse> searchTag(final String query, final JishoTag type, {final int page = 1}) {
-    return search("$query #${type.getTag()}");
+  final Map<Type, String> _typeTags = {
+    Kanji: "kanji",
+    Word: "words",
+    Sentence: "sentences",
+    Name: "names"
+  };
+
+  Future<SearchResponse> searchType<T>(final String query, {final int page = 1}) {
+    return search("$query #${_typeTags[T]}");
   }
 
   Future<Kanji> kanjiDetails(final String kanji) async {
