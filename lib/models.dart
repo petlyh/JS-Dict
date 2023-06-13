@@ -126,17 +126,6 @@ class OtherForm {
   }
 }
 
-enum DefinitionType {
-  noun, nounNo,
-  adjectiveNa, adjectiveI,
-  verbIchidan, verbSuru,
-  verbRu, verbNu, verbMu, verbKu, verbSu, verbYuku,
-  verbTrans, verbIntrans, verbAux,
-  adverb, adverbTo,
-  expression, prefix, suffix,
-  wikipedia
-}
-
 class Definition {
   List<String> meanings = [];
   List<String> types = [];
