@@ -5,7 +5,7 @@ import 'package:jsdict/models.dart';
 import 'furigana.dart';
 
 class Parser {
-  static SearchResponse search<T>(final Document document) {
+  static SearchResponse<T> search<T>(final Document document) {
     var response = SearchResponse<T>();
     final body = document.body!;
 

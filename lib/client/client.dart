@@ -53,7 +53,7 @@ class JishoClient {
     Name: "names"
   };
 
-  Future<SearchResponse> search<T>(final String query, {final int page = 1}) {
+  Future<SearchResponse<T>> search<T>(final String query, {final int page = 1}) {
     final pagePart = page > 1 ? "?page=$page" : "";
     final path = _searchPath("$query #${_typeTags[T]}") + pagePart;
     return _getHtml(path).then((document) => Parser.search<T>(document));
