@@ -19,25 +19,25 @@ enum JLPTLevel {
 
   @override
   String toString() {
-    switch (this) {
-      case n1: return "N1";
-      case n2: return "N2";
-      case n3: return "N3";
-      case n4: return "N4";
-      case n5: return "N5";
-      default: return "";
-    }
+    return switch (this) {
+      n1 => "N1",
+      n2 => "N2",
+      n3 => "N3",
+      n4 => "N4",
+      n5 => "N5",
+      _ => "",
+    };
   }
 
   static JLPTLevel fromString(final String level) {
-    switch (level.toLowerCase()) {
-      case "n1": return n1;
-      case "n2": return n2;
-      case "n3": return n3;
-      case "n4": return n4;
-      case "n5": return n5;
-      default: return none;
-    }
+    return switch (level.toLowerCase()) {
+      "n1" => n1,
+      "n2" => n2,
+      "n3" => n3,
+      "n4" => n4,
+      "n5" => n5,
+      _ =>  none,
+    };
   }
 
   static JLPTLevel findInText(final String text) {

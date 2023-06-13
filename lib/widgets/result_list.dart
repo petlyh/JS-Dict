@@ -11,18 +11,13 @@ class ResultListWidget<T> extends StatelessWidget {
   final SearchResponse searchResponse;
 
   Widget Function(BuildContext, int) getItemBuilder() {
-    switch (T) {
-      case Word:
-        return (_, index) => WordItem(word: searchResponse.results[index]);
-      case Kanji:
-        return (_, index) => KanjiItem(kanji: searchResponse.results[index]);
-      case Sentence:
-        return (_, index) => SentenceItem(sentence: searchResponse.results[index]);
-      case Name:
-        return (_, index) => NameItem(name: searchResponse.results[index]);
-      default:
-        throw Exception("Unknown type");
-    }
+    return switch (T) {
+      Word => (_, index) => WordItem(word: searchResponse.results[index]),
+      Kanji => (_, index) => KanjiItem(kanji: searchResponse.results[index]),
+      Sentence => (_, index) => SentenceItem(sentence: searchResponse.results[index]),
+      Name => (_, index) => NameItem(name: searchResponse.results[index]),
+      _ => throw Exception("Unknown type"),
+    };
   }
 
   @override
