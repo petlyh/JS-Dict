@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 import 'package:jsdict/models.dart';
 
-import 'fetcher.dart';
 import 'parser.dart';
 
 class NotFoundException implements HttpException {
@@ -23,18 +22,17 @@ class NotFoundException implements HttpException {
 }
 
 class JishoClient {
-  Fetcher fetcher = Fetcher();
-  Parser parser = Parser();
+  static const baseUrl = "https://jisho.org";
 
-  JishoClient();
+  final Parser _parser = Parser();
+  final http.Client _client;
 
-  JishoClient.client(http.Client client) {
-    fetcher = Fetcher.client(client);
-    parser = Parser();
-  }
+  JishoClient() : _client = http.Client();
 
-  Future<Document> _handleResponse(Future<http.Response> futureResponse) async {
-    var response = await futureResponse;
+  JishoClient.client(http.Client client) : _client = client;
+
+  Future<Document> _getHtml(String path) async {
+    var response = await _client.get(Uri.parse(baseUrl + path));
 
     if (response.statusCode != HttpStatus.ok) {
       if (response.statusCode == HttpStatus.notFound) {
@@ -47,9 +45,12 @@ class JishoClient {
     return parse(response.body);
   }
 
+  String _searchPath(String query) => "/search/${Uri.encodeComponent(query)}";
+
   Future<SearchResponse> search(final String query, {final int page = 1}) {
-    var futureResponse = fetcher.search(query, page);
-    return _handleResponse(futureResponse).then((document) => parser.search(document));
+    final pagePart = page > 1 ? "?page=$page" : "";
+    final path = _searchPath(query) + pagePart;
+    return _getHtml(path).then((document) => _parser.search(document));
   }
 
   Future<SearchResponse> searchTag(final String query, final JishoTag type, {final int page = 1}) {
@@ -57,17 +58,16 @@ class JishoClient {
   }
 
   Future<Kanji> kanjiDetails(final String kanji) async {
-    var futureResponse = fetcher.kanjiDetails(kanji);
-    return _handleResponse(futureResponse).then((document) => parser.kanjiDetails(document));
+    final path = _searchPath("$kanji #kanji");
+    return _getHtml(path).then((document) => _parser.kanjiDetails(document));
   }
 
   Future<Word> wordDetails(final String word) async {
-    var futureResponse = fetcher.wordDetails(word);
-    return _handleResponse(futureResponse).then((document) => parser.wordDetails(document));
+    final path = "/word/${Uri.encodeComponent(word)}";
+    return _getHtml(path).then((document) => _parser.wordDetails(document));
   }
 
   Future<Sentence> sentenceDetails(final String sentenceId) async {
-    var futureResponse = fetcher.sentenceDetails(sentenceId);
-    return _handleResponse(futureResponse).then((document) => parser.sentenceDetails(document));
+    return _getHtml("/sentences/$sentenceId").then((document) => _parser.sentenceDetails(document));
   }
 }
