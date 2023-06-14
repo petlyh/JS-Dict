@@ -9,6 +9,8 @@ class Parser {
     var response = SearchResponse<T>();
     final body = document.body!;
 
+    response.hasNextPage = document.querySelector("a.more") != null;
+
     switch (T) {
       case Kanji:
         response.addResults(body.collectAll<Kanji>("div.kanji.details", _kanjiDetailsEntry));

@@ -39,6 +39,8 @@ dependencies:
   get_it: ^7.3.0
   collection: ^1.17.0
   expansion_tile_card: ^3.0.0
+  infinite_scroll_pagination: ^3.2.0
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

@@ -1,40 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:jsdict/models.dart';
+import 'package:jsdict/query_provider.dart';
 import 'package:jsdict/screens/settings_screen.dart';
 import 'package:jsdict/widgets/result_page.dart';
+import 'package:provider/provider.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
-
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  String query = "";
-
-  final searchController = TextEditingController();
-  final searchFocusNode = FocusNode();
-
-  void search(String submittedQuery) {
-    // remove tags
-    searchController.text = submittedQuery.replaceAll(RegExp(r"#\w+"), "").trim();
-
-    setState(() {
-      query = searchController.text;
-    });
-  }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
 
   static const placeholder = Center(child: Text("JS-Dict", style: TextStyle(fontSize: 32.0)));
 
   @override
   Widget build(BuildContext context) {
+    final searchController = Provider.of<QueryProvider>(context, listen: false).searchController;
+    final searchFocusNode = FocusNode();
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -43,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
           title: TextField(
             focusNode: searchFocusNode,
             controller: searchController,
-            onSubmitted: search,
+            onSubmitted: (_) => Provider.of<QueryProvider>(context, listen: false).updateQuery(),
             autofocus: false,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
@@ -51,9 +31,9 @@ class _SearchScreenState extends State<SearchScreen> {
               hintText: "Search...",
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
-                onPressed: () => {
-                  searchFocusNode.requestFocus(),
-                  searchController.clear()
+                onPressed: () {
+                  searchFocusNode.requestFocus();
+                  searchController.clear();
                 },
                 tooltip: "Clear",
               )
@@ -68,7 +48,7 @@ class _SearchScreenState extends State<SearchScreen> {
               tooltip: "Settings",
             ),
           ],
-          bottom: query.isEmpty ? null : const TabBar(
+          bottom: Provider.of<QueryProvider>(context).query.isEmpty ? null : const TabBar(
             isScrollable: true,
             tabs: [
               Tab(text: "Words"),
@@ -78,15 +58,17 @@ class _SearchScreenState extends State<SearchScreen> {
             ]
           ),
         ),
-        body: query.isEmpty ?
-          placeholder :
-          TabBarView(
-            children: [
-              ResultPage<Word>(query: query),
-              ResultPage<Kanji>(query: query),
-              ResultPage<Name>(query: query),
-              ResultPage<Sentence>(query: query),
-            ]
+        body: Consumer<QueryProvider>(
+          builder: (_, provider, __) => provider.query.isEmpty ?
+            placeholder :
+            TabBarView(
+              children: [
+                ResultPage<Word>(provider.query, key: UniqueKey()),
+                ResultPage<Kanji>(provider.query, key: UniqueKey()),
+                ResultPage<Name>(provider.query, key: UniqueKey()),
+                ResultPage<Sentence>(provider.query, key: UniqueKey()),
+              ]
+            ),
           ),
       ),
     );

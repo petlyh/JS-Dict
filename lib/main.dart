@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jsdict/query_provider.dart';
 import 'package:jsdict/screens/search_screen.dart';
 import 'package:jsdict/singletons.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   setClient();
@@ -24,7 +26,10 @@ class JsDictApp extends StatelessWidget {
         colorSchemeSeed: const Color(0xFF27CA27),
         brightness: Brightness.dark
       ),
-      home: const SearchScreen(),
+      home: ChangeNotifierProvider(
+        create: (_) => QueryProvider(),
+        child: const SearchScreen()
+      ),
     );
   }
 }
