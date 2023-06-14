@@ -22,83 +22,61 @@ class KanjiDetailsScreen extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.all(8.0),
               child: Column(
-                children: getColumnItems(context, kanji),
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(kanji.kanji, style: const TextStyle(fontSize: 40)),
+                  ),
+                  InfoChipList.color([
+                    ("${kanji.strokeCount} strokes", null),
+                    if (kanji.jlptLevel != JLPTLevel.none)
+                      ("JLPT ${kanji.jlptLevel.toString()}", Colors.blue),
+                    if (kanji.type != null)
+                      (kanji.type.toString(), Colors.blue),
+                  ]),
+                  const Divider(),
+                  ListTile(
+                    title: Text(kanji.meanings.join(", ")),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (kanji.kunReadings.isNotEmpty)
+                          Text("Kun: ${kanji.kunReadings.join("、 ")}"),
+                        if (kanji.onReadings.isNotEmpty)
+                          Text("On: ${kanji.onReadings.join("、 ")}"),
+                        if (kanji.radical != null)
+                          Text("Radical: ${kanji.radical!.meanings.join(', ')} ${kanji.radical!.character}"),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  if (kanji.parts.length > 1) ...[
+                    Wrap(
+                      children: kanji.parts.whereNot((part) => part == kanji.kanji).map((part) => Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        child: InkWell(
+                          onTap: () => {Navigator.of(context).push(MaterialPageRoute(builder: (context) => KanjiDetailsScreen(part)))},
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Text(part, style: const TextStyle(fontSize: 20)),
+                          ),
+                        ),
+                      )).toList()
+                    ),
+                    const Divider(),
+                  ],
+                  if (kanji.onCompounds.isNotEmpty)
+                    CompoundList("On", kanji.onCompounds),
+                  if (kanji.kunCompounds.isNotEmpty)
+                    CompoundList("Kun", kanji.kunCompounds),
+                ],
               ),
             ),
           );
         }
       ),
     );
-  }
-
-  List<Text> getInfoText(Kanji kanji) {
-    List<Text> infoText = [];
-
-    if (kanji.kunReadings.isNotEmpty) {
-      infoText.add(Text("Kun: ${kanji.kunReadings.join("、 ")}"));
-    }
-
-    if (kanji.onReadings.isNotEmpty) {
-      infoText.add(Text("On: ${kanji.onReadings.join("、 ")}"));
-    }
-
-    if (kanji.radical != null) {
-      infoText.add(Text("Radical: ${kanji.radical!.meanings.join(', ')} ${kanji.radical!.character}"));
-    }
-
-    return infoText;
-  }
-
-  List<Widget> getColumnItems(BuildContext context, Kanji kanji) {
-    List<Widget> items = [
-      Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(kanji.kanji, style: const TextStyle(fontSize: 40)),
-      ),
-      InfoChipList.color([
-        ("${kanji.strokeCount} strokes", null),
-        (kanji.jlptLevel != JLPTLevel.none ? "JLPT ${kanji.jlptLevel.toString()}" : null, Colors.blue),
-        (kanji.type?.toString(), Colors.blue),
-      ]),
-      const Divider(),
-      ListTile(
-        title: Text(kanji.meanings.join(", ")),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: getInfoText(kanji),
-        ),
-      ),
-      const Divider()
-    ];
-
-    if (kanji.parts.length > 1) {
-      items.add(
-        Wrap(
-          children: kanji.parts.whereNot((part) => part == kanji.kanji).map((part) => Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            child: InkWell(
-              onTap: () => {Navigator.of(context).push(MaterialPageRoute(builder: (context) => KanjiDetailsScreen(part)))},
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(part, style: const TextStyle(fontSize: 20)),
-              ),
-            ),
-          )).toList()
-        )
-      );
-      items.add(const Divider());
-    }
-
-    if (kanji.onCompounds.isNotEmpty) {
-      items.add(CompoundList("On", kanji.onCompounds));
-    }
-
-    if (kanji.kunCompounds.isNotEmpty) {
-      items.add(CompoundList("Kun", kanji.kunCompounds));
-    }
-
-    return items;
   }
 }

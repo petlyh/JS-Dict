@@ -11,12 +11,6 @@ class SentenceItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> subtitleWidgets = [Text(sentence.english)];
-
-    if (sentence.copyright != null) {
-      subtitleWidgets.add(CopyrightText(sentence.copyright!));
-    }
-
     return Card(
       child: ListTile(
         onTap: () => {
@@ -27,7 +21,11 @@ class SentenceItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: subtitleWidgets
+          children: [
+            Text(sentence.english),
+            if (sentence.copyright != null)
+              CopyrightText(sentence.copyright!),
+          ],
         )
       )
     );

@@ -16,7 +16,11 @@ class WordItem extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => WordDetailsScreen(word.id!)))
         },
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-        title: RubyText(word.word.toRubyData(), style: const TextStyle(fontSize: 18), rubyStyle: const TextStyle(fontSize: 10)),
+        title: RubyText(
+          word.word.toRubyData(),
+          style: const TextStyle(fontSize: 18),
+          rubyStyle: const TextStyle(fontSize: 10),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

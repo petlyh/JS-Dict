@@ -23,24 +23,14 @@ class KanjiItem extends StatelessWidget {
           children: [
             Text("Kun: ${kanji.kunReadings.join("、 ")}"),
             Text("On: ${kanji.onReadings.join("、 ")}"),
-            Text(extraInfo(kanji)),
+            Text([
+              "${kanji.strokeCount} strokes",
+              if (kanji.jlptLevel != JLPTLevel.none) "JLPT ${kanji.jlptLevel}",
+              if (kanji.type != null) kanji.type.toString(),
+            ].join(", ")),
           ],
         )
       )
     );
-  }
-
-  String extraInfo(Kanji kanji) {
-    var info = ["${kanji.strokeCount} strokes"];
-
-    if (kanji.jlptLevel != JLPTLevel.none) {
-      info.add("JLPT ${kanji.jlptLevel}");
-    }
-
-    if (kanji.type != null) {
-      info.add(kanji.type.toString());
-    }
-
-    return info.join(", ");
   }
 }
