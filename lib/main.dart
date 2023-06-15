@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:jsdict/query_provider.dart';
 import 'package:jsdict/screens/search_screen.dart';
@@ -9,27 +10,34 @@ void main() {
   runApp(const JsDictApp());
 }
 
+const mainColor = Color(0xFF27CA27);
+
 class JsDictApp extends StatelessWidget {
   const JsDictApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // themeMode: ThemeMode.dark,
-      title: 'JS-Dict',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color(0xFF27CA27),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color(0xFF27CA27),
-        brightness: Brightness.dark
-      ),
-      home: ChangeNotifierProvider(
-        create: (_) => QueryProvider(),
-        child: const SearchScreen()
-      ),
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        return MaterialApp(
+          title: "JS-Dict",
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: lightDynamic,
+            colorSchemeSeed: lightDynamic == null ? mainColor : null,
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            useMaterial3: true,
+            colorScheme: darkDynamic,
+            colorSchemeSeed: darkDynamic == null ? mainColor : null,
+          ),
+          home: ChangeNotifierProvider(
+            create: (_) => QueryProvider(),
+            child: const SearchScreen()
+          ),
+        );
+      }
     );
   }
 }
