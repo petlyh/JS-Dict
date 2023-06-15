@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:jsdict/client/client.dart';
 
@@ -12,7 +13,10 @@ class ErrorIndicator extends StatelessWidget {
   final Function()? onRetry;
   final StackTrace? stackTrace;
 
-  String get _message {
+  String get _errorType => error.runtimeType.toString();
+  String get _errorMessage => error.toString();
+
+  String get _userMessage {
     if (error is NotFoundException) {
       return "Page not found";
     }
@@ -32,7 +36,7 @@ class ErrorIndicator extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(_message, textAlign: TextAlign.center),
+            Text(_userMessage, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             ElevatedButton(
               child: const Text("Show Error"),
@@ -77,8 +81,8 @@ class ErrorIndicator extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _infoText("Type: ", error.runtimeType.toString()),
-              _infoText("Message: ", error.toString()),
+              _infoText("Type: ", _errorType),
+              _infoText("Message: ", _errorMessage),
               if (stackTrace != null) ...[
                 _infoText("Stack trace: ", ""),
                 ExpandableText(
@@ -94,10 +98,26 @@ class ErrorIndicator extends StatelessWidget {
         ),
         actions: [
           TextButton(
+            child: const Text("Copy"),
+            onPressed: () => _copyError(context),
+          ),
+          TextButton(
             child: const Text("Close"),
             onPressed: () => Navigator.pop(context),
           ),
         ],
       ));
+  }
+
+  void _copyError(BuildContext context) {
+    final copyText = "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n${stackTrace.toString()}```";
+
+    Clipboard.setData(ClipboardData(text: copyText)).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Copied error info")),
+      );
+    });
+
+    Navigator.pop(context);
   }
 }
