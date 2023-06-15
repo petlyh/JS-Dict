@@ -1,14 +1,16 @@
 import 'dart:io';
 
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:jsdict/client/client.dart';
 
 class ErrorIndicator extends StatelessWidget {
-  const ErrorIndicator(this.error, {super.key, this.onRetry});
+  const ErrorIndicator(this.error, {super.key, this.stackTrace, this.onRetry});
 
   final Object error;
   final Function()? onRetry;
+  final StackTrace? stackTrace;
 
   String get _message {
     if (error is NotFoundException) {
@@ -70,13 +72,25 @@ class ErrorIndicator extends StatelessWidget {
         titlePadding: const EdgeInsets.only(top: 28, bottom: 12, left: 28, right: 28),
         contentPadding: const EdgeInsets.symmetric(horizontal: 28),
         title: const Text("Error Info", style: TextStyle(fontSize: 20)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _infoText("Type: ", error.runtimeType.toString()),
-            _infoText("Message: ", error.toString()),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _infoText("Type: ", error.runtimeType.toString()),
+              _infoText("Message: ", error.toString()),
+              if (stackTrace != null) ...[
+                _infoText("Stack trace: ", ""),
+                ExpandableText(
+                  stackTrace.toString(),
+                  expandText: "Show",
+                  collapseText: "Hide",
+                  maxLines: 1,
+                  linkColor: Theme.of(context).primaryColor,
+                ),
+              ],
+            ],
+          ),
         ),
         actions: [
           TextButton(

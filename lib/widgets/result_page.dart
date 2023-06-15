@@ -36,8 +36,8 @@ class _ResultPageState<T> extends State<ResultPage<T>> {
       }
 
       _pagingController.appendPage(response.results, pageKey + 1);
-    } catch (error) {
-      _pagingController.error = error;
+    } catch (error, stackTrace) {
+      _pagingController.error = (error, stackTrace);
     }
   }
 
@@ -55,7 +55,8 @@ class _ResultPageState<T> extends State<ResultPage<T>> {
                 builderDelegate: PagedChildBuilderDelegate<T>(
                   itemBuilder: (context, item, index) => _createItem(item),
                   firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                    _pagingController.error,
+                    _pagingController.error.$1,
+                    stackTrace: _pagingController.error.$2,
                     onRetry: _pagingController.refresh,
                   ),
                   noItemsFoundIndicatorBuilder: (context) => Container(

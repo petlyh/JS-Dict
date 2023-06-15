@@ -51,7 +51,11 @@ class _LoaderWidgetState<T> extends State<LoaderWidget<T>> {
         }
 
         if (snapshot.hasError) {
-          return ErrorIndicator(snapshot.error!, onRetry: _retry);
+          return ErrorIndicator(
+            snapshot.error!,
+            stackTrace: snapshot.stackTrace,
+            onRetry: _retry,
+          );
         }
 
         if (snapshot.hasData && snapshot.data != null) {
