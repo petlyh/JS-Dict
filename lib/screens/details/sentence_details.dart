@@ -16,7 +16,7 @@ class SentenceDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Sentence Details")),
       body: LoaderWidget(
-        future: getClient().sentenceDetails(sentenceId),
+        onLoad: () => getClient().sentenceDetails(sentenceId),
         handler: (sentence) {
           return SingleChildScrollView(
             child: Container(

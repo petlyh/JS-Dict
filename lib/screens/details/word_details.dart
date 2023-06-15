@@ -19,7 +19,7 @@ class WordDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Word Details")),
       body: LoaderWidget(
-        future: getClient().wordDetails(inputWord),
+        onLoad: () => getClient().wordDetails(inputWord),
         handler: (word) => SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.all(8.0),

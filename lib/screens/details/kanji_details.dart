@@ -16,7 +16,7 @@ class KanjiDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Kanji Details")),
       body: LoaderWidget(
-        future: getClient().kanjiDetails(searchKanji),
+        onLoad: () => getClient().kanjiDetails(searchKanji),
         handler: (kanji) {
           return SingleChildScrollView(
             child: Container(

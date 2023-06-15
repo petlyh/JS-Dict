@@ -1,22 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:jsdict/widgets/error_indicator.dart';
 
-class LoaderWidget<T> extends StatelessWidget {
+class LoaderWidget<T> extends StatefulWidget {
   const LoaderWidget({
     super.key,
-    required this.future,
+    required this.onLoad,
     required this.handler,
     this.placeholder = const Text("")}
   );
 
-  final Future<T>? future;
+  final Future<T>? Function() onLoad;
   final Widget Function(T data) handler;
   final Widget placeholder;
 
   @override
+  State<LoaderWidget<T>> createState() => _LoaderWidgetState<T>();
+}
+
+class _LoaderWidgetState<T> extends State<LoaderWidget<T>> {
+  Future<T>? _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = widget.onLoad();
+  }
+
+  void _retry() {
+    setState(() {
+      _future = widget.onLoad();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: future,
+      future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -28,15 +47,15 @@ class LoaderWidget<T> extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.none) {
-          return placeholder;
+          return widget.placeholder;
         }
 
         if (snapshot.hasError) {
-          return ErrorIndicator(snapshot.error!);
+          return ErrorIndicator(snapshot.error!, onRetry: _retry);
         }
 
         if (snapshot.hasData && snapshot.data != null) {
-          return handler(snapshot.data as T);
+          return widget.handler(snapshot.data as T);
         }
 
         throw AssertionError();
