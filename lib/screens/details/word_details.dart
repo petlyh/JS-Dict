@@ -49,7 +49,16 @@ class WordDetailsScreen extends StatelessWidget {
                   children: intersperce(
                     word.definitions.map((definition) => ListTile(
                       title: Text(definition.meanings.join("; ")),
-                      subtitle: Text(definition.types.join(", ")),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(definition.types.join(", ")),
+                          if (definition.tags.isNotEmpty)
+                            Text(definition.tags.join(", ")),
+                          if (definition.seeAlso.isNotEmpty)
+                            Text("See also ${definition.seeAlso.join(", ")}"),
+                        ],
+                      ),
                     )).toList(),
                     const Divider(),
                   ),

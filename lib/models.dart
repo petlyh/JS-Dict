@@ -131,6 +131,8 @@ class OtherForm {
 class Definition {
   List<String> meanings = [];
   List<String> types = [];
+  List<String> tags = [];
+  List<String> seeAlso = [];
 
   @override
   String toString() {
