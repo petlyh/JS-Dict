@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jsdict/models.dart';
-import 'package:jsdict/query_provider.dart';
+import 'package:jsdict/providers/query_provider.dart';
 import 'package:jsdict/screens/settings_screen.dart';
 import 'package:jsdict/widgets/result_page.dart';
 import 'package:provider/provider.dart';
