@@ -15,4 +15,10 @@ class QueryProvider extends ChangeNotifier {
   void _sanitizeQuery() {
     searchController.text = searchController.text.replaceAll(RegExp(r"#\w+"), "").trim();
   }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 }
