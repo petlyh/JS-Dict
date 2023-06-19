@@ -11,9 +11,24 @@ import 'package:jsdict/widgets/loader.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 class WordDetailsScreen extends StatelessWidget {
-  const WordDetailsScreen(this.inputWord, {super.key});
+  const WordDetailsScreen(this.inputWord, {super.key, this.search = false});
 
   final String inputWord;
+  /// Search for the word.
+  /// Use if `inputWord` is not the id of the details page.
+  final bool search;
+
+  Future<Word> _getFuture() {
+    if (search) {
+      return getClient().search<Word>(inputWord).then((response) {
+        if (response.results.isEmpty) {
+          throw Exception("Word not found");
+        }
+        return getClient().wordDetails(response.results.first.id!);
+      });
+    }
+    return getClient().wordDetails(inputWord);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +44,7 @@ class WordDetailsScreen extends StatelessWidget {
         ],
       ),
       body: LoaderWidget(
-        onLoad: () => getClient().wordDetails(inputWord),
+        onLoad: _getFuture,
         handler: (word) => SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.all(8.0),
@@ -89,6 +104,12 @@ class WordDetailsScreen extends StatelessWidget {
                       word.collocations.map((collocation) => ListTile(
                         title: Text(collocation.word),
                         subtitle: Text(collocation.meaning),
+                        trailing: const Icon(Icons.keyboard_arrow_right),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => WordDetailsScreen(collocation.word, search: true),
+                          ),
+                        ),
                       )).toList(),
                       const Divider(),
                     ),
