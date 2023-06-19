@@ -1,4 +1,5 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jsdict/intersperce.dart';
 import 'package:jsdict/link_popup_items.dart';
@@ -32,6 +33,8 @@ class WordDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Word Details"),
@@ -81,7 +84,23 @@ class WordDetailsScreen extends StatelessWidget {
                           if (definition.tags.isNotEmpty)
                             Text(definition.tags.join(", ")),
                           if (definition.seeAlso.isNotEmpty)
-                            Text("See also ${definition.seeAlso.join(", ")}"),
+                            RichText(text: TextSpan(
+                              children: [
+                                TextSpan(text: "See also ", style: TextStyle(color: textColor)),
+                                ...intersperce(
+                                  definition.seeAlso.map((seeAlsoWord) => TextSpan(
+                                    text: seeAlsoWord,
+                                    style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                                    recognizer: TapGestureRecognizer()..onTap = () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => WordDetailsScreen(seeAlsoWord, search: true),
+                                      ),
+                                    ),
+                                  )).toList(),
+                                  TextSpan(text: ", ", style: TextStyle(color: textColor)),
+                                )
+                              ]
+                            ))
                         ],
                       ),
                     )).toList(),
