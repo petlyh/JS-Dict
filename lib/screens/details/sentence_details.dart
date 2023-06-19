@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jsdict/link_popup_items.dart';
 import 'package:jsdict/models.dart';
 import 'package:jsdict/singletons.dart';
 import 'package:jsdict/widgets/copyright_text.dart';
@@ -14,7 +15,16 @@ class SentenceDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Sentence Details")),
+      appBar: AppBar(
+        title: const Text("Sentence Details"),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: linkPopupItemsBuilder([
+              ("Open in Browser", "https://jisho.org/sentences/$sentenceId"),
+            ]),
+          ),
+        ],
+      ),
       body: LoaderWidget(
         onLoad: () => getClient().sentenceDetails(sentenceId),
         handler: (sentence) {

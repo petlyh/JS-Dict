@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:jsdict/link_popup_items.dart';
 import 'package:jsdict/models.dart';
 import 'package:jsdict/singletons.dart';
 import 'package:jsdict/widgets/info_chip_list.dart';
@@ -14,7 +15,19 @@ class KanjiDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Kanji Details")),
+      appBar: AppBar(
+        title: const Text("Kanji Details"),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: linkPopupItemsBuilder([
+              ("Open in Browser", "https://jisho.org/search/$searchKanji %23kanji"),
+              ("Unihan database", "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$searchKanji&useutf8=true"),
+              ("Wiktionary", "http://en.wiktionary.org/wiki/$searchKanji"),
+              ("Google", "http://www.google.com/search?ie=utf8&oe=utf8&lr=lang_ja&q=$searchKanji"),
+            ]),
+          ),
+        ],
+      ),
       body: LoaderWidget(
         onLoad: () => getClient().kanjiDetails(searchKanji),
         handler: (kanji) {

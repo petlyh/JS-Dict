@@ -1,6 +1,7 @@
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:jsdict/intersperce.dart';
+import 'package:jsdict/link_popup_items.dart';
 import 'package:jsdict/models.dart';
 import 'package:jsdict/singletons.dart';
 import 'package:jsdict/widgets/inflection_table.dart';
@@ -17,7 +18,16 @@ class WordDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Word Details")),
+      appBar: AppBar(
+        title: const Text("Word Details"),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: linkPopupItemsBuilder([
+              ("Open in Browser", "https://jisho.org/word/$inputWord"),
+            ]),
+          ),
+        ],
+      ),
       body: LoaderWidget(
         onLoad: () => getClient().wordDetails(inputWord),
         handler: (word) => SingleChildScrollView(
