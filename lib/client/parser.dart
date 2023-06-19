@@ -205,6 +205,8 @@ class Parser {
 
       definition.tags = definitionElement.collectAll("span.tag-tag, span.tag-info", (e) => e.text.trim());
       definition.seeAlso = definitionElement.collectAll("span.tag-see_also > a", (e) => e.text.trim());
+      // deduplicate
+      definition.seeAlso = definition.seeAlso.toSet().toList();
 
       word.definitions.add(definition);
     }
