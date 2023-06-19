@@ -10,10 +10,12 @@ class CopyrightText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+
     return RichText(
       text: TextSpan(
         children: [
-          const TextSpan(text: '— ', style: TextStyle(color: Colors.black)),
+          TextSpan(text: '— ', style: TextStyle(color: textColor)),
           TextSpan(
             text: copyright.name,
             style: const TextStyle(color: Colors.blue),
