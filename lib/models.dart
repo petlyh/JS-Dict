@@ -124,7 +124,7 @@ class OtherForm {
     if (reading.isEmpty) {
       return form;
     }
-    return "$form ($reading)";
+    return "$form 【$reading】";
   }
 }
 
