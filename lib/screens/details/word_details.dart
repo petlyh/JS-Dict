@@ -64,7 +64,7 @@ class WordDetailsScreen extends StatelessWidget {
                 ),
                 InfoChipList.color([
                   if (word.commonWord)
-                    ("Common", null),
+                    ("Common", Colors.green),
                   if (word.jlptLevel != JLPTLevel.none)
                     ("JLPT ${word.jlptLevel.toString()}", Colors.blue),
                   if (word.wanikaniLevel != -1)

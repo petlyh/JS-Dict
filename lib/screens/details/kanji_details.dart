@@ -42,7 +42,7 @@ class KanjiDetailsScreen extends StatelessWidget {
                     child: Text(kanji.kanji, style: const TextStyle(fontSize: 40)),
                   ),
                   InfoChipList.color([
-                    ("${kanji.strokeCount} strokes", null),
+                    ("${kanji.strokeCount} strokes", Colors.green),
                     if (kanji.jlptLevel != JLPTLevel.none)
                       ("JLPT ${kanji.jlptLevel.toString()}", Colors.blue),
                     if (kanji.type != null)
