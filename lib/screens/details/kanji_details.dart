@@ -67,6 +67,7 @@ class KanjiDetailsScreen extends StatelessWidget {
                   const Divider(),
                   if (kanji.parts.length > 1) ...[
                     Wrap(
+                      alignment: WrapAlignment.center,
                       children: kanji.parts.whereNot((part) => part == kanji.kanji).map((part) => Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                         child: InkWell(
