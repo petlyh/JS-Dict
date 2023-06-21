@@ -5,7 +5,7 @@ List<PopupMenuEntry> createLinkPopupItems(List<(String text, String url)> data) 
   return data
       .map((entry) => PopupMenuItem(
         child: Text(entry.$1),
-        onTap: () => launchUrlString(entry.$2),
+        onTap: () => launchUrlString(entry.$2, mode: LaunchMode.externalApplication),
       ))
       .toList();
 }
