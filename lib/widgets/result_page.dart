@@ -17,7 +17,10 @@ class ResultPage<T> extends StatefulWidget {
   State<ResultPage<T>> createState() => _ResultPageState<T>();
 }
 
-class _ResultPageState<T> extends State<ResultPage<T>> {
+class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveClientMixin<ResultPage<T>> {
+  @override
+  final bool wantKeepAlive = true;
+
   final PagingController<int, T> _pagingController = PagingController(firstPageKey: 1);
 
   @override
@@ -43,6 +46,8 @@ class _ResultPageState<T> extends State<ResultPage<T>> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Center(
       child: Column(
         children: [
