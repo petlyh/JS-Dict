@@ -19,23 +19,23 @@ class JsDictApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
-        return MaterialApp(
-          title: "JS-Dict",
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: lightDynamic,
-            colorSchemeSeed: lightDynamic == null ? mainColor : null,
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            useMaterial3: true,
-            colorScheme: darkDynamic,
-            colorSchemeSeed: darkDynamic == null ? mainColor : null,
-          ),
-          home: ChangeNotifierProvider(
+        return ChangeNotifierProvider(
             create: (_) => QueryProvider(),
-            child: const SearchScreen()
-          ),
+            child: MaterialApp(
+              title: "JS-Dict",
+              theme: ThemeData(
+                useMaterial3: true,
+                colorScheme: lightDynamic,
+                colorSchemeSeed: lightDynamic == null ? mainColor : null,
+              ),
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                useMaterial3: true,
+                colorScheme: darkDynamic,
+                colorSchemeSeed: darkDynamic == null ? mainColor : null,
+              ),
+              home: const SearchScreen(),
+            ),
         );
       }
     );

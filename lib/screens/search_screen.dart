@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jsdict/models.dart';
 import 'package:jsdict/providers/query_provider.dart';
+import 'package:jsdict/screens/search_options_screen.dart';
 import 'package:jsdict/screens/settings_screen.dart';
 import 'package:jsdict/widgets/result_page.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,10 @@ class SearchScreen extends StatelessWidget {
       length: 4,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SearchOptionsScreen())),
+          child: const Text("部", style: TextStyle(fontSize: 20)),
+        ),
         appBar: AppBar(
           title: TextField(
             focusNode: searchFocusNode,
