@@ -203,7 +203,7 @@ class Parser {
       var meaningsElement = definitionElement.querySelector("span.meaning-meaning");
       definition.meanings = meaningsElement!.innerHtml.trim().split("; ");
 
-      definition.tags = definitionElement.collectAll("span.tag-tag, span.tag-info", (e) => e.text.trim());
+      definition.tags = definitionElement.collectAll("span.tag-tag, span.tag-info, span.tag-source", (e) => e.text.trim());
       definition.seeAlso = definitionElement.collectAll("span.tag-see_also > a", (e) => e.text.trim());
       // deduplicate
       definition.seeAlso = definition.seeAlso.toSet().toList();
