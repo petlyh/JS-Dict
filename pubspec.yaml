@@ -33,7 +33,7 @@ dependencies:
 
 
   html: ^0.15.3
-  http: ^0.13.6
+  http: ^1.0.0
   ruby_text: ^3.0.1
   url_launcher: ^6.1.10
   get_it: ^7.3.0
