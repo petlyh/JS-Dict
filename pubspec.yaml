@@ -43,6 +43,7 @@ dependencies:
   provider: ^6.0.5
   expandable_text: ^2.3.0
   dynamic_color: ^1.6.5
+  shared_preferences: ^2.1.2
 
 dev_dependencies:
   flutter_test:

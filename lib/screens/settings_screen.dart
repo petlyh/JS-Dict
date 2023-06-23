@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jsdict/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -9,6 +11,22 @@ class SettingScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Settings")),
       body: Column(
         children: [
+          ListTile(
+            leading: const Icon(Icons.water_drop, size: 32.0),
+            title: const Text("Theme"),
+            trailing: Consumer<ThemeProvider>(
+              builder: (context, provider, _) {
+                return DropdownButton(
+                  value: provider.currentThemeString,
+                  items: ThemeProvider.themes.map((theme) =>
+                    DropdownMenuItem(value: theme, child: Text(theme))
+                  ).toList(),
+                  onChanged: (value) => provider.setTheme(value!),
+                );
+              }
+            ),
+          ),
+          const Divider(),
           ListTile(
             onTap: () => showAboutDialog(
               context: context,
