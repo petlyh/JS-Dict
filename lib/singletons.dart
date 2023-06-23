@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:jsdict/client/client.dart';
+import 'package:jsdict/packages/jisho_client/jisho_client.dart';
 
 void setClient() {
   GetIt.I.registerLazySingleton<JishoClient>(() => JishoClient());

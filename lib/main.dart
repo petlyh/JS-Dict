@@ -1,7 +1,7 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:jsdict/providers/query_provider.dart';
-import 'package:jsdict/screens/search_screen.dart';
+import 'package:jsdict/screens/search/search_screen.dart';
 import 'package:jsdict/singletons.dart';
 import 'package:provider/provider.dart';
 

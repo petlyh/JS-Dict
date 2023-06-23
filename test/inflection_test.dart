@@ -1,28 +1,28 @@
-import 'package:jsdict/inflection.dart';
-import 'package:jsdict/models.dart';
+import 'package:jsdict/models/models.dart';
+import 'package:jsdict/packages/inflection/inflection.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test("getInflectionType", () {
-    final kanashii = getInflectionType("悲しい", "adj-i");
+  test("Inflection.getType", () {
+    final kanashii = Inflection.getType("悲しい", "adj-i");
     expect(kanashii, isA<IAdjective>());
 
-    final arifureru = getInflectionType("あり触れる", "v1");
+    final arifureru = Inflection.getType("あり触れる", "v1");
     expect(arifureru, isA<IchidanVerb>());
 
-    final noboru = getInflectionType("上る", "v5r");
+    final noboru = Inflection.getType("上る", "v5r");
     expect(noboru, isA<GodanVerb>());
 
-    final iku = getInflectionType("行く", "v5k-s");
+    final iku = Inflection.getType("行く", "v5k-s");
     expect(iku, isA<GodanVerb>());
 
-    final kuru = getInflectionType("来る", "vk");
+    final kuru = Inflection.getType("来る", "vk");
     expect(kuru, isA<Kuru>());
 
-    final suru = getInflectionType("為る", "vs-i");
+    final suru = Inflection.getType("為る", "vs-i");
     expect(suru, isA<SuruSpecial>());
 
-    final koisuru = getInflectionType("恋する", "vs-i");
+    final koisuru = Inflection.getType("恋する", "vs-i");
     expect(koisuru, isA<SuruVerb>());
   });
 

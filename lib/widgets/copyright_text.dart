@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:jsdict/models.dart';
+import 'package:jsdict/models/models.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CopyrightText extends StatelessWidget {
