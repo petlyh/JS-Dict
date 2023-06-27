@@ -15,7 +15,7 @@ class WikipediaScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               Text(definition.name, style: const TextStyle(fontSize: 18)),
