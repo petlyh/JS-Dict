@@ -6,41 +6,28 @@ class ThemeProvider extends ChangeNotifier {
   final SharedPreferences _preferences = getPreferences();
 
   static const _themeKey = "ThemeMode";
-  static const _defaultTheme = ThemeMode.system;
+  static const _defaultThemeString = "System";
   static const themes = ["System", "Light", "Dark"];
 
-  String _currentTheme = "";
-
-  ThemeMode get currentTheme {
-    if (_currentTheme.isNotEmpty) {
-      return _themeFromString(_currentTheme);
-    }
-
-    final preferenceTheme = _preferences.getString(_themeKey);
-
-    if (preferenceTheme == null) {
-      return _defaultTheme;
-    }
-
-    return _themeFromString(preferenceTheme);
-  }
-
-  void setTheme(String name) {
-    _currentTheme = name;
-    notifyListeners();
-    _preferences.setString(_themeKey, name);
-  }
-
-  String get currentThemeString => switch (currentTheme) {
-    ThemeMode.system => "System",
-    ThemeMode.light => "Light",
-    ThemeMode.dark => "Dark",
-  };
-
-  ThemeMode _themeFromString(String name) => switch (name) {
+  ThemeMode get currentTheme => switch (currentThemeString) {
     "System" => ThemeMode.system,
     "Light" => ThemeMode.light,
     "Dark" => ThemeMode.dark,
-    _ => throw Exception("Unknown theme: $name"),
+    _ => throw Exception("Unknown theme: $currentThemeString"),
   };
+
+  String get currentThemeString => _preferences.getString(_themeKey) ?? _defaultThemeString;
+
+  void setTheme(String name) async {
+    await _preferences.setString(_themeKey, name);
+    notifyListeners();
+  }
+
+  static const _dynamicColorsKey = "DynamicColors";
+  bool get dynamicColors => _preferences.getBool(_dynamicColorsKey) ?? true;
+  
+  void setDynamicColors(bool value) async {
+    await _preferences.setBool(_dynamicColorsKey, value);
+    notifyListeners();
+  }
 }

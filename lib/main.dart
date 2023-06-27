@@ -18,31 +18,38 @@ class JsDictApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        return MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => QueryProvider()),
-              ChangeNotifierProvider(create: (_) => ThemeProvider()),
-            ],
-            builder: (context, _) => MaterialApp(
+    return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
+      return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => QueryProvider()),
+            ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ],
+          builder: (context, _) {
+            final themeProvider = Provider.of<ThemeProvider>(context);
+
+            return MaterialApp(
               title: "JS-Dict",
-              themeMode: Provider.of<ThemeProvider>(context).currentTheme,
+              themeMode: themeProvider.currentTheme,
               theme: ThemeData(
                 useMaterial3: true,
-                colorScheme: lightDynamic,
-                colorSchemeSeed: lightDynamic == null ? mainColor : null,
+                colorScheme: themeProvider.dynamicColors ? lightDynamic : null,
+                colorSchemeSeed:
+                    (lightDynamic == null || !themeProvider.dynamicColors)
+                        ? mainColor
+                        : null,
               ),
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
                 useMaterial3: true,
-                colorScheme: darkDynamic,
-                colorSchemeSeed: darkDynamic == null ? mainColor : null,
+                colorScheme: themeProvider.dynamicColors ? darkDynamic : null,
+                colorSchemeSeed:
+                    (darkDynamic == null || !themeProvider.dynamicColors)
+                        ? mainColor
+                        : null,
               ),
               home: const SearchScreen(),
-            ),
-        );
-      }
-    );
+            );
+          });
+    });
   }
 }

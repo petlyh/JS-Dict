@@ -26,6 +26,17 @@ class SettingScreen extends StatelessWidget {
               }
             ),
           ),
+          ListTile(
+            leading: const Icon(Icons.format_color_fill, size: 32.0),
+            title: const Text("Dynamic Colors"),
+            subtitle: const Text("Use dynamic colors if available."),
+            trailing: Consumer<ThemeProvider>(
+              builder: (context, provider, _) => Switch(
+                value: provider.dynamicColors,
+                onChanged: provider.setDynamicColors,
+              ),
+            ),
+          ),
           const Divider(),
           ListTile(
             onTap: () => showAboutDialog(
