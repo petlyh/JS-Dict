@@ -36,10 +36,29 @@ class Definition {
   List<String> tags = [];
   List<String> seeAlso = [];
 
+  WikipediaDefinition? wikipedia;
+
   @override
   String toString() {
     return meanings.join(", ");
   }
+}
+
+class WikipediaDefinition {
+  final String name;
+  String? textAbstract;
+  WikipediaPage? wikipediaEnglish;
+  WikipediaPage? wikipediaJapanese;
+  WikipediaPage? dbpedia;
+
+  WikipediaDefinition(this.name);
+}
+
+class WikipediaPage {
+  final String title;
+  final String url;
+
+  WikipediaPage(this.title, this.url);
 }
 
 class OtherForm {

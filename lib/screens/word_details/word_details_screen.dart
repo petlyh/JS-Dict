@@ -2,6 +2,7 @@ import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jsdict/packages/intersperce.dart';
+import 'package:jsdict/screens/wikipedia_screen.dart';
 import 'package:jsdict/widgets/link_popup.dart';
 import 'package:jsdict/models/models.dart';
 import 'package:jsdict/singletons.dart';
@@ -74,35 +75,10 @@ class WordDetailsScreen extends StatelessWidget {
                   initiallyExpanded: true,
                   title: const Text("Definitions"),
                   children: intersperce(
-                    word.definitions.map((definition) => ListTile(
-                      title: Text(definition.meanings.join("; ")),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(definition.types.join(", ")),
-                          if (definition.tags.isNotEmpty)
-                            Text(definition.tags.join(", ")),
-                          if (definition.seeAlso.isNotEmpty)
-                            RichText(text: TextSpan(
-                              children: [
-                                TextSpan(text: "See also ", style: TextStyle(color: textColor)),
-                                ...intersperce(
-                                  definition.seeAlso.map((seeAlsoWord) => TextSpan(
-                                    text: seeAlsoWord,
-                                    style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
-                                    recognizer: TapGestureRecognizer()..onTap = () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => WordDetailsScreen(seeAlsoWord, search: true),
-                                      ),
-                                    ),
-                                  )).toList(),
-                                  TextSpan(text: ", ", style: TextStyle(color: textColor)),
-                                )
-                              ]
-                            ))
-                        ],
-                      ),
-                    )).toList(),
+                    word.definitions
+                        .map((definition) =>
+                            _DefinitionTile(definition, textColor: textColor))
+                        .toList(),
                     const Divider(),
                   ),
                 ),
@@ -146,6 +122,60 @@ class WordDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _DefinitionTile extends StatelessWidget {
+  const _DefinitionTile(this.definition, {this.textColor});
+
+  final Definition definition;
+  final Color? textColor;
+
+  bool get isWikipedia => definition.wikipedia != null;
+
+  Function()? onTap(BuildContext context) {
+    if (isWikipedia) {
+      return () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              WikipediaScreen(definition.wikipedia!)));
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: onTap(context),
+      trailing: isWikipedia ? const Icon(Icons.keyboard_arrow_right) : null,
+      title: Text(definition.meanings.join("; ")),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(definition.types.join(", ")),
+          if (definition.tags.isNotEmpty)
+            Text(definition.tags.join(", ")),
+          if (definition.seeAlso.isNotEmpty)
+            RichText(text: TextSpan(
+              children: [
+                TextSpan(text: "See also ", style: TextStyle(color: textColor)),
+                ...intersperce(
+                  definition.seeAlso.map((seeAlsoWord) => TextSpan(
+                    text: seeAlsoWord,
+                    style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                    recognizer: TapGestureRecognizer()..onTap = () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => WordDetailsScreen(seeAlsoWord, search: true),
+                      ),
+                    ),
+                  )).toList(),
+                  TextSpan(text: ", ", style: TextStyle(color: textColor)),
+                )
+              ]
+            ))
+        ],
       ),
     );
   }

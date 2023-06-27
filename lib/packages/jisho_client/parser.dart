@@ -208,6 +208,15 @@ class Parser {
       // deduplicate
       definition.seeAlso = definition.seeAlso.toSet().toList();
 
+      if (definition.types.contains("Wikipedia definition")) {
+        var wikipediaDefinition = WikipediaDefinition(definition.meanings.first);
+        wikipediaDefinition.textAbstract = definitionElement.collect("span.meaning-abstract", (e) => e.nodes.first.text!);
+        wikipediaDefinition.wikipediaEnglish = _wikipediaPage(definitionElement, "English Wikipedia");
+        wikipediaDefinition.wikipediaJapanese = _wikipediaPage(definitionElement, "Japanese Wikipedia");
+        wikipediaDefinition.dbpedia = _wikipediaPage(definitionElement, "DBpedia");
+        definition.wikipedia = wikipediaDefinition;
+      }
+
       word.definitions.add(definition);
     }
 
@@ -229,6 +238,14 @@ class Parser {
     ) ?? [];
 
     return word;
+  }
+
+  static WikipediaPage? _wikipediaPage(Element definitionElement, String name) {
+    return definitionElement.collectWhere(
+      "span.meaning-abstract > a",
+      (e) => e.text.contains(name),
+      (e) => WikipediaPage(RegExp('“(.+?)”').firstMatch(e.text)!.group(1)!, e.attributes["href"]!),
+    );
   }
 
   static Word wordDetails(final Document document) {
