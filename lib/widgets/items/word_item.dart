@@ -24,9 +24,11 @@ class WordItem extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: word.definitions.asMap().entries.map((entry) {
-            return Text("${entry.key + 1}. ${entry.value.meanings.join("; ")}");
-          }).toList(),
+          children: word.definitions
+              .map((e) => e.meanings.join("; "))
+              .toSet().toList().asMap().entries
+              .map((entry) => Text("${entry.key + 1}. ${entry.value}"))
+              .toList(),
         )
       ),
     );
