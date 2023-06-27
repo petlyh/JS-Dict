@@ -3,7 +3,7 @@ import "package:html/dom.dart";
 import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
 
-Furigana parseSentenceFurigana(final Element element) {
+Furigana parseSentenceFurigana(Element element) {
   final nodes = element.querySelector("ul.japanese_sentence")!.nodes;
 
   return nodes.map((node) {
@@ -23,7 +23,7 @@ Furigana parseSentenceFurigana(final Element element) {
   }).toList();
 }
 
-Furigana parseWordFurigana(final Element element) {
+Furigana parseWordFurigana(Element element) {
   if (element.querySelector("span.furigana > ruby") != null) {
     return parseRubyFurigana(element);
   }
@@ -56,7 +56,7 @@ Furigana parseWordFurigana(final Element element) {
       .toList();
 }
 
-Furigana parseRubyFurigana(final Element element) {
+Furigana parseRubyFurigana(Element element) {
   final furiganaParts = element.collectAll(
     "div.concept_light-representation > span.furigana > *",
     (e) => e.localName == "ruby"

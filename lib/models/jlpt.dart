@@ -13,7 +13,7 @@ enum JLPTLevel {
     };
   }
 
-  static JLPTLevel fromString(final String level) {
+  static JLPTLevel fromString(String level) {
     return switch (level.toLowerCase()) {
       "n1" => n1,
       "n2" => n2,
@@ -24,7 +24,7 @@ enum JLPTLevel {
     };
   }
 
-  static JLPTLevel findInText(final String text) {
+  static JLPTLevel findInText(String text) {
     final pattern = RegExp(r"JLPT (N\d)");
     final match = pattern.firstMatch(text.toUpperCase());
     if (match == null) return none;

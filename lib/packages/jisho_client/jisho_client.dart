@@ -44,23 +44,23 @@ class JishoClient {
     Name: "names"
   };
 
-  Future<SearchResponse<T>> search<T>(final String query, {final int page = 1}) {
+  Future<SearchResponse<T>> search<T>(String query, {int page = 1}) {
     final pagePart = page > 1 ? "?page=$page" : "";
     final path = _searchPath("$query #${_typeTags[T]}") + pagePart;
     return _getHtml(path).then((document) => Parser.search<T>(document));
   }
 
-  Future<Kanji> kanjiDetails(final String kanji) async {
+  Future<Kanji> kanjiDetails(String kanji) async {
     final path = _searchPath("$kanji #kanji");
     return _getHtml(path).then((document) => Parser.kanjiDetails(document));
   }
 
-  Future<Word> wordDetails(final String word) async {
+  Future<Word> wordDetails(String word) async {
     final path = "/word/${Uri.encodeComponent(word)}";
     return _getHtml(path).then((document) => Parser.wordDetails(document));
   }
 
-  Future<Sentence> sentenceDetails(final String sentenceId) async {
+  Future<Sentence> sentenceDetails(String sentenceId) async {
     return _getHtml("/sentences/$sentenceId").then((document) => Parser.sentenceDetails(document));
   }
 }
