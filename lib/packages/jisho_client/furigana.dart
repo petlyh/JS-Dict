@@ -1,7 +1,7 @@
-import 'package:collection/collection.dart';
-import 'package:html/dom.dart';
-import 'package:jsdict/packages/jisho_client/parsing_helper.dart';
-import 'package:jsdict/models/models.dart';
+import "package:collection/collection.dart";
+import "package:html/dom.dart";
+import "package:jsdict/packages/jisho_client/parsing_helper.dart";
+import "package:jsdict/models/models.dart";
 
 Furigana parseSentenceFurigana(final Element element) {
   final nodes = element.querySelector("ul.japanese_sentence")!.nodes;

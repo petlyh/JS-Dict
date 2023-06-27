@@ -1,4 +1,4 @@
-import 'package:jsdict/models/models.dart';
+import "package:jsdict/models/models.dart";
 
 String _withoutSuffix(String input, String suffix) {
   return input.replaceFirst(RegExp(suffix + r"$"), "");

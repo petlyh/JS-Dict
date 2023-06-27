@@ -1,8 +1,8 @@
-import 'package:html/dom.dart';
-import 'package:jsdict/packages/jisho_client/parsing_helper.dart';
-import 'package:jsdict/models/models.dart';
+import "package:html/dom.dart";
+import "package:jsdict/packages/jisho_client/parsing_helper.dart";
+import "package:jsdict/models/models.dart";
 
-import 'furigana.dart';
+import "furigana.dart";
 
 class Parser {
   static SearchResponse<T> search<T>(final Document document) {
@@ -244,7 +244,7 @@ class Parser {
     return definitionElement.collectWhere(
       "span.meaning-abstract > a",
       (e) => e.text.contains(name),
-      (e) => WikipediaPage(RegExp('“(.+?)”').firstMatch(e.text)!.group(1)!, e.attributes["href"]!),
+      (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!, e.attributes["href"]!),
     );
   }
 

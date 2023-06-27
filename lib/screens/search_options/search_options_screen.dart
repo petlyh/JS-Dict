@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/providers/query_provider.dart';
-import 'package:provider/provider.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/providers/query_provider.dart";
+import "package:provider/provider.dart";
 
-import 'radical_search/radical_search_widget.dart';
+import "radical_search/radical_search_widget.dart";
 
 class SearchOptionsScreen extends StatelessWidget {
   const SearchOptionsScreen({super.key});

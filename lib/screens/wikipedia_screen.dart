@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:url_launcher/url_launcher.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/models/models.dart";
+import "package:url_launcher/url_launcher.dart";
 
 class WikipediaScreen extends StatelessWidget {
   const WikipediaScreen(this.definition, {super.key});

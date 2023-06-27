@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/models/models.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/models/models.dart";
 
 class NameItem extends StatelessWidget {
   const NameItem({super.key, required this.name});

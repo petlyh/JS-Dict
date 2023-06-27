@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/screens/kanji_details/kanji_details_screen.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
 
 class KanjiItem extends StatelessWidget {
   const KanjiItem({super.key, required this.kanji});

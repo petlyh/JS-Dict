@@ -1,12 +1,12 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:jsdict/widgets/link_popup.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/singletons.dart';
-import 'package:jsdict/widgets/info_chips.dart';
-import 'package:jsdict/widgets/loader.dart';
+import "package:collection/collection.dart";
+import "package:flutter/material.dart";
+import "package:jsdict/widgets/link_popup.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/loader.dart";
 
-import 'compound_list.dart';
+import "compound_list.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
   const KanjiDetailsScreen(this.searchKanji, {super.key});

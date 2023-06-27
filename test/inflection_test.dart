@@ -1,6 +1,6 @@
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/packages/inflection/inflection.dart';
-import 'package:test/test.dart';
+import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/inflection/inflection.dart";
+import "package:test/test.dart";
 
 void main() {
   test("Inflection.getType", () {

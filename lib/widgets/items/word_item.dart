@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/screens/word_details/word_details_screen.dart';
-import 'package:ruby_text/ruby_text.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/screens/word_details/word_details_screen.dart";
+import "package:ruby_text/ruby_text.dart";
 
 class WordItem extends StatelessWidget {
   const WordItem({super.key, required this.word});

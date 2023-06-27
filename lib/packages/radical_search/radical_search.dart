@@ -1,6 +1,6 @@
-import 'package:collection/collection.dart';
+import "package:collection/collection.dart";
 
-import 'kanji_radicals.dart';
+import "kanji_radicals.dart";
 
 class RadicalSearch {
   static List<String> kanjiByRadicals(List<String> radicals) {

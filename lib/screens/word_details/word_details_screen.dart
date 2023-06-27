@@ -1,17 +1,17 @@
-import 'package:expansion_tile_card/expansion_tile_card.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:jsdict/packages/intersperce.dart';
-import 'package:jsdict/screens/wikipedia_screen.dart';
-import 'package:jsdict/widgets/link_popup.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/singletons.dart';
-import 'package:jsdict/widgets/info_chips.dart';
-import 'package:jsdict/widgets/items/kanji_item.dart';
-import 'package:jsdict/widgets/loader.dart';
-import 'package:ruby_text/ruby_text.dart';
+import "package:expansion_tile_card/expansion_tile_card.dart";
+import "package:flutter/gestures.dart";
+import "package:flutter/material.dart";
+import "package:jsdict/packages/intersperce.dart";
+import "package:jsdict/screens/wikipedia_screen.dart";
+import "package:jsdict/widgets/link_popup.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/items/kanji_item.dart";
+import "package:jsdict/widgets/loader.dart";
+import "package:ruby_text/ruby_text.dart";
 
-import 'inflection_table.dart';
+import "inflection_table.dart";
 
 class WordDetailsScreen extends StatelessWidget {
   const WordDetailsScreen(this.inputWord, {super.key, this.search = false});

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:jsdict/packages/jisho_client/jisho_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import "package:flutter/material.dart";
+import "package:get_it/get_it.dart";
+import "package:jsdict/packages/jisho_client/jisho_client.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 Future<void> registerSingletons() {
   WidgetsFlutterBinding.ensureInitialized();

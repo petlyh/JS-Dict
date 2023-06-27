@@ -1,6 +1,6 @@
-import 'inflection_types.dart';
+import "inflection_types.dart";
 
-export 'inflection_types.dart';
+export "inflection_types.dart";
 
 class Inflection {
   static InflectionType getType(String word, String typeId) {

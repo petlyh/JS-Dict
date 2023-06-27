@@ -1,8 +1,8 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:jsdict/packages/radical_search/radical_search.dart';
+import "package:collection/collection.dart";
+import "package:flutter/material.dart";
+import "package:jsdict/packages/radical_search/radical_search.dart";
 
-import 'custom_button.dart';
+import "custom_button.dart";
 
 class RadicalSelectionWidget extends StatelessWidget {
   const RadicalSelectionWidget(this.selectedRadicals, this.validRadicals,

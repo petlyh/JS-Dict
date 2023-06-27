@@ -1,4 +1,4 @@
-import 'package:html/dom.dart';
+import "package:html/dom.dart";
 
 extension ParsingHelper on Element {
   T? collect<T>(String selector, T Function(Element e) handler) {

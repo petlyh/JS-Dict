@@ -1,16 +1,16 @@
 library jisho_dart;
 
-import 'dart:io';
+import "dart:io";
 
-import 'package:html/dom.dart';
-import 'package:http/http.dart' as http;
-import 'package:html/parser.dart';
-import 'package:jsdict/models/models.dart';
+import "package:html/dom.dart";
+import "package:http/http.dart" as http;
+import "package:html/parser.dart";
+import "package:jsdict/models/models.dart";
 
-import 'exceptions.dart';
-import 'parser.dart';
+import "exceptions.dart";
+import "parser.dart";
 
-export 'exceptions.dart';
+export "exceptions.dart";
 
 class JishoClient {
   static const baseUrl = "https://jisho.org";

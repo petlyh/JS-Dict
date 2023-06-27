@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/singletons.dart';
-import 'package:jsdict/widgets/error_indicator.dart';
-import 'package:jsdict/widgets/items/kanji_item.dart';
-import 'package:jsdict/widgets/items/name_item.dart';
-import 'package:jsdict/widgets/items/sentence_item.dart';
-import 'package:jsdict/widgets/items/word_item.dart';
+import "package:flutter/material.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/error_indicator.dart";
+import "package:jsdict/widgets/items/kanji_item.dart";
+import "package:jsdict/widgets/items/name_item.dart";
+import "package:jsdict/widgets/items/sentence_item.dart";
+import "package:jsdict/widgets/items/word_item.dart";
 
 class ResultPage<T> extends StatefulWidget {
   const ResultPage(this.query, {super.key});

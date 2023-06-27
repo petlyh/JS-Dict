@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/packages/inflection/inflection.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:ruby_text/ruby_text.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/packages/inflection/inflection.dart";
+import "package:jsdict/models/models.dart";
+import "package:ruby_text/ruby_text.dart";
 
 class InflectionTable extends StatelessWidget {
   const InflectionTable(this.inflectionType, {super.key});

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/screens/sentence_details_screen.dart';
-import 'package:jsdict/widgets/copyright_text.dart';
-import 'package:ruby_text/ruby_text.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/screens/sentence_details_screen.dart";
+import "package:jsdict/widgets/copyright_text.dart";
+import "package:ruby_text/ruby_text.dart";
 
 class SentenceItem extends StatelessWidget {
   const SentenceItem({super.key, required this.sentence});

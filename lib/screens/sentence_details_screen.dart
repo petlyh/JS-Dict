@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/widgets/link_popup.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/singletons.dart';
-import 'package:jsdict/widgets/copyright_text.dart';
-import 'package:jsdict/widgets/items/kanji_item.dart';
-import 'package:jsdict/widgets/loader.dart';
-import 'package:ruby_text/ruby_text.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/widgets/link_popup.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/copyright_text.dart";
+import "package:jsdict/widgets/items/kanji_item.dart";
+import "package:jsdict/widgets/loader.dart";
+import "package:ruby_text/ruby_text.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
   const SentenceDetailsScreen(this.sentenceId, {super.key});

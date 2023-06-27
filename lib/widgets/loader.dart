@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-import 'error_indicator.dart';
+import "error_indicator.dart";
 
 class LoaderWidget<T> extends StatefulWidget {
   const LoaderWidget({

@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/models/models.dart';
-import 'package:jsdict/providers/query_provider.dart';
-import 'package:jsdict/screens/search/result_page.dart';
-import 'package:jsdict/screens/search_options/search_options_screen.dart';
-import 'package:jsdict/screens/settings_screen.dart';
-import 'package:provider/provider.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/screens/search/result_page.dart";
+import "package:jsdict/screens/search_options/search_options_screen.dart";
+import "package:jsdict/screens/settings_screen.dart";
+import "package:provider/provider.dart";
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

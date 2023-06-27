@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:jsdict/packages/radical_search/radical_search.dart';
+import "package:flutter/material.dart";
+import "package:jsdict/packages/radical_search/radical_search.dart";
 
-import 'kanji_selection.dart';
-import 'radical_selection.dart';
+import "kanji_selection.dart";
+import "radical_selection.dart";
 
 class RadicalSearchWidget extends StatefulWidget {
   const RadicalSearchWidget({super.key, required this.onKanjiSelect});

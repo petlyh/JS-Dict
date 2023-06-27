@@ -1,10 +1,10 @@
-import 'dart:io';
+import "dart:io";
 
-import 'package:expandable_text/expandable_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart';
-import 'package:jsdict/packages/jisho_client/jisho_client.dart';
+import "package:expandable_text/expandable_text.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:http/http.dart";
+import "package:jsdict/packages/jisho_client/jisho_client.dart";
 
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator(this.error, {super.key, this.stackTrace, this.onRetry});

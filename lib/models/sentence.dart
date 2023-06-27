@@ -1,5 +1,5 @@
-import 'furigana.dart';
-import 'kanji.dart';
+import "furigana.dart";
+import "kanji.dart";
 
 class Sentence {
   final String id;
