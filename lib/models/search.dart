@@ -6,7 +6,7 @@ class SearchResponse<T> {
 
   List<T> results = [];
 
-  void addResults(List list) {
+  void addResults(List<dynamic> list) {
     if (list is List<T>) {
       results.addAll(list);
     }

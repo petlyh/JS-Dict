@@ -27,5 +27,10 @@ linter:
     - parameter_assignments
     - avoid_print
 
+analyzer:
+  language:
+    strict-casts: true
+    strict-raw-types: true
+
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

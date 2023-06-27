@@ -60,8 +60,8 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
                 builderDelegate: PagedChildBuilderDelegate<T>(
                   itemBuilder: (context, item, index) => _createItem(item),
                   firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                    _pagingController.error.$1,
-                    stackTrace: _pagingController.error.$2,
+                    (_pagingController.error.$1 as Object),
+                    stackTrace: (_pagingController.error.$2 as StackTrace),
                     onRetry: _pagingController.refresh,
                   ),
                   noItemsFoundIndicatorBuilder: (context) => Container(
