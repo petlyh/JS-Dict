@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/widgets/items/item_card.dart";
 
 class NameItem extends StatelessWidget {
   const NameItem({super.key, required this.name});
@@ -8,9 +9,8 @@ class NameItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return ItemCard(
       child: ListTile(
-        onTap: () => {},
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: Text(name.reading),
         subtitle: Column(

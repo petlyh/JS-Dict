@@ -3,6 +3,8 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:ruby_text/ruby_text.dart";
 
+import "item_card.dart";
+
 class WordItem extends StatelessWidget {
   const WordItem({super.key, required this.word});
 
@@ -10,11 +12,11 @@ class WordItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return ItemCard(
+      onTap: () => {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => WordDetailsScreen(word.id!)))
+      },
       child: ListTile(
-        onTap: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WordDetailsScreen(word.id!)))
-        },
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: RubyText(
           word.word.toRubyData(),

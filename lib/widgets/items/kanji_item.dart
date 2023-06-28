@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
 
+import "item_card.dart";
+
 class KanjiItem extends StatelessWidget {
   const KanjiItem({super.key, required this.kanji});
 
@@ -9,11 +11,11 @@ class KanjiItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return ItemCard(
+      onTap: () => {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => KanjiDetailsScreen(kanji.kanji)))
+      },
       child: ListTile(
-        onTap: () => {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => KanjiDetailsScreen(kanji.kanji)))
-        },
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         leading: Text(kanji.kanji, style: const TextStyle(fontSize: 35)),
         title: Text(kanji.meanings.join(", ")),
