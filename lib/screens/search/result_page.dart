@@ -33,6 +33,8 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
     try {
       final response = await getClient().search<T>(widget.query, page: pageKey);
 
+      if (!mounted) return;
+
       if (!response.hasNextPage) {
         _pagingController.appendLastPage(response.results);
         return;
