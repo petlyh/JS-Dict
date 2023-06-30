@@ -12,18 +12,19 @@ class CompoundList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemList = List<Widget>.from(compounds.map((compound) => ListTile(
+    return ExpansionTileCard(
+      title: Text("$type reading compounds"),
+      children: intersperce(
+        compounds.map((compound) => ListTile(
           title: Text("${compound.compound} 【${compound.reading}】"),
           subtitle: Text(compound.meanings.join(", ")),
           trailing: const Icon(Icons.keyboard_arrow_right),
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) =>
                   WordDetailsScreen(compound.compound, search: true))),
-        )));
-
-    return ExpansionTileCard(
-      title: Text("$type reading compounds"),
-      children: intersperce(itemList, const Divider()),
+        )).toList(),
+        const Divider(),
+      ),
     );
   }
 }
