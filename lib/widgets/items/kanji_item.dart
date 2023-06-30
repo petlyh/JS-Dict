@@ -18,7 +18,7 @@ class KanjiItem extends StatelessWidget {
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         leading: Text(kanji.kanji, style: const TextStyle(fontSize: 35)),
-        title: Text(kanji.meanings.join(", ")),
+        title: Text(kanji.meanings.join(", "), style: const TextStyle(fontWeight: FontWeight.w500)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

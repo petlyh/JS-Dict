@@ -12,6 +12,8 @@ class WordItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium!;
+
     return ItemCard(
       onTap: () => {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => WordDetailsScreen(word.id!)))
@@ -29,7 +31,12 @@ class WordItem extends StatelessWidget {
           children: word.definitions
               .map((e) => e.meanings.join("; "))
               .toSet().toList().asMap().entries
-              .map((entry) => Text("${entry.key + 1}. ${entry.value}"))
+              .map((entry) => RichText(
+                text: TextSpan(children: [
+                  TextSpan(text: "${entry.key + 1}. ", style: textStyle.copyWith(fontWeight: FontWeight.w300)),
+                  TextSpan(text: entry.value, style: textStyle),
+                ])
+              ))
               .toList(),
         )
       ),
