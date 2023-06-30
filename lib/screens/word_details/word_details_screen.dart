@@ -39,7 +39,7 @@ class WordDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Word Details"),
+        title: const Text("Word"),
         actions: [
           LinkPopupButton([
             ("Open in Browser", "https://jisho.org/word/$inputWord"),

@@ -17,7 +17,7 @@ class KanjiDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kanji Details"),
+        title: const Text("Kanji"),
         actions: [
           LinkPopupButton([
             ("Open in Browser", "https://jisho.org/search/$searchKanji %23kanji"),

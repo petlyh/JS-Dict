@@ -16,7 +16,7 @@ class SentenceDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sentence Details"),
+        title: const Text("Sentence"),
         actions: [
           LinkPopupButton([
             ("Open in Browser", "https://jisho.org/sentences/$sentenceId"),
