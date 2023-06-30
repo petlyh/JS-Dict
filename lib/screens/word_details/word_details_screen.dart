@@ -9,6 +9,7 @@ import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/loader.dart";
+import "package:jsdict/widgets/rounded_bottom_border.dart";
 import "package:ruby_text/ruby_text.dart";
 
 import "inflection_table.dart";
@@ -76,8 +77,10 @@ class WordDetailsScreen extends StatelessWidget {
                   title: const Text("Definitions"),
                   children: intersperce(
                     word.definitions
-                        .map((definition) =>
-                            _DefinitionTile(definition, textColor: textColor))
+                        .map((definition) => _DefinitionTile(definition,
+                            textColor: textColor,
+                            isLast: definition == word.definitions.last,
+                        ))
                         .toList(),
                     const Divider(),
                   ),
@@ -96,6 +99,9 @@ class WordDetailsScreen extends StatelessWidget {
                     title: const Text("Collocations"),
                     children: intersperce(
                       word.collocations.map((collocation) => ListTile(
+                        shape: collocation == word.collocations.last
+                            ? RoundedBottomBorder(8)
+                            : null,
                         title: Text(collocation.word),
                         subtitle: Text(collocation.meaning),
                         trailing: const Icon(Icons.keyboard_arrow_right),
@@ -128,10 +134,11 @@ class WordDetailsScreen extends StatelessWidget {
 }
 
 class _DefinitionTile extends StatelessWidget {
-  const _DefinitionTile(this.definition, {this.textColor});
+  const _DefinitionTile(this.definition, {this.textColor, this.isLast = false});
 
   final Definition definition;
   final Color? textColor;
+  final bool isLast;
 
   bool get isWikipedia => definition.wikipedia != null;
 
@@ -148,6 +155,7 @@ class _DefinitionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      shape: isLast ? RoundedBottomBorder(8) : null,
       onTap: onTap(context),
       trailing: isWikipedia ? const Icon(Icons.keyboard_arrow_right) : null,
       title: Text(definition.meanings.join("; ")),
