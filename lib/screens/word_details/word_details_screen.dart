@@ -154,6 +154,8 @@ class _DefinitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final linkColor = Theme.of(context).primaryColor;
+
     return ListTile(
       shape: isLast ? RoundedBottomBorder(8) : null,
       onTap: onTap(context),
@@ -172,7 +174,7 @@ class _DefinitionTile extends StatelessWidget {
                 ...intersperce(
                   definition.seeAlso.map((seeAlsoWord) => TextSpan(
                     text: seeAlsoWord,
-                    style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                    style: TextStyle(color: linkColor, decoration: TextDecoration.underline),
                     recognizer: TapGestureRecognizer()..onTap = () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => WordDetailsScreen(seeAlsoWord, search: true),

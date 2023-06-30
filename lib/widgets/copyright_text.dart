@@ -11,6 +11,7 @@ class CopyrightText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+    final linkColor = Theme.of(context).primaryColor;
 
     return RichText(
       text: TextSpan(
@@ -18,7 +19,7 @@ class CopyrightText extends StatelessWidget {
           TextSpan(text: "— ", style: TextStyle(color: textColor)),
           TextSpan(
             text: copyright.name,
-            style: const TextStyle(color: Colors.blue),
+            style: TextStyle(color: linkColor),
             recognizer: TapGestureRecognizer()..onTap = () {
               launchUrl(Uri.parse(copyright.url), mode: LaunchMode.externalApplication);
             },
