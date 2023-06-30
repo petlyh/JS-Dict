@@ -24,6 +24,7 @@ class QueryProvider extends ChangeNotifier {
 
     if (selectionStart == -1) {
       searchController.text += text;
+      return;
     }
 
     final newText = searchController.text.replaceRange(selectionStart, selection.extentOffset, text);
