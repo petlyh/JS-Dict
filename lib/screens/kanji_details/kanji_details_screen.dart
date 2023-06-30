@@ -70,6 +70,7 @@ class KanjiDetailsScreen extends StatelessWidget {
                       children: kanji.parts.whereNot((part) => part == kanji.kanji).map((part) => Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                         child: InkWell(
+                          borderRadius: BorderRadius.circular(4),
                           onTap: () => {Navigator.of(context).push(MaterialPageRoute(builder: (context) => KanjiDetailsScreen(part)))},
                           child: Padding(
                             padding: const EdgeInsets.all(8),
