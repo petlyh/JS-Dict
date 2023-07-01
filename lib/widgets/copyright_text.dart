@@ -11,7 +11,7 @@ class CopyrightText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final linkColor = Theme.of(context).primaryColor;
+    final linkColor = Theme.of(context).colorScheme.primary;
 
     return RichText(
       text: TextSpan(

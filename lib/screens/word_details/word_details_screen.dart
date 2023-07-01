@@ -154,7 +154,7 @@ class _DefinitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final linkColor = Theme.of(context).primaryColor;
+    final linkColor = Theme.of(context).colorScheme.primary;
 
     return ListTile(
       shape: isLast ? RoundedBottomBorder(8) : null,

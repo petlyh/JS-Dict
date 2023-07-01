@@ -90,7 +90,7 @@ class ErrorIndicator extends StatelessWidget {
                   expandText: "Show",
                   collapseText: "Hide",
                   maxLines: 1,
-                  linkColor: Theme.of(context).primaryColor,
+                  linkColor: Theme.of(context).colorScheme.primary,
                 ),
               ],
             ],
