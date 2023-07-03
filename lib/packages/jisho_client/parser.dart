@@ -9,6 +9,10 @@ class Parser {
     var response = SearchResponse<T>();
     final body = document.body!;
 
+    if (document.getElementById("no-matches") != null) {
+      return response;
+    }
+
     response.hasNextPage = document.querySelector("a.more") != null;
 
     switch (T) {
