@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/screens/name_details_screen.dart";
 import "package:jsdict/widgets/items/item_card.dart";
 
 class NameItem extends StatelessWidget {
@@ -10,6 +11,9 @@ class NameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
+      onTap: () => {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => NameDetailsScreen(name)))
+      },
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: Text(name.reading),
