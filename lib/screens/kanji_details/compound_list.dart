@@ -15,22 +15,19 @@ class CompoundList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpansionTileCard(
       title: Text("$type reading compounds"),
-      children: intersperce(
-        compounds
-            .map((compound) => ListTile(
-                  shape: compound == compounds.last
-                      ? RoundedBottomBorder(8)
-                      : null,
-                  title: Text("${compound.compound} 【${compound.reading}】"),
-                  subtitle: Text(compound.meanings.join(", ")),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          WordDetailsScreen(compound.compound, search: true))),
-                ))
-            .toList(),
-        const Divider(),
-      ),
+      children: compounds
+          .map((compound) => ListTile(
+                shape:
+                    compound == compounds.last ? RoundedBottomBorder(8) : null,
+                title: Text("${compound.compound} 【${compound.reading}】"),
+                subtitle: Text(compound.meanings.join(", ")),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        WordDetailsScreen(compound.compound, search: true))),
+              ))
+          .toList()
+          .intersperce(const Divider()),
     );
   }
 }

@@ -74,15 +74,14 @@ class WordDetailsScreen extends StatelessWidget {
                 ExpansionTileCard(
                   initiallyExpanded: true,
                   title: const Text("Definitions"),
-                  children: intersperce(
-                    word.definitions
-                        .map((definition) => DefinitionTile(definition,
+                  children: word.definitions
+                      .map((definition) => DefinitionTile(
+                            definition,
                             textColor: textColor,
                             isLast: definition == word.definitions.last,
-                        ))
-                        .toList(),
-                    const Divider(),
-                  ),
+                          ))
+                      .toList()
+                      .intersperce(const Divider()),
                 ),
 
                 if (word.inflectionType != null) ...[
@@ -96,22 +95,24 @@ class WordDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   ExpansionTileCard(
                     title: const Text("Collocations"),
-                    children: intersperce(
-                      word.collocations.map((collocation) => ListTile(
-                        shape: collocation == word.collocations.last
-                            ? RoundedBottomBorder(8)
-                            : null,
-                        title: Text(collocation.word),
-                        subtitle: Text(collocation.meaning),
-                        trailing: const Icon(Icons.keyboard_arrow_right),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => WordDetailsScreen(collocation.word, search: true),
-                          ),
-                        ),
-                      )).toList(),
-                      const Divider(),
-                    ),
+                    children: word.collocations
+                        .map((collocation) => ListTile(
+                              shape: collocation == word.collocations.last
+                                  ? RoundedBottomBorder(8)
+                                  : null,
+                              title: Text(collocation.word),
+                              subtitle: Text(collocation.meaning),
+                              trailing: const Icon(Icons.keyboard_arrow_right),
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => WordDetailsScreen(
+                                      collocation.word,
+                                      search: true),
+                                ),
+                              ),
+                            ))
+                        .toList()
+                        .intersperce(const Divider()),
                   ),
                   const SizedBox(height: 4),
                 ] else

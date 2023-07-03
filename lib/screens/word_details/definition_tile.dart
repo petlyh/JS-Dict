@@ -44,18 +44,24 @@ class DefinitionTile extends StatelessWidget {
             RichText(text: TextSpan(
               children: [
                 TextSpan(text: "See also ", style: TextStyle(color: textColor)),
-                ...intersperce(
-                  definition.seeAlso.map((seeAlsoWord) => TextSpan(
-                    text: seeAlsoWord,
-                    style: TextStyle(color: linkColor, decoration: TextDecoration.underline),
-                    recognizer: TapGestureRecognizer()..onTap = () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => WordDetailsScreen(seeAlsoWord, search: true),
-                      ),
-                    ),
-                  )).toList(),
-                  TextSpan(text: ", ", style: TextStyle(color: textColor)),
-                )
+                ...definition.seeAlso
+                  .map((seeAlsoWord) => TextSpan(
+                        text: seeAlsoWord,
+                        style: TextStyle(
+                            color: linkColor,
+                            decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => WordDetailsScreen(
+                                      seeAlsoWord,
+                                      search: true),
+                                ),
+                              ),
+                      ))
+                  .toList()
+                  .intersperce(
+                      TextSpan(text: ", ", style: TextStyle(color: textColor))),
               ]
             ))
         ],
