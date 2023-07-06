@@ -1,6 +1,7 @@
 class SearchResponse<T> {
   String correction = "";
   String suggestion = "";
+  List<String> noMatchesFor = [];
 
   bool hasNextPage = false;
 

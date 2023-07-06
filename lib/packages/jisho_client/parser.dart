@@ -5,15 +5,24 @@ import "package:jsdict/models/models.dart";
 import "furigana.dart";
 
 class Parser {
+  // ignore: unnecessary_string_escapes
+  static final noMatchesRegex = RegExp("Sorry, couldn't find anything matching (.+?)\. \$");
+
   static SearchResponse<T> search<T>(Document document) {
     var response = SearchResponse<T>();
     final body = document.body!;
 
-    if (document.getElementById("no-matches") != null) {
+    final noMatchesElement = document.getElementById("no-matches");
+    if (noMatchesElement != null) {
+      final match = noMatchesRegex.firstMatch(noMatchesElement.text.trim())!.group(1)!;
+      response.noMatchesFor = match.split(RegExp("(?:, | or )"));
       return response;
     }
 
     response.hasNextPage = document.querySelector("a.more") != null;
+    response.suggestion = body.collect("#the_corrector span.meant > a", (e) => e.text.trim()) ?? "";
+    response.correction = body.collect("#the_corrector > p > strong > span", (e) => e.text.trim()) ?? "";
+
 
     switch (T) {
       case Kanji:
