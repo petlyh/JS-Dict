@@ -23,6 +23,8 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
 
   final PagingController<int, T> _pagingController = PagingController(firstPageKey: 1);
 
+  List<String> noMatchesFor = [];
+
   @override
   void initState() {
     _pagingController.addPageRequestListener(_fetchPage);
@@ -30,10 +32,16 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
   }
 
   Future<void> _fetchPage(int pageKey) async {
+    noMatchesFor = [];
+
     try {
       final response = await getClient().search<T>(widget.query, page: pageKey);
 
       if (!mounted) return;
+
+      if (response.noMatchesFor.isNotEmpty) {
+        noMatchesFor = response.noMatchesFor;
+      }
 
       if (!response.hasNextPage) {
         _pagingController.appendLastPage(response.results);
@@ -66,11 +74,17 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
                     stackTrace: (_pagingController.error.$2 as StackTrace),
                     onRetry: _pagingController.refresh,
                   ),
-                  noItemsFoundIndicatorBuilder: (context) => Container(
-                    alignment: Alignment.topCenter,
-                    margin: const EdgeInsets.all(20.0),
-                    child: const Text("No matches found"),
-                  ),
+                  noItemsFoundIndicatorBuilder: (context) {
+                    return Container(
+                      alignment: Alignment.topCenter,
+                      margin: const EdgeInsets.all(20.0),
+                      child: Text(
+                        "No matches for:\n${noMatchesFor.join(", ")}",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(height: 2),
+                      ),
+                    );
+                  }
                 ),
               ),
             ),

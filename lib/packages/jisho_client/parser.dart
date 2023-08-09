@@ -5,17 +5,15 @@ import "package:jsdict/models/models.dart";
 import "furigana.dart";
 
 class Parser {
-  // ignore: unnecessary_string_escapes
-  static final noMatchesRegex = RegExp("Sorry, couldn't find anything matching (.+?)\. \$");
-
   static SearchResponse<T> search<T>(Document document) {
     var response = SearchResponse<T>();
     final body = document.body!;
 
     final noMatchesElement = document.getElementById("no-matches");
+
     if (noMatchesElement != null) {
-      final match = noMatchesRegex.firstMatch(noMatchesElement.text.trim())!.group(1)!;
-      response.noMatchesFor = match.split(RegExp("(?:, | or )"));
+      final noMatchesText = noMatchesElement.text.trim().replaceFirst(RegExp(r"\.$"), "");
+      response.noMatchesFor = noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
       return response;
     }
 
