@@ -40,7 +40,9 @@ class WikipediaScreen extends StatelessWidget {
   Widget _link(WikipediaPage page, String wikiName) => ElevatedButton(
     child: Text(wikiName),
     onPressed: () {
-      launchUrl(Uri.parse(page.url), mode: LaunchMode.externalApplication);
-    },
+          launchUrl(
+              Uri.parse(page.url.replaceFirst(RegExp(r"[\?&]oldid=\d+"), "")),
+              mode: LaunchMode.externalApplication);
+        },
   );
 }
