@@ -79,10 +79,12 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
                       alignment: Alignment.topCenter,
                       margin: const EdgeInsets.all(20.0),
                       child: Text(
-                        "No matches for:\n${noMatchesFor.join("\n")}",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(height: 2),
-                      ),
+                          noMatchesFor.isNotEmpty
+                              ? "No matches for:\n${noMatchesFor.join("\n")}"
+                              : "No matches found",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(height: 2),
+                        ),
                     );
                   }
                 ),
