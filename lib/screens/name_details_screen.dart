@@ -29,7 +29,10 @@ class NameDetailsScreen extends StatelessWidget {
                             Text(
                                 name.reading
                                     .replaceFirst("【", "\n")
-                                    .replaceFirst("】", ""),
+                                    .replaceFirst("】", "")
+                                    .split("\n")
+                                    .reversed
+                                    .join("\n"),
                                 style: const TextStyle(fontSize: 20),
                                 textAlign: TextAlign.center),
                             const SizedBox(height: 16),
