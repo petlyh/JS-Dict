@@ -63,14 +63,6 @@ class Parser {
     return kanji;
   }
 
-
-  static Sentence sentenceDetails(Document document) {
-    final sentence = document.body!.collect("div.sentence_content", _sentenceEntry)!;
-    sentence.kanji = document.body!.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
-
-    return sentence;
-  }
-
   static Sentence _sentenceEntry(Element element) {
     final english = element.collect("span.english", (e) => e.innerHtml.trim())!;
     final japanese = parseSentenceFurigana(element);
@@ -227,6 +219,11 @@ class Parser {
         wikipediaDefinition.dbpedia = _wikipediaPage(definitionElement, "DBpedia");
         definition.wikipedia = wikipediaDefinition;
       }
+
+      definition.exampleSentence = definitionElement.collect(
+          "div.sentence",
+          (e) => Sentence.example(parseSentenceFurigana(e),
+              e.querySelector("span.english")!.text.trim()));
 
       word.definitions.add(definition);
     }

@@ -59,8 +59,4 @@ class JishoClient {
     final path = "/word/${Uri.encodeComponent(word)}";
     return _getHtml(path).then((document) => Parser.wordDetails(document));
   }
-
-  Future<Sentence> sentenceDetails(String sentenceId) async {
-    return _getHtml("/sentences/$sentenceId").then((document) => Parser.sentenceDetails(document));
-  }
 }

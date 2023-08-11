@@ -1,5 +1,4 @@
 import "furigana.dart";
-import "kanji.dart";
 
 class Sentence {
   final String id;
@@ -7,10 +6,11 @@ class Sentence {
   final String english;
   final SentenceCopyright? copyright;
 
-  List<Kanji> kanji = [];
+  bool get isExample => id.isEmpty;
 
   Sentence(this.id, this.japanese, this.english) : copyright = null;
   Sentence.copyright(this.id, this.japanese, this.english, this.copyright);
+  Sentence.example(this.japanese, this.english) : copyright = null, id = "";
 }
 
 class SentenceCopyright {

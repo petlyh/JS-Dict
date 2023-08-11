@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/widgets/copyright_text.dart";
 import "package:ruby_text/ruby_text.dart";
@@ -14,9 +15,7 @@ class SentenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-      onTap: () => {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SentenceDetailsScreen(sentence.id)))
-      },
+      onTap: screenPusher(context, SentenceDetailsScreen(sentence)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: RubyText(sentence.japanese.toRubyData()),

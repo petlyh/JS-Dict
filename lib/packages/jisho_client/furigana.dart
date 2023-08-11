@@ -4,14 +4,14 @@ import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
 
 Furigana parseSentenceFurigana(Element element) {
-  final nodes = element.querySelector("ul.japanese_sentence")!.nodes;
+  final nodes = element.querySelector("ul.japanese_sentence, ul.japanese")!.nodes;
 
   return nodes.map((node) {
     if (node.nodeType == Node.TEXT_NODE) {
       return FuriganaPart.textOnly(node.text!.trim());
     } else {
       final element = (node as Element);
-      final text = element.querySelector("span.unlinked")!.innerHtml.trim();
+      final text = element.querySelector("span.unlinked")!.firstChild!.text!.trim();
       final furiganaElement = element.querySelector("span.furigana");
       if (furiganaElement == null) {
         return FuriganaPart.textOnly(text);

@@ -2,6 +2,8 @@ import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/intersperce.dart";
+import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/rounded_bottom_border.dart";
@@ -14,12 +16,15 @@ class DefinitionTile extends StatelessWidget {
   final bool isLast;
 
   bool get isWikipedia => definition.wikipedia != null;
+  bool get hasExampleSentence => definition.exampleSentence != null;
 
   Function()? onTap(BuildContext context) {
     if (isWikipedia) {
-      return () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              WikipediaScreen(definition.wikipedia!)));
+      return screenPusher(context, WikipediaScreen(definition.wikipedia!));
+    }
+
+    if (hasExampleSentence) {
+      return screenPusher(context, SentenceDetailsScreen(definition.exampleSentence!));
     }
 
     return null;
@@ -32,7 +37,9 @@ class DefinitionTile extends StatelessWidget {
     return ListTile(
       shape: isLast ? RoundedBottomBorder(8) : null,
       onTap: onTap(context),
-      trailing: isWikipedia ? const Icon(Icons.keyboard_arrow_right) : null,
+      trailing: isWikipedia || hasExampleSentence
+          ? const Icon(Icons.keyboard_arrow_right)
+          : null,
       title: Text(definition.meanings.join("; ")),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,6 +3,7 @@ import "package:jsdict/packages/inflection/inflection.dart";
 import "furigana.dart";
 import "jlpt.dart";
 import "kanji.dart";
+import "sentence.dart";
 
 class Word {
   final Furigana word;
@@ -37,6 +38,8 @@ class Definition {
   List<String> seeAlso = [];
 
   WikipediaDefinition? wikipedia;
+
+  Sentence? exampleSentence;
 
   @override
   String toString() {

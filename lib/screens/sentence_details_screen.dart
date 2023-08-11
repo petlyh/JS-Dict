@@ -8,24 +8,26 @@ import "package:jsdict/widgets/loader.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
-  const SentenceDetailsScreen(this.sentenceId, {super.key});
+  const SentenceDetailsScreen(this.sentence, {super.key});
 
-  final String sentenceId;
+  final Sentence sentence;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sentence"),
+        title: Text(sentence.isExample ? "Example Sentence" : "Sentence"),
         actions: [
-          LinkPopupButton([
-            ("Open in Browser", "https://jisho.org/sentences/$sentenceId"),
-          ]),
+          if (!sentence.isExample)
+            LinkPopupButton([
+              ("Open in Browser", "https://jisho.org/sentences/${sentence.id}"),
+            ]),
         ],
       ),
       body: LoaderWidget(
-        onLoad: () => getClient().sentenceDetails(sentenceId),
-        handler: (sentence) {
+        onLoad: () => getClient().search<Kanji>(sentence.japanese.getText()),
+        handler: (kanjiSearchResponse) {
+          final kanjiList = kanjiSearchResponse.results;
           return SingleChildScrollView(
             child: Container(
               margin: const EdgeInsets.all(8.0),
@@ -40,15 +42,16 @@ class SentenceDetailsScreen extends StatelessWidget {
                         const SizedBox(height: 20),
                         Text(sentence.english, style: const TextStyle(fontSize: 18)),
                         const SizedBox(height: 20),
-                        CopyrightText(sentence.copyright!),
+                        if (!sentence.isExample)
+                          CopyrightText(sentence.copyright!),
                       ],
                     )
                   ),
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: sentence.kanji.length,
-                    itemBuilder: (_, index) => KanjiItem(kanji: sentence.kanji[index])
+                    itemCount: kanjiList.length,
+                    itemBuilder: (_, index) => KanjiItem(kanji: kanjiList[index])
                   )
                 ],
               ),
