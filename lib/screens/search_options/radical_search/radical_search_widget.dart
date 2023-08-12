@@ -70,7 +70,7 @@ class _RadicalSearchWidgetState extends State<RadicalSearchWidget> {
             onReset: reset,
           ),
         ),
-        const Divider(),
+        const Divider(height: 0),
         Expanded(
           flex: 3,
           child: RadicalSelectionWidget(
