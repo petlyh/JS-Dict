@@ -138,10 +138,8 @@ class WordDetailsScreen extends StatelessWidget {
                                                 const TextStyle(fontSize: 16)),
                                       ))
                                   .toList()
-                              // .intersperce(const RubyTextData("、"))
                               ),
                         )
-                        // RubyText()
                       ],
                     ),
                   if (word.notes.isNotEmpty)
