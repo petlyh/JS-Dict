@@ -24,40 +24,41 @@ class SentenceDetailsScreen extends StatelessWidget {
             ]),
         ],
       ),
-      body: LoaderWidget(
-        onLoad: () => getClient().search<Kanji>(sentence.japanese.getText()),
-        handler: (kanjiSearchResponse) {
-          final kanjiList = kanjiSearchResponse.results;
-          return SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: [
-                        RubyText(sentence.japanese.toRubyData(), style: const TextStyle(fontSize: 18)),
-                        const SizedBox(height: 20),
-                        Text(sentence.english, style: const TextStyle(fontSize: 18)),
-                        const SizedBox(height: 20),
-                        if (!sentence.isExample)
-                          CopyrightText(sentence.copyright!),
-                      ],
-                    )
-                  ),
-                  ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: kanjiList.length,
-                    itemBuilder: (_, index) => KanjiItem(kanji: kanjiList[index])
-                  )
-                ],
-              ),
-            ),
-          );
-        }
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      RubyText(sentence.japanese.toRubyData(),
+                          style: const TextStyle(fontSize: 18)),
+                      const SizedBox(height: 20),
+                      Text(sentence.english,
+                          style: const TextStyle(fontSize: 18)),
+                      const SizedBox(height: 20),
+                      if (!sentence.isExample)
+                        CopyrightText(sentence.copyright!),
+                    ],
+                  )),
+              LoaderWidget(
+                  onLoad: () =>
+                      getClient().search<Kanji>(sentence.japanese.getText()),
+                  handler: (kanjiSearchResponse) {
+                    final kanjiList = kanjiSearchResponse.results;
+                    return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: kanjiList.length,
+                        itemBuilder: (_, index) =>
+                            KanjiItem(kanji: kanjiList[index]));
+                  }),
+            ],
+          ),
+        ),
       ),
     );
   }
