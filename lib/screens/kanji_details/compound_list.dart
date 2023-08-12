@@ -14,6 +14,7 @@ class CompoundList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTileCard(
+      shadowColor: Theme.of(context).colorScheme.shadow,
       title: Text("$type reading compounds"),
       children: compounds
           .map((compound) => ListTile(

@@ -36,6 +36,7 @@ class WordDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+    final shadowColor = Theme.of(context).colorScheme.shadow;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,6 +73,7 @@ class WordDetailsScreen extends StatelessWidget {
                 ]),
                 const SizedBox(height: 16),
                 ExpansionTileCard(
+                  shadowColor: shadowColor,
                   initiallyExpanded: true,
                   title: const Text("Definitions"),
                   children: word.definitions
@@ -88,11 +90,13 @@ class WordDetailsScreen extends StatelessWidget {
                 ...[
                   if (word.inflectionType != null)
                     ExpansionTileCard(
+                      shadowColor: shadowColor,
                       title: const Text("Inflections"),
                       children: [InflectionTable(word.inflectionType!)],
                     ),
                   if (word.collocations.isNotEmpty)
                     ExpansionTileCard(
+                      shadowColor: shadowColor,
                       title: const Text("Collocations"),
                       children: word.collocations
                           .map((collocation) => ListTile(
@@ -116,6 +120,7 @@ class WordDetailsScreen extends StatelessWidget {
                     ),
                   if (word.otherForms.isNotEmpty)
                     ExpansionTileCard(
+                      shadowColor: shadowColor,
                       title: const Text("Other forms"),
                       children: [
                         Container(
@@ -144,6 +149,7 @@ class WordDetailsScreen extends StatelessWidget {
                     ),
                   if (word.notes.isNotEmpty)
                     ExpansionTileCard(
+                      shadowColor: shadowColor,
                       title: const Text("Notes"),
                       children: [
                         Flex(direction: Axis.horizontal, children: [
