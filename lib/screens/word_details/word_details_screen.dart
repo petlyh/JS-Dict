@@ -1,6 +1,6 @@
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
-import "package:jsdict/packages/intersperce.dart";
+import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
@@ -150,7 +150,7 @@ class WordDetailsScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
-                            child: Text(word.notes.toSet().toList().join("\n")),
+                            child: Text(word.notes.deduplicate().join("\n")),
                           )
                         ])
                       ],

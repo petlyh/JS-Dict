@@ -1,4 +1,4 @@
-extension Intersperce on List<dynamic> {
+extension ListExtensions on List<dynamic> {
   List<T> intersperce<T>(T item) {
     final typedList = List<T>.from(this);
 
@@ -14,4 +14,6 @@ extension Intersperce on List<dynamic> {
 
     return typedList;
   }
+
+  List<T> deduplicate<T>() => toSet().toList() as List<T>;
 }

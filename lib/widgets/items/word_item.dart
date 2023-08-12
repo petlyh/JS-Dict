@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:ruby_text/ruby_text.dart";
 
@@ -30,7 +31,7 @@ class WordItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: word.definitions
               .map((e) => e.meanings.join("; "))
-              .toSet().toList().asMap().entries
+              .toList().deduplicate<String>().asMap().entries
               .map((entry) => RichText(
                 text: TextSpan(children: [
                   TextSpan(text: "${entry.key + 1}. ", style: textStyle.copyWith(fontWeight: FontWeight.w300)),

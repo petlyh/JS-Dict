@@ -1,6 +1,7 @@
 import "package:html/dom.dart";
 import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/list_extensions.dart";
 
 import "furigana.dart";
 
@@ -209,7 +210,7 @@ class Parser {
       definition.tags = definitionElement.collectAll("span.tag-tag, span.tag-info, span.tag-source", (e) => e.text.trim());
       definition.seeAlso = definitionElement.collectAll("span.tag-see_also > a", (e) => e.text.trim());
       // deduplicate
-      definition.seeAlso = definition.seeAlso.toSet().toList();
+      definition.seeAlso = definition.seeAlso.deduplicate();
 
       if (definition.types.contains("Wikipedia definition")) {
         var wikipediaDefinition = WikipediaDefinition(definition.meanings.first);

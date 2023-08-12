@@ -1,6 +1,6 @@
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
-import "package:jsdict/packages/intersperce.dart";
+import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/rounded_bottom_border.dart";

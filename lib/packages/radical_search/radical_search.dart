@@ -1,4 +1,5 @@
 import "package:collection/collection.dart";
+import "package:jsdict/packages/list_extensions.dart";
 
 import "kanji_radicals.dart";
 
@@ -20,8 +21,8 @@ class RadicalSearch {
         .map((kanji) => kanjiRadicals[kanji]!)
         .toList()
         .flattened
-        .toSet()
-        .toList();
+        .toList()
+        .deduplicate();
   }
 
   static const Map<int, List<String>> radicalsByStrokes = {

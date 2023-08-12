@@ -1,7 +1,7 @@
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
-import "package:jsdict/packages/intersperce.dart";
+import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/wikipedia_screen.dart";
