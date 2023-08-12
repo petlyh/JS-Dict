@@ -148,6 +148,21 @@ class WordDetailsScreen extends StatelessWidget {
                   ),
                 ],
 
+                if (word.notes.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  ExpansionTileCard(
+                    title: const Text("Notes"),
+                    children: [
+                      Flex(direction: Axis.horizontal, children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text(word.notes.toSet().toList().join("\n")),
+                        )
+                      ])
+                    ],
+                  ),
+                ],
+
                 const SizedBox(height: 8),
 
                 ListView.builder(

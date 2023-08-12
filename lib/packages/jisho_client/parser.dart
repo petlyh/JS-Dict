@@ -188,7 +188,7 @@ class Parser {
 
       var notesElement = definitionElement.querySelector("div.meaning-representation_notes > span");
       if (notesElement != null) {
-        word.notes = notesElement.text.trim();
+        word.notes = notesElement.text.trim().replaceFirst(RegExp(r"\.$"), "").split(". ");
         continue;
       }
 

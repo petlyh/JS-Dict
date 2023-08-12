@@ -16,7 +16,7 @@ class Word {
 
   String audioUrl = "";
 
-  String notes = "";
+  List<String> notes = [];
 
   List<Kanji> kanji = [];
 
