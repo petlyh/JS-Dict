@@ -17,6 +17,7 @@ class CompoundList extends StatelessWidget {
       title: Text("$type reading compounds"),
       children: compounds
           .map((compound) => ListTile(
+                contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 shape:
                     compound == compounds.last ? RoundedBottomBorder(8) : null,
                 title: Text("${compound.compound} 【${compound.reading}】"),
@@ -27,7 +28,7 @@ class CompoundList extends StatelessWidget {
                         WordDetailsScreen(compound.compound, search: true))),
               ))
           .toList()
-          .intersperce(const Divider()),
+          .intersperce(const Divider(height: 0)),
     );
   }
 }

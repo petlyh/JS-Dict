@@ -81,7 +81,7 @@ class WordDetailsScreen extends StatelessWidget {
                             isLast: definition == word.definitions.last,
                           ))
                       .toList()
-                      .intersperce(const Divider()),
+                      .intersperce(const Divider(height: 0)),
                 ),
 
 
@@ -112,7 +112,7 @@ class WordDetailsScreen extends StatelessWidget {
                                 ),
                               ))
                           .toList()
-                          .intersperce(const Divider()),
+                          .intersperce(const Divider(height: 0)),
                     ),
                   if (word.otherForms.isNotEmpty)
                     ExpansionTileCard(

@@ -35,6 +35,7 @@ class DefinitionTile extends StatelessWidget {
     final linkColor = Theme.of(context).colorScheme.primary;
 
     return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       shape: isLast ? RoundedBottomBorder(8) : null,
       onTap: onTap(context),
       trailing: isWikipedia || hasExampleSentence
@@ -58,13 +59,10 @@ class DefinitionTile extends StatelessWidget {
                             color: linkColor,
                             decoration: TextDecoration.underline),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => WordDetailsScreen(
-                                      seeAlsoWord,
-                                      search: true),
-                                ),
-                              ),
+                          ..onTap = screenPusher(
+                            context,
+                            WordDetailsScreen(seeAlsoWord, search: true),
+                          ),
                       ))
                   .toList()
                   .intersperce(
