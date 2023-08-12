@@ -63,31 +63,29 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
         children: [
           Flexible(
             flex: 1,
-            child: Container(
-              margin: const EdgeInsets.all(8.0),
-              child: PagedListView<int, T>(
-                pagingController: _pagingController,
-                builderDelegate: PagedChildBuilderDelegate<T>(
-                  itemBuilder: (context, item, index) => _createItem(item),
-                  firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                    (_pagingController.error.$1 as Object),
-                    stackTrace: (_pagingController.error.$2 as StackTrace),
-                    onRetry: _pagingController.refresh,
-                  ),
-                  noItemsFoundIndicatorBuilder: (context) {
-                    return Container(
-                      alignment: Alignment.topCenter,
-                      margin: const EdgeInsets.all(20.0),
-                      child: Text(
-                          noMatchesFor.isNotEmpty
-                              ? "No matches for:\n${noMatchesFor.join("\n")}"
-                              : "No matches found",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(height: 2),
-                        ),
-                    );
-                  }
+            child: PagedListView<int, T>(
+              padding: const EdgeInsets.all(8.0),
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<T>(
+                itemBuilder: (context, item, index) => _createItem(item),
+                firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+                  (_pagingController.error.$1 as Object),
+                  stackTrace: (_pagingController.error.$2 as StackTrace),
+                  onRetry: _pagingController.refresh,
                 ),
+                noItemsFoundIndicatorBuilder: (context) {
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.all(20.0),
+                    child: Text(
+                        noMatchesFor.isNotEmpty
+                            ? "No matches for:\n${noMatchesFor.join("\n")}"
+                            : "No matches found",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(height: 2),
+                      ),
+                  );
+                }
               ),
             ),
           ),
