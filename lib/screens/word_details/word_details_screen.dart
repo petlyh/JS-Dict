@@ -84,84 +84,80 @@ class WordDetailsScreen extends StatelessWidget {
                       .intersperce(const Divider()),
                 ),
 
-                if (word.inflectionType != null) ...[
-                  const SizedBox(height: 4),
-                  ExpansionTileCard(
-                    title: const Text("Inflections"),
-                    children: [InflectionTable(word.inflectionType!)],
-                  ),
-                  const SizedBox(height: 4),
-                ] else if (word.collocations.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  ExpansionTileCard(
-                    title: const Text("Collocations"),
-                    children: word.collocations
-                        .map((collocation) => ListTile(
-                              shape: collocation == word.collocations.last
-                                  ? RoundedBottomBorder(8)
-                                  : null,
-                              title: Text(collocation.word),
-                              subtitle: Text(collocation.meaning),
-                              trailing: const Icon(Icons.keyboard_arrow_right),
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => WordDetailsScreen(
-                                      collocation.word,
-                                      search: true),
+
+                ...[
+                  if (word.inflectionType != null)
+                    ExpansionTileCard(
+                      title: const Text("Inflections"),
+                      children: [InflectionTable(word.inflectionType!)],
+                    ),
+                  if (word.collocations.isNotEmpty)
+                    ExpansionTileCard(
+                      title: const Text("Collocations"),
+                      children: word.collocations
+                          .map((collocation) => ListTile(
+                                shape: collocation == word.collocations.last
+                                    ? RoundedBottomBorder(8)
+                                    : null,
+                                title: Text(collocation.word),
+                                subtitle: Text(collocation.meaning),
+                                trailing:
+                                    const Icon(Icons.keyboard_arrow_right),
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => WordDetailsScreen(
+                                        collocation.word,
+                                        search: true),
+                                  ),
                                 ),
+                              ))
+                          .toList()
+                          .intersperce(const Divider()),
+                    ),
+                  if (word.otherForms.isNotEmpty)
+                    ExpansionTileCard(
+                      title: const Text("Other forms"),
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          alignment: Alignment.centerLeft,
+                          child: Wrap(
+                              alignment: WrapAlignment.start,
+                              spacing: 2,
+                              runSpacing: 8,
+                              children: word.otherForms
+                                  .map((otherForm) => Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 6),
+                                        child: RubyText([
+                                          RubyTextData(otherForm.form,
+                                              ruby: otherForm.reading)
+                                        ],
+                                            style:
+                                                const TextStyle(fontSize: 16)),
+                                      ))
+                                  .toList()
+                              // .intersperce(const RubyTextData("、"))
                               ),
-                            ))
-                        .toList()
-                        .intersperce(const Divider()),
-                  ),
-                  const SizedBox(height: 4),
-                ],
-
-                if (word.otherForms.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  ExpansionTileCard(
-                    title: const Text("Other forms"),
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                            alignment: WrapAlignment.start,
-                            spacing: 2,
-                            runSpacing: 8,
-                            children: word.otherForms
-                                .map((otherForm) => Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 6),
-                                      child: RubyText([
-                                        RubyTextData(otherForm.form,
-                                            ruby: otherForm.reading)
-                                      ], style: const TextStyle(fontSize: 16)),
-                                    ))
-                                .toList()
-                            // .intersperce(const RubyTextData("、"))
-                            ),
-                      )
-                      // RubyText()
-                    ],
-                  ),
-                ],
-
-                if (word.notes.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  ExpansionTileCard(
-                    title: const Text("Notes"),
-                    children: [
-                      Flex(direction: Axis.horizontal, children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Text(word.notes.toSet().toList().join("\n")),
                         )
-                      ])
-                    ],
-                  ),
-                ],
+                        // RubyText()
+                      ],
+                    ),
+                  if (word.notes.isNotEmpty)
+                    ExpansionTileCard(
+                      title: const Text("Notes"),
+                      children: [
+                        Flex(direction: Axis.horizontal, children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Text(word.notes.toSet().toList().join("\n")),
+                          )
+                        ])
+                      ],
+                    ),
+                ].intersperce(const SizedBox(height: 4)),
 
                 const SizedBox(height: 8),
 
