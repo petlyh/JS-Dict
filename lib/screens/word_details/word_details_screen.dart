@@ -115,8 +115,40 @@ class WordDetailsScreen extends StatelessWidget {
                         .intersperce(const Divider()),
                   ),
                   const SizedBox(height: 4),
-                ] else
-                  const SizedBox(height: 8),
+                ],
+
+                if (word.otherForms.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  ExpansionTileCard(
+                    title: const Text("Other forms"),
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                            alignment: WrapAlignment.start,
+                            spacing: 2,
+                            runSpacing: 8,
+                            children: word.otherForms
+                                .map((otherForm) => Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 6),
+                                      child: RubyText([
+                                        RubyTextData(otherForm.form,
+                                            ruby: otherForm.reading)
+                                      ], style: const TextStyle(fontSize: 16)),
+                                    ))
+                                .toList()
+                            // .intersperce(const RubyTextData("、"))
+                            ),
+                      )
+                      // RubyText()
+                    ],
+                  ),
+                ],
+
+                const SizedBox(height: 8),
 
                 ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
