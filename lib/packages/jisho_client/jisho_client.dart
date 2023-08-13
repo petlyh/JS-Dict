@@ -53,12 +53,12 @@ class JishoClient {
     return _getHtml(path).then((document) => Parser.search<T>(document));
   }
 
-  Future<Kanji> kanjiDetails(String kanji) async {
+  Future<Kanji> kanjiDetails(String kanji) {
     final path = _searchPath("$kanji #kanji");
     return _getHtml(path).then((document) => Parser.kanjiDetails(document));
   }
 
-  Future<Word> wordDetails(String word) async {
+  Future<Word> wordDetails(String word) {
     final path = "/word/${Uri.encodeComponent(word)}";
     return _getHtml(path).then((document) => Parser.wordDetails(document));
   }
