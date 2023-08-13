@@ -30,15 +30,17 @@ class WordItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: word.definitions
-              .map((e) => e.meanings.join("; "))
-              .toList().deduplicate<String>().asMap().entries
-              .map((entry) => RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "${entry.key + 1}. ", style: textStyle.copyWith(fontWeight: FontWeight.w300)),
-                  TextSpan(text: entry.value, style: textStyle),
-                ])
-              ))
-              .toList(),
+                .map((e) => e.meanings.join("; ")).toList()
+                .deduplicateCaseInsensitive()
+                .asMap().entries
+                .map((entry) => RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: "${entry.key + 1}. ",
+                          style: textStyle.copyWith(fontWeight: FontWeight.w300)),
+                      TextSpan(text: entry.value, style: textStyle),
+                    ])))
+                .toList(),
         )
       ),
     );

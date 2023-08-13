@@ -16,4 +16,23 @@ extension ListExtensions on List<dynamic> {
   }
 
   List<T> deduplicate<T>() => toSet().toList() as List<T>;
+
+  List<T> deduplicateBy<T>(T Function(T item) transform) {
+    List<T> result = [];
+
+    for (final item in this as List<T>) {
+      if (result.map(transform).contains(transform(item))) {
+        continue;
+      }
+
+      result.add(item);
+    }
+
+    return result;
+  }
+}
+
+extension StringListExtensions on List<String> {
+  List<String> deduplicateCaseInsensitive() =>
+      deduplicateBy((item) => item.toLowerCase());
 }
