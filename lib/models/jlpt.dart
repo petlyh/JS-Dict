@@ -1,3 +1,5 @@
+part of "models.dart";
+
 enum JLPTLevel {
   n1, n2, n3, n4, n5, none;
 

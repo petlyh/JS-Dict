@@ -1,3 +1,5 @@
+part of "models.dart";
+
 class SearchResponse<T> {
   String correction = "";
   String suggestion = "";

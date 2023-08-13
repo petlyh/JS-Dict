@@ -1,4 +1,4 @@
-import "package:ruby_text/ruby_text.dart";
+part of "models.dart";
 
 typedef Furigana = List<FuriganaPart>;
 

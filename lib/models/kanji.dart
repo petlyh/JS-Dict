@@ -1,4 +1,4 @@
-import "jlpt.dart";
+part of "models.dart";
 
 class Kanji {
   final String kanji;

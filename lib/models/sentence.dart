@@ -1,4 +1,4 @@
-import "furigana.dart";
+part of "models.dart";
 
 class Sentence {
   final String id;

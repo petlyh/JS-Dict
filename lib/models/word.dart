@@ -1,9 +1,4 @@
-import "package:jsdict/packages/inflection/inflection.dart";
-
-import "furigana.dart";
-import "jlpt.dart";
-import "kanji.dart";
-import "sentence.dart";
+part of "models.dart";
 
 class Word {
   final Furigana word;
