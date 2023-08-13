@@ -44,9 +44,12 @@ class JishoClient {
     Name: "names"
   };
 
+  // returns query with everything lowercased except for tags
+  String _lowercaseQuery(String query) => query.replaceAllMapped(RegExp(r"(?<=^|\s)\w+"), (match) => match.group(0)!.toLowerCase());
+
   Future<SearchResponse<T>> search<T>(String query, {int page = 1}) {
     final pagePart = page > 1 ? "?page=$page" : "";
-    final path = _searchPath("$query #${_typeTags[T]}") + pagePart;
+    final path = _searchPath("${_lowercaseQuery(query)} #${_typeTags[T]}") + pagePart;
     return _getHtml(path).then((document) => Parser.search<T>(document));
   }
 
