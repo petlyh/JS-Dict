@@ -25,6 +25,7 @@ class SearchScreen extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton(
           onPressed: screenPusher(context, const RadicalSearchScreen()),
+          tooltip: "Radicals",
           child: const Text("部", style: TextStyle(fontSize: 20)),
         ),
         appBar: AppBar(

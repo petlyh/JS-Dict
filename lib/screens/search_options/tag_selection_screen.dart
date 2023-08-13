@@ -17,6 +17,7 @@ class _TagFAB extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: QueryProvider.of(context).clearTags,
+      tooltip: "Clear Tags",
       child: const Icon(Icons.clear),
     );
   }
