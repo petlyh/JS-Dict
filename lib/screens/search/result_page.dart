@@ -65,6 +65,7 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
             flex: 1,
             child: PagedListView<int, T>(
               padding: const EdgeInsets.all(8.0),
+              shrinkWrap: true,
               pagingController: _pagingController,
               builderDelegate: PagedChildBuilderDelegate<T>(
                 itemBuilder: (context, item, index) => _createItem(item),
