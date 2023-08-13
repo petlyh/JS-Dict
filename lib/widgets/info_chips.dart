@@ -1,19 +1,24 @@
 import "package:flutter/material.dart";
 
 class InfoChip extends StatelessWidget {
-  const InfoChip(this.text, {super.key, this.color});
+  const InfoChip(this.text, {super.key, this.color, this.onTap});
 
   final String text;
   final Color? color;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
         surfaceTintColor: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: Text(text),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(48),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: Text(text),
+          ),
         ));
   }
 }

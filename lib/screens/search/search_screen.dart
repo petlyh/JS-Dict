@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search/result_page.dart";
-import "package:jsdict/screens/search_options/search_options_screen.dart";
+import "package:jsdict/screens/search_options/radical_search_screen.dart";
+import "package:jsdict/screens/search_options/tag_selection_screen.dart";
 import "package:jsdict/screens/settings_screen.dart";
 import "package:provider/provider.dart";
 
@@ -13,7 +15,8 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchController = Provider.of<QueryProvider>(context, listen: false).searchController;
+    final queryProvider = QueryProvider.of(context);
+    final searchController = queryProvider.searchController;
     final searchFocusNode = FocusNode();
 
     return DefaultTabController(
@@ -21,14 +24,14 @@ class SearchScreen extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SearchOptionsScreen())),
+          onPressed: screenPusher(context, const RadicalSearchScreen()),
           child: const Text("部", style: TextStyle(fontSize: 20)),
         ),
         appBar: AppBar(
           title: TextField(
             focusNode: searchFocusNode,
             controller: searchController,
-            onSubmitted: (_) => Provider.of<QueryProvider>(context, listen: false).updateQuery(),
+            onSubmitted: (_) => queryProvider.updateQuery(),
             autofocus: false,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
@@ -46,9 +49,12 @@ class SearchScreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              onPressed: () => {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingScreen()))
-              },
+              onPressed: screenPusher(context, const TagSelectionScreen()),
+              icon: const Icon(Icons.tag),
+              tooltip: "Tags",
+            ),
+            IconButton(
+              onPressed: screenPusher(context, const SettingScreen()),
               icon: const Icon(Icons.settings),
               tooltip: "Settings",
             ),

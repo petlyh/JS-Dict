@@ -1,15 +1,16 @@
 import "package:flutter/material.dart";
 import "package:jsdict/providers/query_provider.dart";
-import "package:provider/provider.dart";
-
-import "radical_search/radical_search_widget.dart";
 
 class SearchOptionsScreen extends StatelessWidget {
-  const SearchOptionsScreen({super.key});
+  const SearchOptionsScreen(
+      {super.key, required this.body, this.floatingActionButton});
+
+  final Widget body;
+  final Widget? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
-    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
+    final queryProvider = QueryProvider.of(context);
     final searchController = queryProvider.searchController;
 
     return WillPopScope(
@@ -18,6 +19,7 @@ class SearchOptionsScreen extends StatelessWidget {
         return true;
       },
       child: Scaffold(
+        floatingActionButton: floatingActionButton,
         appBar: AppBar(
           scrolledUnderElevation: 0,
           title: TextField(
@@ -33,7 +35,7 @@ class SearchOptionsScreen extends StatelessWidget {
                 )),
           ),
         ),
-        body: RadicalSearchWidget(onKanjiSelect: queryProvider.insertText),
+        body: body,
       ),
     );
   }

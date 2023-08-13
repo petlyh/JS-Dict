@@ -1,13 +1,23 @@
 import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
 class QueryProvider extends ChangeNotifier {
+  static QueryProvider of(BuildContext context) {
+    return Provider.of<QueryProvider>(context, listen: false);
+  }
+
   TextEditingController searchController = TextEditingController();
 
   String _query = "";
   String get query => _query;
 
+  void sanitizeText() {
+    searchController.text =
+        searchController.text.trim().replaceAll(RegExp(r"\s+"), " ");
+  }
+
   void updateQuery() {
-    _sanitizeQuery();
+    sanitizeText();
     _query = searchController.text;
     notifyListeners();
   }
@@ -16,6 +26,20 @@ class QueryProvider extends ChangeNotifier {
     if (_query != searchController.text) {
       updateQuery();
     }
+  }
+
+  void addTag(String tag) {
+    sanitizeText();
+    if (searchController.text.isNotEmpty) {
+      searchController.text += " ";
+    }
+    searchController.text += "#$tag";
+  }
+
+  void clearTags() {
+    searchController.text =
+        searchController.text.replaceAll(RegExp(r"(?<= |^)#[A-Za-z0-9-]+"), "");
+    sanitizeText();
   }
 
   void insertText(String text) {
@@ -27,13 +51,11 @@ class QueryProvider extends ChangeNotifier {
       return;
     }
 
-    final newText = searchController.text.replaceRange(selectionStart, selection.extentOffset, text);
+    final newText = searchController.text
+        .replaceRange(selectionStart, selection.extentOffset, text);
     searchController.text = newText;
-    searchController.selection = TextSelection.collapsed(offset: selectionStart + 1);
-  }
-
-  void _sanitizeQuery() {
-    searchController.text = searchController.text.replaceAll(RegExp(r"#\w+"), "").trim();
+    searchController.selection =
+        TextSelection.collapsed(offset: selectionStart + 1);
   }
 
   @override
