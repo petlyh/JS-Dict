@@ -9,7 +9,7 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) => Scaffold(
+        builder: (dynamicColorScheme, _) => Scaffold(
               appBar: AppBar(title: const Text("Settings")),
               body: Column(
                 children: [
@@ -28,7 +28,7 @@ class SettingScreen extends StatelessWidget {
                       );
                     }),
                   ),
-                  if (lightDynamic != null || darkDynamic != null)
+                  if (dynamicColorScheme != null)
                     ListTile(
                       leading: const Icon(Icons.format_color_fill, size: 32.0),
                       title: const Text("Dynamic Colors"),
