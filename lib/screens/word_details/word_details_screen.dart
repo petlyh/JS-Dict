@@ -1,3 +1,4 @@
+import "package:audioplayers/audioplayers.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/packages/list_extensions.dart";
@@ -72,6 +73,13 @@ class WordDetailsScreen extends StatelessWidget {
                       InfoChip("JLPT ${word.jlptLevel.toString()}", color: Colors.blue),
                     if (word.wanikaniLevel != -1)
                       InfoChip("WaniKani Lv. ${word.wanikaniLevel}", color: Colors.blue),
+                    if (word.audioUrl.isNotEmpty)
+                      InfoChip(
+                        "Audio",
+                        color: Colors.green,
+                        icon: Icons.play_arrow,
+                        onTap: () => AudioPlayer().play(UrlSource(word.audioUrl)),
+                      ),
                   ],
                 ),
                 const SizedBox(height: 16),
