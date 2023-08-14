@@ -86,6 +86,7 @@ class KanjiDetailsScreen extends StatelessWidget {
                   ],
                   if (kanji.onCompounds.isNotEmpty)
                     CompoundList("On", kanji.onCompounds),
+                    const SizedBox(height: 4),
                   if (kanji.kunCompounds.isNotEmpty)
                     CompoundList("Kun", kanji.kunCompounds),
                 ],

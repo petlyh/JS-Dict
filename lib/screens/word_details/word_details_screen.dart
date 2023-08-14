@@ -75,22 +75,21 @@ class WordDetailsScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                ExpansionTileCard(
-                  shadowColor: shadowColor,
-                  initiallyExpanded: true,
-                  title: const Text("Definitions"),
-                  children: word.definitions
-                      .map((definition) => DefinitionTile(
-                            definition,
-                            textColor: textColor,
-                            isLast: definition == word.definitions.last,
-                          ))
-                      .toList()
-                      .intersperce(const Divider(height: 0)),
-                ),
-
 
                 ...[
+                  ExpansionTileCard(
+                    shadowColor: shadowColor,
+                    initiallyExpanded: true,
+                    title: const Text("Definitions"),
+                    children: word.definitions
+                        .map((definition) => DefinitionTile(
+                              definition,
+                              textColor: textColor,
+                              isLast: definition == word.definitions.last,
+                            ))
+                        .toList()
+                        .intersperce(const Divider(height: 0)),
+                  ),
                   if (word.inflectionType != null)
                     ExpansionTileCard(
                       shadowColor: shadowColor,
@@ -164,7 +163,7 @@ class WordDetailsScreen extends StatelessWidget {
                         ])
                       ],
                     ),
-                ].intersperce(const SizedBox(height: 4)),
+                ].intersperce(const SizedBox(height: 8)),
 
                 const SizedBox(height: 8),
 
