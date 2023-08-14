@@ -212,7 +212,8 @@ class Parser {
       // deduplicate
       definition.seeAlso = definition.seeAlso.deduplicate();
 
-      if (definition.types.contains("Wikipedia definition")) {
+      if (definition.types.contains("Wikipedia definition") &&
+          definitionElement.querySelector("span.meaning-abstract") != null) {
         var wikipediaDefinition = WikipediaDefinition(definition.meanings.first);
         wikipediaDefinition.textAbstract = definitionElement.collect("span.meaning-abstract", (e) => e.nodes.first.text!);
         wikipediaDefinition.wikipediaEnglish = _wikipediaPage(definitionElement, "English Wikipedia");
