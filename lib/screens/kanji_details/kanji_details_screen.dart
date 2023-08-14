@@ -40,13 +40,16 @@ class KanjiDetailsScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(kanji.kanji, style: const TextStyle(fontSize: 40)),
                   ),
-                  InfoChipList.color([
-                    ("${kanji.strokeCount} strokes", Colors.green),
-                    if (kanji.jlptLevel != JLPTLevel.none)
-                      ("JLPT ${kanji.jlptLevel.toString()}", Colors.blue),
-                    if (kanji.type != null)
-                      (kanji.type.toString(), Colors.blue),
-                  ]),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      InfoChip("${kanji.strokeCount} strokes", color: Colors.green),
+                      if (kanji.jlptLevel != JLPTLevel.none)
+                        InfoChip("JLPT ${kanji.jlptLevel.toString()}", color: Colors.blue),
+                      if (kanji.type != null)
+                        InfoChip(kanji.type.toString(), color: Colors.blue),
+                    ],
+                  ),
                   const Divider(),
                   ListTile(
                     title: Text(kanji.meanings.join(", ")),

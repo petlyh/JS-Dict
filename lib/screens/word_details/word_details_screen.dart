@@ -63,14 +63,17 @@ class WordDetailsScreen extends StatelessWidget {
                     rubyStyle: const TextStyle(fontSize: 14),
                   ),
                 ),
-                InfoChipList.color([
-                  if (word.commonWord)
-                    ("Common", Colors.green),
-                  if (word.jlptLevel != JLPTLevel.none)
-                    ("JLPT ${word.jlptLevel.toString()}", Colors.blue),
-                  if (word.wanikaniLevel != -1)
-                    ("WaniKani Lv. ${word.wanikaniLevel}", Colors.blue),
-                ]),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  children: [
+                    if (word.commonWord)
+                      const InfoChip("Common", color: Colors.green),
+                    if (word.jlptLevel != JLPTLevel.none)
+                      InfoChip("JLPT ${word.jlptLevel.toString()}", color: Colors.blue),
+                    if (word.wanikaniLevel != -1)
+                      InfoChip("WaniKani Lv. ${word.wanikaniLevel}", color: Colors.blue),
+                  ],
+                ),
                 const SizedBox(height: 16),
                 ExpansionTileCard(
                   shadowColor: shadowColor,
