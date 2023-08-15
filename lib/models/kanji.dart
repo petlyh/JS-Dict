@@ -19,6 +19,8 @@ class Kanji {
   
   int? frequency;
 
+  String strokeDiagramUrl = "";
+
   List<Compound> onCompounds = [];
   List<Compound> kunCompounds = [];
   

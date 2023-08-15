@@ -74,11 +74,23 @@ class Parser {
     return Sentence.copyright(id, japanese, english, copyright);
   }
 
+  static final strokeDiagramUrlRegex = RegExp(r"var url = '(.+?)';");
+
   static Kanji kanjiDetails(Document document) {
-    final kanji = document.body!.collect("div.kanji.details", _kanjiDetailsEntry);
+    final kanji =
+        document.body!.collect("div.kanji.details", _kanjiDetailsEntry);
 
     if (kanji == null) {
       throw Exception("Kanji not found");
+    }
+
+    final strokeDiagramUrl = document.body!.collectWhere(
+        "script",
+        (e) => strokeDiagramUrlRegex.firstMatch(e.text) != null,
+        (e) => strokeDiagramUrlRegex.firstMatch(e.text)!.group(1));
+
+    if (strokeDiagramUrl != null) {
+      kanji.strokeDiagramUrl = "https:$strokeDiagramUrl";
     }
 
     return kanji;
