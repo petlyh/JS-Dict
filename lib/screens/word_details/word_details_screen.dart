@@ -78,7 +78,11 @@ class WordDetailsScreen extends StatelessWidget {
                         "Audio",
                         color: Colors.green,
                         icon: Icons.play_arrow,
-                        onTap: () => AudioPlayer().play(UrlSource(word.audioUrl)),
+                        onTap: () => AudioPlayer().play(
+                          UrlSource(word.audioUrl),
+                          mode: PlayerMode.lowLatency,
+                          ctx: AudioContextConfig(duckAudio: true).build(),
+                        ),
                       ),
                   ],
                 ),
