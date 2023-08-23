@@ -27,7 +27,7 @@ void main() {
   });
 
   test("I-adjective", () {
-    InflectionType samui = IAdjective("寒い");
+    final InflectionType samui = IAdjective("寒い");
     expect(samui.name, equals("I-adjective"));
 
     expect(samui.nonPast(true), equals("寒い"));
@@ -37,7 +37,7 @@ void main() {
   });
 
   test("Ichidan verb", () {
-    Verb ageru = IchidanVerb("上げる");
+    final Verb ageru = IchidanVerb("上げる");
     expect(ageru.name, equals("Ichidan verb"));
 
     expect(ageru.nonPast(true), equals("上げる"));
@@ -64,7 +64,7 @@ void main() {
   });
 
   test("Godan verb with u ending", () {
-    Verb utau = GodanVerb("歌う", "u");
+    final Verb utau = GodanVerb("歌う", "u");
     expect(utau.name, equals("Godan verb with u ending"));
 
     expect(utau.nonPast(true), equals("歌う"));
@@ -91,7 +91,7 @@ void main() {
   });
 
   test("Godan verb with mu ending", () {
-    Verb shimu = GodanVerb("占む", "m");
+    final Verb shimu = GodanVerb("占む", "m");
     expect(shimu.name, equals("Godan verb with mu ending"));
 
     expect(shimu.nonPast(true), equals("占む"));
@@ -118,7 +118,7 @@ void main() {
   });
 
   test("Godan verb with su ending", () {
-    Verb watasu = GodanVerb("渡す", "s");
+    final Verb watasu = GodanVerb("渡す", "s");
     expect(watasu.name, equals("Godan verb with su ending"));
 
     expect(watasu.nonPast(true), equals("渡す"));
@@ -145,7 +145,7 @@ void main() {
   });
 
   test("Godan verb with tsu ending", () {
-    Verb matsu = GodanVerb("待つ", "t");
+    final Verb matsu = GodanVerb("待つ", "t");
     expect(matsu.name, equals("Godan verb with tsu ending"));
 
     expect(matsu.nonPast(true), equals("待つ"));
@@ -172,7 +172,7 @@ void main() {
   });
 
   test("Godan verb with nu ending", () {
-    Verb shinu = GodanVerb("死ぬ", "n");
+    final Verb shinu = GodanVerb("死ぬ", "n");
     expect(shinu.name, equals("Godan verb with nu ending"));
 
     expect(shinu.nonPast(true), equals("死ぬ"));
@@ -199,7 +199,7 @@ void main() {
   });
 
   test("Godan verb with ru ending", () {
-    Verb meguru = GodanVerb("巡る", "r");
+    final Verb meguru = GodanVerb("巡る", "r");
     expect(meguru.name, equals("Godan verb with ru ending"));
 
     expect(meguru.nonPast(true), equals("巡る"));
@@ -226,7 +226,7 @@ void main() {
   });
 
   test("Godan verb with bu ending", () {
-    Verb asobu = GodanVerb("遊ぶ", "b");
+    final Verb asobu = GodanVerb("遊ぶ", "b");
     expect(asobu.name, equals("Godan verb with bu ending"));
 
     expect(asobu.nonPast(true), equals("遊ぶ"));
@@ -253,7 +253,7 @@ void main() {
   });
 
   test("Godan verb with ku ending", () {
-    Verb yaku = GodanVerb("焼く", "k");
+    final Verb yaku = GodanVerb("焼く", "k");
     expect(yaku.name, equals("Godan verb with ku ending"));
 
     expect(yaku.nonPast(true), equals("焼く"));
@@ -280,7 +280,7 @@ void main() {
   });
 
   test("Godan verb with gu ending", () {
-    Verb oyogu = GodanVerb("泳ぐ", "g");
+    final Verb oyogu = GodanVerb("泳ぐ", "g");
     expect(oyogu.name, equals("Godan verb with gu ending"));
 
     expect(oyogu.nonPast(true), equals("泳ぐ"));
@@ -307,7 +307,7 @@ void main() {
   });
 
   test("Godan verb - Iku/Yuku special class", () {
-    Verb iku = GodanVerb("行く", "k-s");
+    final Verb iku = GodanVerb("行く", "k-s");
     expect(iku.name, equals("Godan verb - Iku/Yuku special class"));
 
     expect(iku.nonPast(true), equals("行く"));
@@ -334,7 +334,7 @@ void main() {
   });
 
   test("Kuru verb", () {
-    Verb kuru = Kuru();
+    final Verb kuru = Kuru();
     expect(kuru.name, equals("Kuru verb - special class"));
 
     expect(kuru.nonPastFurigana(true).getReading(), equals("くる"));
@@ -361,7 +361,7 @@ void main() {
   });
 
   test("Suru special class", () {
-    Verb suru = SuruSpecial();
+    final Verb suru = SuruSpecial();
     expect(suru.name, "Suru verb - included");
 
     expect(suru.nonPastFurigana(true).getReading(), equals("する"));
@@ -388,7 +388,7 @@ void main() {
   });
 
   test("Suru verb", () {
-    Verb koisuru = SuruVerb("恋する");
+    final Verb koisuru = SuruVerb("恋する");
     expect(koisuru.name, "Suru verb - included");
 
     expect(koisuru.nonPast(true), equals("恋する"));

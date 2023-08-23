@@ -26,6 +26,8 @@ linter:
     - avoid_final_parameters
     - parameter_assignments
     - avoid_print
+    - prefer_final_locals
+    - prefer_final_in_for_each
 
 analyzer:
   language:

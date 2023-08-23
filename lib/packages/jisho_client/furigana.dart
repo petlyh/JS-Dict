@@ -41,7 +41,7 @@ Furigana parseWordFurigana(Element element) {
       .querySelector("div.concept_light-representation > span.text")!
       .nodes
       .map((node) {
-        var text = node.text!.trim();
+        final text = node.text!.trim();
         // split kanji if it's a text node
         return node.nodeType == Node.TEXT_NODE ? text.split("") : [text];
       })

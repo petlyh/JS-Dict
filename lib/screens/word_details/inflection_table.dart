@@ -18,7 +18,7 @@ class InflectionTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var rows = _headerRow + _getRows();
+    final rows = _headerRow + _getRows();
 
     return Table(
       border: const TableBorder(

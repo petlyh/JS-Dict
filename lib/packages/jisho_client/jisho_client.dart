@@ -22,7 +22,7 @@ class JishoClient {
   JishoClient.client(http.Client client) : _client = client;
 
   Future<Document> _getHtml(String path) async {
-    var response = await _client.get(Uri.parse(baseUrl + path));
+    final response = await _client.get(Uri.parse(baseUrl + path));
 
     if (response.statusCode != HttpStatus.ok) {
       if (response.statusCode == HttpStatus.notFound) {

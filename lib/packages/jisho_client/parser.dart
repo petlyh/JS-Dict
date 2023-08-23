@@ -7,7 +7,7 @@ import "furigana.dart";
 
 class Parser {
   static SearchResponse<T> search<T>(Document document) {
-    var response = SearchResponse<T>();
+    final response = SearchResponse<T>();
     final body = document.body!;
 
     final noMatchesElement = document.getElementById("no-matches");
@@ -51,7 +51,7 @@ class Parser {
 
   static Kanji _kanjiEntry(Element element) {
     final literal = element.collect("div.literal_block > span > a", (e) => e.innerHtml.trim())!;
-    var kanji = Kanji(literal);
+    final kanji = Kanji(literal);
 
     kanji.meanings = element.collectAll("div.meanings > span", (e) => e.innerHtml.trim().replaceAll(",", ""));
     kanji.kunReadings = element.collectAll("div.kun > span.japanese_gothic > a", (e) => e.innerHtml.trim());
@@ -190,25 +190,25 @@ class Parser {
       (e) => int.parse(e.children.first.innerHtml.trim().split(" ")[2]),
     ) ?? -1;
 
-    var definitionElements = element.querySelectorAll("div.meaning-wrapper");
+    final definitionElements = element.querySelectorAll("div.meaning-wrapper");
 
-    for (var definitionElement in definitionElements) {
-      var previousElement = definitionElement.previousElementSibling;
+    for (final definitionElement in definitionElements) {
+      final previousElement = definitionElement.previousElementSibling;
       if (previousElement?.text == "Other forms") {
         word.otherForms = _parseOtherForms(definitionElement);
         continue;
       }
 
-      var notesElement = definitionElement.querySelector("div.meaning-representation_notes > span");
+      final notesElement = definitionElement.querySelector("div.meaning-representation_notes > span");
       if (notesElement != null) {
         word.notes = notesElement.text.trim().replaceFirst(RegExp(r"\.$"), "").split(". ");
         continue;
       }
 
-      var definition = Definition();
+      final definition = Definition();
 
       if (previousElement != null && previousElement.classes.contains("meaning-tags")) {
-        var tagsText = definitionElement.previousElementSibling!.text;
+        final tagsText = definitionElement.previousElementSibling!.text;
         definition.types = tagsText.split(", ").map((e) => e.trim()).toList();
       }
 
@@ -216,7 +216,7 @@ class Parser {
         definition.types = word.definitions.last.types;
       }
 
-      var meaningsElement = definitionElement.querySelector("span.meaning-meaning");
+      final meaningsElement = definitionElement.querySelector("span.meaning-meaning");
       definition.meanings = meaningsElement!.innerHtml.trim().split("; ");
 
       definition.tags = definitionElement.collectAll("span.tag-tag, span.tag-info, span.tag-source", (e) => e.text.trim());
@@ -226,7 +226,7 @@ class Parser {
 
       if (definition.types.contains("Wikipedia definition") &&
           definitionElement.querySelector("span.meaning-abstract") != null) {
-        var wikipediaDefinition = WikipediaDefinition(definition.meanings.first);
+        final wikipediaDefinition = WikipediaDefinition(definition.meanings.first);
         wikipediaDefinition.textAbstract = definitionElement.collect("span.meaning-abstract", (e) => e.nodes.first.text!);
         wikipediaDefinition.wikipediaEnglish = _wikipediaPage(definitionElement, "English Wikipedia");
         wikipediaDefinition.wikipediaJapanese = _wikipediaPage(definitionElement, "Japanese Wikipedia");
