@@ -16,7 +16,7 @@ Furigana parseSentenceFurigana(Element element) {
       if (furiganaElement == null) {
         return FuriganaPart.textOnly(text);
       } else {
-        final furiganaText = furiganaElement.innerHtml.trim();
+        final furiganaText = furiganaElement.text.trim();
         return FuriganaPart(text, furiganaText);
       }
     }
