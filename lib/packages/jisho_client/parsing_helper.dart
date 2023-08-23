@@ -6,17 +6,24 @@ extension ParsingHelper on Element {
     return foundElement != null ? handler(foundElement) : null;
   }
 
-  T? collectWhere<T>(String selector, bool Function(Element e) condition, T Function(Element e) handler) {
+  List<T> collectAll<T>(String selector, T Function(Element e) handler) {
+    return querySelectorAll(selector).map(handler).toList();
+  }
+
+  List<T> collectWhere<T>(String selector, bool Function(Element e) condition, T Function(Element e) handler) {
+    final List<T> result = [];
+
     for (final foundElement in querySelectorAll(selector)) {
       if (condition(foundElement)) {
-        return handler(foundElement);
+        result.add(handler(foundElement));
       }
     }
 
-    return null;
+    return result;
   }
 
-  List<T> collectAll<T>(String selector, T Function(Element e) handler) {
-    return querySelectorAll(selector).map(handler).toList();
+  T? collectFirstWhere<T>(String selector, bool Function(Element e) condition, T Function(Element e) handler) {
+    final result = collectWhere(selector, condition, handler);
+    return result.isNotEmpty ? result.first : null;
   }
 }

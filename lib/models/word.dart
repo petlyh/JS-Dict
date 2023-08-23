@@ -6,7 +6,7 @@ class Word {
   List<OtherForm> otherForms = [];
 
   bool commonWord = false;
-  int wanikaniLevel = -1;
+  List<int> wanikaniLevels = [];
   JLPTLevel jlptLevel = JLPTLevel.none;
 
   String audioUrl = "";

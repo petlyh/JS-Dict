@@ -38,7 +38,7 @@ void main() {
     expect(word.word.getText(), "見る");
     expect(word.word.getReading(), "みる");
     expect(word.commonWord, true);
-    expect(word.wanikaniLevel, 22);
+    expect(word.wanikaniLevels, [22, 4]);
     expect(word.jlptLevel, JLPTLevel.n5);
     expect(word.audioUrl, isNotEmpty);
     expect(word.notes, isEmpty);

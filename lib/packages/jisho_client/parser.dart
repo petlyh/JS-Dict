@@ -84,7 +84,7 @@ class Parser {
       throw Exception("Kanji not found");
     }
 
-    final strokeDiagramUrl = document.body!.collectWhere(
+    final strokeDiagramUrl = document.body!.collectFirstWhere(
         "script",
         (e) => strokeDiagramUrlRegex.firstMatch(e.text) != null,
         (e) => strokeDiagramUrlRegex.firstMatch(e.text)!.group(1));
@@ -145,7 +145,7 @@ class Parser {
   }
 
   static List<Compound> _findCompounds(Element element, String type) {
-    return element.collectWhere(
+    return element.collectFirstWhere(
       "div.row.compounds > div.columns",
       (e) => e.querySelector("h2")!.text.contains("$type reading compounds"),
       (column) => column.collectAll("ul > li", (e) {
@@ -178,17 +178,17 @@ class Parser {
 
     word.audioUrl = element.collect("audio > source", (e) => "https:${e.attributes["src"]!}") ?? "";
 
-    word.jlptLevel = element.collectWhere(
+    word.jlptLevel = element.collectFirstWhere(
       "span.concept_light-tag",
       (e) => e.text.contains("JLPT"),
       (e) => JLPTLevel.fromString(e.text.trim().split(" ")[1]),
     ) ?? JLPTLevel.none;
 
-    word.wanikaniLevel = element.collectWhere(
+    word.wanikaniLevels = element.collectWhere(
       "span.concept_light-tag",
       (e) => e.text.contains("Wanikani"),
       (e) => int.parse(e.children.first.text.trim().split(" ")[2]),
-    ) ?? -1;
+    );
 
     final definitionElements = element.querySelectorAll("div.meaning-wrapper");
 
@@ -246,7 +246,7 @@ class Parser {
 
     word.inflectionId = element.collect("a.show_inflection_table", (e) => e.attributes["data-pos"]!) ?? "";
 
-    word.collocations = element.collectWhere(
+    word.collocations = element.collectFirstWhere(
       ".concept_light-status_link",
       (e) => e.text.contains("collocation"),
       (e) {
@@ -263,7 +263,7 @@ class Parser {
   }
 
   static WikipediaPage? _wikipediaPage(Element definitionElement, String name) {
-    return definitionElement.collectWhere(
+    return definitionElement.collectFirstWhere(
       "span.meaning-abstract > a",
       (e) => e.text.contains(name),
       (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!, e.attributes["href"]!),

@@ -71,8 +71,9 @@ class WordDetailsScreen extends StatelessWidget {
                       const InfoChip("Common", color: Colors.green),
                     if (word.jlptLevel != JLPTLevel.none)
                       InfoChip("JLPT ${word.jlptLevel.toString()}", color: Colors.blue),
-                    if (word.wanikaniLevel != -1)
-                      InfoChip("WaniKani Lv. ${word.wanikaniLevel}", color: Colors.blue),
+                    ...word.wanikaniLevels.map((wanikaniLevel) => InfoChip(
+                        "WaniKani Lv. $wanikaniLevel",
+                        color: Colors.blue)),
                     if (word.audioUrl.isNotEmpty)
                       InfoChip(
                         "Audio",
