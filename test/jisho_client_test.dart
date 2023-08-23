@@ -31,4 +31,31 @@ void main() {
     final kanji = await client.kanjiDetails("張");
     expect(kanji.meanings, contains("counter for bows & stringed instruments"));
   });
+
+  test("word details", () async {
+    final word = await client.wordDetails("見る");
+
+    expect(word.word.getText(), "見る");
+    expect(word.word.getReading(), "みる");
+    expect(word.commonWord, true);
+    expect(word.wanikaniLevel, 22);
+    expect(word.jlptLevel, JLPTLevel.n5);
+    expect(word.audioUrl, isNotEmpty);
+    expect(word.notes, isEmpty);
+    expect(word.inflectionId, "v1");
+
+    expect(word.kanji, hasLength(1));
+    expect(word.kanji.first.kanji, "見");
+
+    expect(word.collocations, hasLength(16));
+    expect(word.collocations.first.word, "見るに堪えない");
+    expect(word.collocations.first.meaning, "so miserable that it is painful to look at");
+
+    expect(word.definitions, hasLength(6));
+    expect(word.definitions.first.meanings, contains("to observe"));
+    expect(word.definitions.first.types, contains("Transitive verb"));
+
+    expect(word.otherForms, hasLength(2));
+    expect(word.otherForms.first.form, "観る");
+  });
 }
