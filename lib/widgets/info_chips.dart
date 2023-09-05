@@ -25,19 +25,18 @@ class InfoChip extends StatelessWidget {
                 borderRadius: BorderRadius.circular(48),
                 onTap: onTap,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (icon != null) ...[
-                        Icon(icon, size: 16),
-                        const SizedBox(width: 2),
-                      ],
-                      Text(text),
-                    ],
-                  ),
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: icon != null
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(icon, size: 16),
+                          const SizedBox(width: 2),
+                          Text(text),
+                        ],
+                      )
+                    : Text(text),
+              ),
               ));
           }
             ),
