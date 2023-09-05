@@ -1,8 +1,7 @@
 part of "models.dart";
 
 class SearchResponse<T> {
-  String correction = "";
-  String suggestion = "";
+  Correction? correction;
   List<String> noMatchesFor = [];
 
   bool hasNextPage = false;
@@ -14,4 +13,11 @@ class SearchResponse<T> {
       results.addAll(list);
     }
   }
+}
+
+class Correction {
+  final String searchedFor;
+  final String suggestion;
+
+  const Correction(this.searchedFor, this.suggestion);
 }

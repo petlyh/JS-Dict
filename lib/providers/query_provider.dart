@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:jsdict/packages/remove_tags.dart';
 import "package:provider/provider.dart";
 
 class QueryProvider extends ChangeNotifier {
@@ -37,8 +38,7 @@ class QueryProvider extends ChangeNotifier {
   }
 
   void clearTags() {
-    searchController.text =
-        searchController.text.replaceAll(RegExp(r"(?<= |^)#[A-Za-z0-9-]+"), "");
+    searchController.text = removeTags(searchController.text);
     sanitizeText();
   }
 

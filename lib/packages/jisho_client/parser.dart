@@ -1,4 +1,5 @@
 import "package:html/dom.dart";
+import 'package:jsdict/packages/remove_tags.dart';
 import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
@@ -18,10 +19,16 @@ class Parser {
       return response;
     }
 
-    response.hasNextPage = document.querySelector("a.more") != null;
-    response.suggestion = body.collect("#the_corrector span.meant > a", (e) => e.text.trim()) ?? "";
-    response.correction = body.collect("#the_corrector > p > strong > span", (e) => e.text.trim()) ?? "";
+    final correctorElement = document.getElementById("the_corrector");
 
+    if (correctorElement != null) {
+      response.correction = Correction(
+        correctorElement.collect("p > strong > span", (e) => e.text.trim()) ?? "",
+        removeTags(correctorElement.collect("span.meant > a", (e) => e.text.trim()) ?? ""),
+      );
+    }
+
+    response.hasNextPage = document.querySelector("a.more") != null;
 
     switch (T) {
       case Kanji:
