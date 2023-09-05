@@ -71,7 +71,10 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
-        _correctionInfo(context),
+        ValueListenableBuilder(
+          valueListenable: correction,
+          builder: (_, correctionValue, __) => _CorrectionInfo(correctionValue),
+        ),
         SliverPadding(
           padding: const EdgeInsets.all(8.0),
           sliver: PagedSliverList<int, T>(
@@ -113,47 +116,51 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
     };
   }
 
-  Widget _correctionInfo(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final linkColor = Theme.of(context).colorScheme.primary;
-    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
-
-    return ValueListenableBuilder(
-      valueListenable: correction,
-      builder: (context, correctionValue, _) => SliverPadding(
-        padding: correctionValue != null
-            ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
-            : EdgeInsets.zero,
-        sliver: SliverToBoxAdapter(
-            child: correctionValue != null
-                ? RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: TextStyle(color: textColor, height: 1.5),
-                      children: [
-                        const TextSpan(text: "Searched for "),
-                        TextSpan(text: correctionValue.searchedFor, style: const TextStyle(fontWeight: FontWeight.w600)),
-                        const TextSpan(text: "\n"),
-                        const TextSpan(text: "Try searching for "),
-                        TextSpan(
-                          text: correctionValue.suggestion,
-                          style: TextStyle(fontWeight: FontWeight.w600, color: linkColor),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              queryProvider.searchController.text = correctionValue.suggestion;
-                              queryProvider.updateQuery();
-                            },
-                        ),
-                      ],
-                    ))
-                : null),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _pagingController.dispose();
     super.dispose();
+  }
+}
+
+class _CorrectionInfo extends StatelessWidget {
+  const _CorrectionInfo(this.correction);
+
+  final Correction? correction;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+    final linkColor = Theme.of(context).colorScheme.primary;
+    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
+
+    return SliverPadding(
+      padding: correction != null
+          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
+          : EdgeInsets.zero,
+      sliver: SliverToBoxAdapter(
+          child: correction != null
+              ? RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(color: textColor, height: 1.5),
+                    children: [
+                      const TextSpan(text: "Searched for "),
+                      TextSpan(text: correction!.searchedFor, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      const TextSpan(text: "\n"),
+                      const TextSpan(text: "Try searching for "),
+                      TextSpan(
+                        text: correction!.suggestion,
+                        style: TextStyle(fontWeight: FontWeight.w600, color: linkColor),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            queryProvider.searchController.text = correction!.suggestion;
+                            queryProvider.updateQuery();
+                          },
+                      ),
+                    ],
+                  ))
+              : null),
+    );
   }
 }
