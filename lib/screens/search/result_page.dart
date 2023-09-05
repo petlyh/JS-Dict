@@ -38,7 +38,10 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
 
   Future<void> _fetchPage(int pageKey) async {
     noMatchesFor = [];
-    correction.value = null;
+
+    if (pageKey == 1) {
+      correction.value = null;
+    }
 
     try {
       final response = await getClient().search<T>(widget.query, page: pageKey);
