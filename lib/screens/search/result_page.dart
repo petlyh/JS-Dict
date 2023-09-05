@@ -151,7 +151,11 @@ class _CorrectionInfo extends StatelessWidget {
                       const TextSpan(text: "Try searching for "),
                       TextSpan(
                         text: correction!.suggestion,
-                        style: TextStyle(fontWeight: FontWeight.w600, color: linkColor),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: linkColor,
+                          decoration: TextDecoration.underline,
+                        ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             queryProvider.searchController.text = correction!.suggestion;
