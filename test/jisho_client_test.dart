@@ -58,4 +58,11 @@ void main() {
     expect(word.otherForms, hasLength(2));
     expect(word.otherForms.first.form, "観る");
   });
+
+  test("search correction", () async {
+    final response = await client.search<Word>("atatakai");
+    expect(response.correction, isNotNull);
+    expect(response.correction!.searchedFor, "あたたかい");
+    expect(response.correction!.suggestion, '"atatakai"');
+  });
 }
