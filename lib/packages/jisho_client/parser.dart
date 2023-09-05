@@ -7,7 +7,7 @@ import "package:jsdict/packages/list_extensions.dart";
 import "furigana.dart";
 
 class Parser {
-  static SearchResponse<T> search<T>(Document document) {
+  static SearchResponse<T> search<T extends SearchType>(Document document) {
     final response = SearchResponse<T>();
     final body = document.body!;
 

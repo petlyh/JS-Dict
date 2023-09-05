@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Name {
+class Name implements SearchType {
   final String reading;
   final List<String> meanings;
 

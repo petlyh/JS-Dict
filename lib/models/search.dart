@@ -1,6 +1,8 @@
 part of "models.dart";
 
-class SearchResponse<T> {
+sealed class SearchType {}
+
+class SearchResponse<T extends SearchType> {
   Correction? correction;
   List<String> noMatchesFor = [];
 

@@ -11,7 +11,7 @@ import "package:jsdict/widgets/items/sentence_item.dart";
 import "package:jsdict/widgets/items/word_item.dart";
 import "package:provider/provider.dart";
 
-class ResultPage<T> extends StatefulWidget {
+class ResultPage<T extends SearchType> extends StatefulWidget {
   const ResultPage(this.query, {super.key});
 
   final String query;
@@ -20,7 +20,7 @@ class ResultPage<T> extends StatefulWidget {
   State<ResultPage<T>> createState() => _ResultPageState<T>();
 }
 
-class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveClientMixin<ResultPage<T>> {
+class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with AutomaticKeepAliveClientMixin<ResultPage<T>> {
   @override
   final bool wantKeepAlive = true;
 

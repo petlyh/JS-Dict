@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Kanji {
+class Kanji implements SearchType {
   final String kanji;
   
   List<String> meanings = [];

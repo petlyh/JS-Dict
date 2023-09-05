@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Sentence {
+class Sentence implements SearchType {
   final String id;
   final Furigana japanese;
   final String english;
