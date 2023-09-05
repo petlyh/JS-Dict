@@ -1,5 +1,5 @@
 import "package:html/dom.dart";
-import 'package:jsdict/packages/remove_tags.dart';
+import "package:jsdict/packages/remove_tags.dart";
 import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";

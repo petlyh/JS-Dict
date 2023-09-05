@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:jsdict/packages/remove_tags.dart';
+import "package:jsdict/packages/remove_tags.dart";
 import "package:provider/provider.dart";
 
 class QueryProvider extends ChangeNotifier {
