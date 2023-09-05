@@ -209,7 +209,7 @@ class Parser {
 
       if (previousElement != null && previousElement.classes.contains("meaning-tags")) {
         final tagsText = definitionElement.previousElementSibling!.text;
-        definition.types = tagsText.split(", ").map((e) => e.trim()).toList();
+        definition.types = tagsText.split(", ").map((e) => e.trim()).toList().deduplicate();
       }
 
       if (definition.types.isEmpty && word.definitions.isNotEmpty) {
