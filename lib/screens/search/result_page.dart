@@ -92,7 +92,7 @@ class _ResultPageState<T> extends State<ResultPage<T>> with AutomaticKeepAliveCl
                           ? "No matches for:\n${noMatchesFor.join("\n")}"
                           : "No matches found",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(height: 2),
+                      style: const TextStyle(height: 1.75),
                     ),
                 );
               }
