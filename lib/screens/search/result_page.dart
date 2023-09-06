@@ -52,7 +52,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
         noMatchesFor = response.noMatchesFor;
       }
 
-      if (response.correction != null) {
+      if (response.correction != null && pageKey == 1) {
         correction.value = response.correction;
       }
 
