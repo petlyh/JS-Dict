@@ -42,7 +42,7 @@ class Compound {
   Compound(this.compound, this.reading, this.meanings);
 }
 
-class KanjiType {}
+sealed class KanjiType {}
 
 class Jinmeiyou extends KanjiType {
   @override
