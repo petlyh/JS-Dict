@@ -23,6 +23,10 @@ Furigana parseSentenceFurigana(Element element) {
   }).toList();
 }
 
+List<String> limitTextPartsSize(List<String> list, int size) {
+  return list.sublist(0, size-1) + [list.sublist(size-1).join("")];
+}
+
 Furigana parseWordFurigana(Element element) {
   if (element.querySelector("span.furigana > ruby") != null) {
     return parseRubyFurigana(element);
@@ -37,7 +41,7 @@ Furigana parseWordFurigana(Element element) {
     return [FuriganaPart(text, furiganaParts.first)];
   }
 
-  final textParts = element
+  var textParts = element
       .querySelector("div.concept_light-representation > span.text")!
       .nodes
       .map((node) {
@@ -48,6 +52,10 @@ Furigana parseWordFurigana(Element element) {
       // flatten list
       .expand((e) => e)
       .toList();
+    
+  if (textParts.length > furiganaParts.length) {
+    textParts = limitTextPartsSize(textParts, furiganaParts.length);
+  }
 
   assert(furiganaParts.length == textParts.length);
 
