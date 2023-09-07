@@ -167,10 +167,16 @@ class WordDetailsScreen extends StatelessWidget {
                       shadowColor: shadowColor,
                       title: const Text("Notes"),
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          child: Text(word.notes.deduplicate().join("\n")),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Text(word.notes.deduplicate().join("\n")),
+                              ),
+                            ),
+                          ],
                         )
                       ],
                     ),
