@@ -23,7 +23,6 @@ class KanjiDetailsScreen extends StatelessWidget {
             ("Open in Browser", "https://jisho.org/search/$searchKanji %23kanji"),
             ("Unihan database", "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$searchKanji&useutf8=true"),
             ("Wiktionary", "http://en.wiktionary.org/wiki/$searchKanji"),
-            ("Google", "http://www.google.com/search?ie=utf8&oe=utf8&lr=lang_ja&q=$searchKanji"),
           ]),
         ],
       ),
