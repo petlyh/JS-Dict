@@ -24,7 +24,7 @@ class Parser {
     if (correctorElement != null) {
       response.correction = Correction(
         correctorElement.collect("p > strong > span", (e) => e.text.trim()) ?? "",
-        removeTags(correctorElement.collect("span.meant > a", (e) => e.text.trim()) ?? ""),
+        removeTypeTags(correctorElement.collect("span.meant > a", (e) => e.text.trim()) ?? ""),
       );
     }
 
