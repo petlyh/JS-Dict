@@ -35,7 +35,17 @@ class JishoClient {
     return parse(response.body);
   }
 
-  String _searchPath(String query) => "/search/${Uri.encodeComponent(query)}";
+  String _searchPath<T extends SearchType>(String query, {int page = -1}) {
+    String path = "/search/${Uri.encodeComponent(_lowercaseQuery(query))}";
+
+    // don't add type tag for page 1 of words
+    if (T is Word && page < 2) {
+      return path;
+    }
+
+    path += Uri.encodeComponent(" #${_typeTags[T]}");
+    return page > 1 ? "$path?page=$page" : path;
+  }
 
   final Map<Type, String> _typeTags = {
     Kanji: "kanji",
@@ -48,14 +58,11 @@ class JishoClient {
   String _lowercaseQuery(String query) => query.replaceAllMapped(RegExp(r"(?<=^|\s)\w+"), (match) => match.group(0)!.toLowerCase());
 
   Future<SearchResponse<T>> search<T extends SearchType>(String query, {int page = 1}) {
-    final pagePart = page > 1 ? "?page=$page" : "";
-    final path = _searchPath("${_lowercaseQuery(query)} #${_typeTags[T]}") + pagePart;
-    return _getHtml(path).then((document) => Parser.search<T>(document));
+    return _getHtml(_searchPath<T>(query, page: page)).then((document) => Parser.search<T>(document));
   }
 
   Future<Kanji> kanjiDetails(String kanji) {
-    final path = _searchPath("$kanji #kanji");
-    return _getHtml(path).then((document) => Parser.kanjiDetails(document));
+    return _getHtml(_searchPath<Kanji>(kanji)).then((document) => Parser.kanjiDetails(document));
   }
 
   Future<Word> wordDetails(String word) {
