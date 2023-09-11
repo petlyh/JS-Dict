@@ -39,7 +39,7 @@ class JishoClient {
     String path = "/search/${Uri.encodeComponent(_lowercaseQuery(query))}";
 
     // don't add type tag for page 1 of words
-    if (T is Word && page < 2) {
+    if (T == Word && page < 2) {
       return path;
     }
 

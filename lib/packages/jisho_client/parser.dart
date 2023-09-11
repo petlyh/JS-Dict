@@ -25,6 +25,12 @@ class Parser {
       removeTypeTags(e.collect("span.meant > a", (e2) => e2.text.trim()) ?? ""),
     ));
 
+    response.grammarInfo = body.collect("div.grammar-breakdown", (e) => GrammarInfo(
+      e.collect("h6", (e2) => e2.text.split(" could be an inflection").first)!,
+      e.collect("h6 > a", (e2) => e2.text.trim())!,
+      e.collectAll("ul > li", (e2) => e2.text.trim()),
+    ));
+
     response.hasNextPage = document.querySelector("a.more") != null;
 
     switch (T) {

@@ -5,6 +5,7 @@ sealed class SearchType {}
 class SearchResponse<T extends SearchType> {
   Correction? correction;
   List<String> noMatchesFor = [];
+  GrammarInfo? grammarInfo;
 
   bool hasNextPage = false;
 
@@ -22,4 +23,12 @@ class Correction {
   final String suggestion;
 
   const Correction(this.searchedFor, this.suggestion);
+}
+
+class GrammarInfo {
+  final String word;
+  final String possibleInflectionOf;
+  final List<String> formInfos;
+
+  GrammarInfo(this.word, this.possibleInflectionOf, this.formInfos);
 }

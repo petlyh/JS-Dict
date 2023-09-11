@@ -65,4 +65,12 @@ void main() {
     expect(response.correction!.searchedFor, "あたたかい");
     expect(response.correction!.suggestion, '"atatakai"');
   });
+
+  test("grammar info", () async {
+    final response = await client.search<Word>("arifureta");
+    expect(response.grammarInfo, isNotNull);
+    expect(response.grammarInfo!.word, "ありふれた");
+    expect(response.grammarInfo!.possibleInflectionOf, "ありふれる");
+    expect(response.grammarInfo!.formInfos, ["Ta-form. It indicates the past tense of the verb."]);
+  });
 }
