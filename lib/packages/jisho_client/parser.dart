@@ -11,22 +11,19 @@ class Parser {
     final response = SearchResponse<T>();
     final body = document.body!;
 
-    final noMatchesElement = document.getElementById("no-matches");
+    response.noMatchesFor = body.collect("#no-matches", (e) {
+      final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
+      return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
+    }) ?? [];
 
-    if (noMatchesElement != null) {
-      final noMatchesText = noMatchesElement.text.trim().replaceFirst(RegExp(r"\.$"), "");
-      response.noMatchesFor = noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
+    if (response.noMatchesFor.isNotEmpty) {
       return response;
     }
 
-    final correctorElement = document.getElementById("the_corrector");
-
-    if (correctorElement != null) {
-      response.correction = Correction(
-        correctorElement.collect("p > strong > span", (e) => e.text.trim()) ?? "",
-        removeTypeTags(correctorElement.collect("span.meant > a", (e) => e.text.trim()) ?? ""),
-      );
-    }
+    response.correction = body.collect("#the_corrector", (e) => Correction(
+      e.collect("p > strong > span", (e2) => e2.text.trim()) ?? "",
+      removeTypeTags(e.collect("span.meant > a", (e2) => e2.text.trim()) ?? ""),
+    ));
 
     response.hasNextPage = document.querySelector("a.more") != null;
 
