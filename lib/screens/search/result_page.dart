@@ -29,6 +29,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
   List<String> noMatchesFor = [];
 
   ValueNotifier<Correction?> correction = ValueNotifier<Correction?>(null);
+  ValueNotifier<GrammarInfo?> grammarInfo = ValueNotifier<GrammarInfo?>(null);
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
 
     if (pageKey == 1) {
       correction.value = null;
+      grammarInfo.value = null;
     }
 
     try {
@@ -52,8 +54,9 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
         noMatchesFor = response.noMatchesFor;
       }
 
-      if (response.correction != null && pageKey == 1) {
+      if (pageKey == 1) {
         correction.value = response.correction;
+        grammarInfo.value = response.grammarInfo;
       }
 
       if (!response.hasNextPage) {
@@ -74,6 +77,10 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
+        ValueListenableBuilder(
+          valueListenable: grammarInfo,
+          builder: (_, grammarInfoValue, __) => _GrammarInfo(grammarInfoValue),
+        ),
         ValueListenableBuilder(
           valueListenable: correction,
           builder: (_, correctionValue, __) => _CorrectionInfo(correctionValue),
@@ -162,6 +169,49 @@ class _CorrectionInfo extends StatelessWidget {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             queryProvider.searchController.text = correction!.suggestion;
+                            queryProvider.updateQuery();
+                          },
+                      ),
+                    ],
+                  ))
+              : null),
+    );
+  }
+}
+
+class _GrammarInfo extends StatelessWidget {
+  const _GrammarInfo(this.grammarInfo);
+
+  final GrammarInfo? grammarInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+    final linkColor = Theme.of(context).colorScheme.primary;
+    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
+
+    return SliverPadding(
+      padding: grammarInfo != null
+          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
+          : EdgeInsets.zero,
+      sliver: SliverToBoxAdapter(
+          child: grammarInfo != null
+              ? RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(color: textColor, height: 1.5),
+                    children: [
+                      TextSpan(text: grammarInfo!.word),
+                      const TextSpan(text: " could be an inflection of "),
+                      TextSpan(
+                        text: grammarInfo!.possibleInflectionOf,
+                        style: TextStyle(
+                          color: linkColor,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            queryProvider.searchController.text = grammarInfo!.possibleInflectionOf;
                             queryProvider.updateQuery();
                           },
                       ),
