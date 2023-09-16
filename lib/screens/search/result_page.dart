@@ -162,22 +162,25 @@ class _CorrectionInfo extends StatelessWidget {
                     style: TextStyle(color: textColor, height: 1.5),
                     children: [
                       const TextSpan(text: "Searched for "),
-                      TextSpan(text: correction!.searchedFor, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      TextSpan(text: correction!.effective, style: const TextStyle(fontWeight: FontWeight.w600)),
                       const TextSpan(text: "\n"),
-                      const TextSpan(text: "Try searching for "),
-                      TextSpan(
-                        text: correction!.suggestion,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: linkColor,
-                          decoration: TextDecoration.underline,
+                      if (!correction!.noMatchesForOriginal) ...[
+                        const TextSpan(text: "Try searching for "),
+                        TextSpan(
+                          text: correction!.original,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: linkColor,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              queryProvider.searchController.text = correction!.original;
+                              queryProvider.updateQuery();
+                            },
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            queryProvider.searchController.text = correction!.suggestion;
-                            queryProvider.updateQuery();
-                          },
-                      ),
+                      ] else
+                        TextSpan(text: "No matches for ${correction!.original}"),
                     ],
                   ))
               : null),

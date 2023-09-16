@@ -20,10 +20,11 @@ class SearchResponse<T extends SearchType> {
 }
 
 class Correction {
-  final String searchedFor;
-  final String suggestion;
+  final String effective;
+  final String original;
+  final bool noMatchesForOriginal;
 
-  const Correction(this.searchedFor, this.suggestion);
+  const Correction(this.effective, this.original, this.noMatchesForOriginal);
 }
 
 class GrammarInfo {

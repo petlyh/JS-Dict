@@ -62,8 +62,17 @@ void main() {
   test("search correction", () async {
     final response = await client.search<Word>("atatakai");
     expect(response.correction, isNotNull);
-    expect(response.correction!.searchedFor, "あたたかい");
-    expect(response.correction!.suggestion, '"atatakai"');
+    expect(response.correction!.effective, "あたたかい");
+    expect(response.correction!.original, '"atatakai"');
+    expect(response.correction!.noMatchesForOriginal, false);
+  });
+
+  test("search correction no matches", () async {
+    final response = await client.search<Word>("込めて");
+    expect(response.correction, isNotNull);
+    expect(response.correction!.effective, "込める");
+    expect(response.correction!.original, "込めて");
+    expect(response.correction!.noMatchesForOriginal, true);
   });
 
   test("grammar info", () async {

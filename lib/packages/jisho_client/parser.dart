@@ -26,10 +26,20 @@ class Parser {
       return response;
     }
 
-    response.correction = body.collect("#the_corrector", (e) => Correction(
-      e.collect("p > strong > span", (e2) => e2.text.trim()) ?? "",
-      removeTypeTags(e.collect("span.meant > a", (e2) => e2.text.trim()) ?? ""),
-    ));
+    response.correction = body.collect("#the_corrector", (e) {
+      final effective = e.collect("p > strong > span", (e2) => e2.text.trim()) ?? "";
+      final original = removeTypeTags(e.collect("span.meant > a", (e2) => e2.text.trim()) ?? "");
+
+      if (original.isNotEmpty) {
+        return Correction(effective, original, false);
+      }
+
+      return Correction(
+        effective,
+        e.collect("p", (e2) => RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!.group(1)!,
+        true,
+      );
+    });
 
     response.grammarInfo = body.collect("div.grammar-breakdown", (e) => GrammarInfo(
       e.collect("h6", (e2) => e2.text.split(" could be an inflection").first)!,
