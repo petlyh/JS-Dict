@@ -30,6 +30,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
 
   ValueNotifier<Correction?> correction = ValueNotifier<Correction?>(null);
   ValueNotifier<GrammarInfo?> grammarInfo = ValueNotifier<GrammarInfo?>(null);
+  ValueNotifier<Conversion?> conversion = ValueNotifier<Conversion?>(null);
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
       if (pageKey == 1) {
         correction.value = response.correction;
         grammarInfo.value = response.grammarInfo;
+        conversion.value = response.conversion;
       }
 
       if (!response.hasNextPage) {
@@ -77,6 +79,10 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
+        ValueListenableBuilder(
+          valueListenable: conversion,
+          builder: (_, conversionValue, __) => _ConversionInfo(conversionValue),
+        ),
         ValueListenableBuilder(
           valueListenable: grammarInfo,
           builder: (_, grammarInfoValue, __) => _GrammarInfo(grammarInfoValue),
@@ -217,6 +223,28 @@ class _GrammarInfo extends StatelessWidget {
                       ),
                     ],
                   ))
+              : null),
+    );
+  }
+}
+
+class _ConversionInfo extends StatelessWidget {
+  const _ConversionInfo(this.conversion);
+
+  final Conversion? conversion;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: conversion != null
+          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
+          : EdgeInsets.zero,
+      sliver: SliverToBoxAdapter(
+          child: conversion != null
+              ? Text(
+                  "${conversion!.original} is ${conversion!.converted}",
+                  textAlign: TextAlign.center,
+                )
               : null),
     );
   }
