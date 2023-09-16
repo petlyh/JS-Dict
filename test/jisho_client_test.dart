@@ -73,4 +73,18 @@ void main() {
     expect(response.grammarInfo!.possibleInflectionOf, "ありふれる");
     expect(response.grammarInfo!.formInfos, ["Ta-form. It indicates the past tense of the verb."]);
   });
+
+  test("year converion", () async {
+    final response = await client.search<Word>("昭和５２");
+    expect(response.conversion, isNotNull);
+    expect(response.conversion!.original, "昭和５２");
+    expect(response.conversion!.converted, "1977");
+  });
+
+  test("number converion", () async {
+    final response = await client.search<Word>("４７７８万");
+    expect(response.conversion, isNotNull);
+    expect(response.conversion!.original, "４７７８万");
+    expect(response.conversion!.converted, "47,780,000");
+  });
 }

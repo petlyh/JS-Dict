@@ -6,6 +6,7 @@ class SearchResponse<T extends SearchType> {
   Correction? correction;
   List<String> noMatchesFor = [];
   GrammarInfo? grammarInfo;
+  Conversion? conversion;
 
   bool hasNextPage = false;
 
@@ -32,3 +33,5 @@ class GrammarInfo {
 
   GrammarInfo(this.word, this.possibleInflectionOf, this.formInfos);
 }
+
+typedef Conversion = ({String original, String converted});

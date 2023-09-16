@@ -11,6 +11,12 @@ class Parser {
     final response = SearchResponse<T>();
     final body = document.body!;
 
+    response.conversion = body.collect("#number_conversion, #year_conversion", (e) {
+      final data = e.text.trim().split(" is ");
+      assert(data.length == 2);
+      return (original: data[0], converted: data[1]);
+    });
+
     response.noMatchesFor = body.collect("#no-matches", (e) {
       final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
       return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
