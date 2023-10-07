@@ -8,6 +8,8 @@ class SearchResponse<T extends SearchType> {
   GrammarInfo? grammarInfo;
   Conversion? conversion;
 
+  List<String> zenEntries = [];
+
   bool hasNextPage = false;
 
   List<T> results = [];

@@ -96,4 +96,19 @@ void main() {
     expect(response.conversion!.original, "４７７８万");
     expect(response.conversion!.converted, "47,780,000");
   });
+
+  test("zen", () async {
+    final response = await client.search<Word>("ありふれた世界");
+    expect(response.zenEntries, ["ありふれた", "世界"]);
+  });
+
+  test("zen ignored parts", () async {
+    final response = await client.search<Word>("三十kmと言った");
+    expect(response.zenEntries, ["三十", "と", "言った"]);
+  });
+
+  test("zen duplicates", () async {
+    final response = await client.search<Word>("灰は灰に");
+    expect(response.zenEntries, ["灰", "は", "灰", "に"]);
+  });
 }

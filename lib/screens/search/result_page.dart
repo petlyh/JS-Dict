@@ -1,3 +1,4 @@
+import "package:collection/collection.dart";
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
@@ -5,6 +6,7 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/error_indicator.dart";
+import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";
@@ -28,14 +30,26 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
 
   List<String> noMatchesFor = [];
 
-  ValueNotifier<Correction?> correction = ValueNotifier<Correction?>(null);
-  ValueNotifier<GrammarInfo?> grammarInfo = ValueNotifier<GrammarInfo?>(null);
-  ValueNotifier<Conversion?> conversion = ValueNotifier<Conversion?>(null);
+  final zenInfo = ValueNotifier<ZenInfo?>(null);
+  final correction = ValueNotifier<Correction?>(null);
+  final grammarInfo = ValueNotifier<GrammarInfo?>(null);
+  final conversion = ValueNotifier<Conversion?>(null);
+
+  String get query => zenInfo.value?.selectedEntry ?? widget.query;
 
   @override
   void initState() {
     _pagingController.addPageRequestListener(_fetchPage);
     super.initState();
+  }
+
+  void _selectZenEntry(int index) {
+    if (zenInfo.value == null) {
+      return;
+    }
+
+    zenInfo.value = zenInfo.value!.withSelected(index);
+    _pagingController.refresh();
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -44,18 +58,29 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
     if (pageKey == 1) {
       correction.value = null;
       grammarInfo.value = null;
+      conversion.value = null;
     }
 
     try {
-      final response = await getClient().search<T>(widget.query, page: pageKey);
+      final cachedQuery = query;
+      final response = await getClient().search<T>(cachedQuery, page: pageKey);
 
+      // avoid accessing the PagingController after the widget has been disposed
       if (!mounted) return;
+
+      // restart if selected zen entry was changed during request
+      if (cachedQuery != query) {
+        return _fetchPage(pageKey);
+      }
 
       if (response.noMatchesFor.isNotEmpty) {
         noMatchesFor = response.noMatchesFor;
       }
 
       if (pageKey == 1) {
+        if (zenInfo.value == null && response.zenEntries.isNotEmpty) {
+          zenInfo.value = ZenInfo(response.zenEntries);
+        }
         correction.value = response.correction;
         grammarInfo.value = response.grammarInfo;
         conversion.value = response.conversion;
@@ -79,6 +104,10 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
+        ValueListenableBuilder(
+          valueListenable: zenInfo,
+          builder: (_, zenInfoValue, __) => _ZenBar(zenInfoValue, _selectZenEntry),
+        ),
         ValueListenableBuilder(
           valueListenable: conversion,
           builder: (_, conversionValue, __) => _ConversionInfo(conversionValue),
@@ -135,6 +164,10 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
   @override
   void dispose() {
     _pagingController.dispose();
+    zenInfo.dispose();
+    correction.dispose();
+    grammarInfo.dispose();
+    conversion.dispose();
     super.dispose();
   }
 }
@@ -247,6 +280,48 @@ class _ConversionInfo extends StatelessWidget {
               ? Text(
                   "${conversion!.original} is ${conversion!.converted}",
                   textAlign: TextAlign.center,
+                )
+              : null),
+    );
+  }
+}
+
+class ZenInfo {
+  final List<String> entries;
+  final int selectedIndex;
+
+  ZenInfo(this.entries, {this.selectedIndex = 0});
+
+  String get selectedEntry => entries[selectedIndex];
+
+  ZenInfo withSelected(int index) => ZenInfo(entries, selectedIndex: index);
+}
+
+class _ZenBar extends StatelessWidget {
+  const _ZenBar(this.zenInfo, this.onSelect);
+
+  final ZenInfo? zenInfo;
+  final void Function(int index) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: zenInfo != null
+          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
+          : EdgeInsets.zero,
+      sliver: SliverToBoxAdapter(
+          child: zenInfo != null
+              ? Wrap(
+                  alignment: WrapAlignment.center,
+                  children: zenInfo!.entries.mapIndexed((index, entry) {
+                    final selected = zenInfo!.selectedIndex == index;
+
+                    return InfoChip(
+                      entry,
+                      icon: selected ? Icons.check : null,
+                      onTap: !selected ? () => onSelect(index) : null,
+                    );
+                  }).toList(),
                 )
               : null),
     );

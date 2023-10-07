@@ -17,6 +17,11 @@ class Parser {
       return (original: data[0], converted: data[1]);
     });
 
+    response.zenEntries = body.collectAll(
+      "#zen_bar span.japanese_word__text_wrapper > a",
+      (e) => e.attributes["data-word"]!,
+    );
+
     response.noMatchesFor = body.collect("#no-matches", (e) {
       final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
       return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
