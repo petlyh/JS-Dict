@@ -8,13 +8,14 @@ class Sentence implements SearchType {
 
   bool get isExample => id.isEmpty;
 
-  Sentence(this.id, this.japanese, this.english) : copyright = null;
-  Sentence.copyright(this.id, this.japanese, this.english, this.copyright);
-  Sentence.example(this.japanese, this.english) : copyright = null, id = "";
+  const Sentence(this.id, this.japanese, this.english) : copyright = null;
+  const Sentence.copyright(this.id, this.japanese, this.english, this.copyright);
+  const Sentence.example(this.japanese, this.english) : copyright = null, id = "";
 }
 
 class SentenceCopyright {
   final String name;
   final String url;
-  SentenceCopyright(this.name, this.url);
+
+  const SentenceCopyright(this.name, this.url);
 }

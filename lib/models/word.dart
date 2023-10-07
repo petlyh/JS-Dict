@@ -56,14 +56,14 @@ class WikipediaPage {
   final String title;
   final String url;
 
-  WikipediaPage(this.title, this.url);
+  const WikipediaPage(this.title, this.url);
 }
 
 class OtherForm {
   final String form;
   final String reading;
   
-  OtherForm(this.form, this.reading);
+  const OtherForm(this.form, this.reading);
 
   @override
   String toString() {
@@ -78,5 +78,5 @@ class Collocation {
   final String word;
   final String meaning;
 
-  Collocation(this.word, this.meaning);
+  const Collocation(this.word, this.meaning);
 }

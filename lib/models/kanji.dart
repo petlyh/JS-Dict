@@ -31,7 +31,7 @@ class Radical {
   final String character;
   final List<String> meanings;
   
-  Radical(this.character, this.meanings);
+  const Radical(this.character, this.meanings);
 }
 
 class Compound {
@@ -39,10 +39,12 @@ class Compound {
   final String reading;
   final List<String> meanings;
 
-  Compound(this.compound, this.reading, this.meanings);
+  const Compound(this.compound, this.reading, this.meanings);
 }
 
-sealed class KanjiType {}
+sealed class KanjiType {
+  const KanjiType();
+}
 
 class Jinmeiyou extends KanjiType {
   @override
@@ -55,8 +57,9 @@ class Jouyou extends KanjiType {
   static const juniorHighGrade = 8;
 
   final int grade;
-  Jouyou(this.grade) : assert((grade >= 1 && grade <= 6) || grade == juniorHighGrade);
-  Jouyou.juniorHigh() : grade = juniorHighGrade;
+
+  const Jouyou(this.grade) : assert((grade >= 1 && grade <= 6) || grade == juniorHighGrade);
+  const Jouyou.juniorHigh() : grade = juniorHighGrade;
 
   @override
   String toString() {

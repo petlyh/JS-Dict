@@ -161,7 +161,7 @@ class Parser {
 
     if (text.contains("Jōyō")) {
       if (text.contains("junior high")) {
-        return Jouyou.juniorHigh();
+        return const Jouyou.juniorHigh();
       }
 
       final grade = RegExp(r"grade (\d+)").firstMatch(text)!.group(1)!;

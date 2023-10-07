@@ -5,8 +5,9 @@ typedef Furigana = List<FuriganaPart>;
 class FuriganaPart {
   final String text;
   final String furigana;
-  FuriganaPart(this.text, this.furigana);
-  FuriganaPart.textOnly(this.text) : furigana = "";
+
+  const FuriganaPart(this.text, this.furigana);
+  const FuriganaPart.textOnly(this.text) : furigana = "";
 }
 
 Furigana furiganaFromText(String text) => [FuriganaPart.textOnly(text)];

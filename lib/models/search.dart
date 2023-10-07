@@ -34,7 +34,7 @@ class GrammarInfo {
   final String possibleInflectionOf;
   final List<String> formInfos;
 
-  GrammarInfo(this.word, this.possibleInflectionOf, this.formInfos);
+  const GrammarInfo(this.word, this.possibleInflectionOf, this.formInfos);
 }
 
 typedef Conversion = ({String original, String converted});
