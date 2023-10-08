@@ -2,6 +2,7 @@ import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/rounded_bottom_border.dart";
 
@@ -24,9 +25,7 @@ class CompoundList extends StatelessWidget {
                 title: Text("${compound.compound} 【${compound.reading}】"),
                 subtitle: Text(compound.meanings.join(", ")),
                 trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        WordDetailsScreen(compound.compound, search: true))),
+                onTap: pushScreen(context, WordDetailsScreen(compound.compound, search: true)),
               ))
           .toList()
           .intersperce(const Divider(height: 0)),

@@ -2,6 +2,7 @@ import "package:audioplayers/audioplayers.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/packages/list_extensions.dart";
+import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
@@ -122,13 +123,9 @@ class WordDetailsScreen extends StatelessWidget {
                                 subtitle: Text(collocation.meaning),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => WordDetailsScreen(
+                                onTap: pushScreen(context, WordDetailsScreen(
                                         collocation.word,
-                                        search: true),
-                                  ),
-                                ),
+                                        search: true)),
                               ))
                           .toList()
                           .intersperce(const Divider(height: 0)),

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
+import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:ruby_text/ruby_text.dart";
 
@@ -16,9 +17,7 @@ class WordItem extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodyMedium!;
 
     return ItemCard(
-      onTap: () => {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => WordDetailsScreen(word.id!)))
-      },
+      onTap: pushScreen(context, WordDetailsScreen(word.id!)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: RubyText(
