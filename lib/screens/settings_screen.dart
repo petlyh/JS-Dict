@@ -1,6 +1,7 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/providers/theme_provider.dart";
+import "package:package_info_plus/package_info_plus.dart";
 import "package:provider/provider.dart";
 
 class SettingScreen extends StatelessWidget {
@@ -41,11 +42,17 @@ class SettingScreen extends StatelessWidget {
                     ),
                   const Divider(),
                   ListTile(
-                    onTap: () => showAboutDialog(
-                      context: context,
-                      applicationVersion: "0.0.1",
-                      applicationLegalese: "Licensed under GPLv3.",
-                    ),
+                    onTap: () async {
+                      final packageInfo = await PackageInfo.fromPlatform();
+                      
+                      if (context.mounted) {
+                        showAboutDialog(
+                          context: context,
+                          applicationVersion: packageInfo.version,
+                          applicationLegalese: "Licensed under GPLv3.",
+                        );
+                      }
+                    },
                     leading: const Icon(Icons.info, size: 32.0),
                     title: const Text("About"),
                   ),
