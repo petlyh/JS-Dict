@@ -253,7 +253,7 @@ class _GrammarInfo extends StatelessWidget {
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = screenPusher(
+                          ..onTap = pushScreen(
                               context,
                               WordDetailsScreen(
                                   grammarInfo!.possibleInflectionOf,

@@ -24,7 +24,7 @@ class SearchScreen extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton(
-          onPressed: screenPusher(context, const RadicalSearchScreen()),
+          onPressed: pushScreen(context, const RadicalSearchScreen()),
           tooltip: "Radicals",
           child: const Text("部", style: TextStyle(fontSize: 20)),
         ),
@@ -50,12 +50,12 @@ class SearchScreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              onPressed: screenPusher(context, const TagSelectionScreen()),
+              onPressed: pushScreen(context, const TagSelectionScreen()),
               icon: const Icon(Icons.tag),
               tooltip: "Tags",
             ),
             IconButton(
-              onPressed: screenPusher(context, const SettingScreen()),
+              onPressed: pushScreen(context, const SettingScreen()),
               icon: const Icon(Icons.settings),
               tooltip: "Settings",
             ),

@@ -20,11 +20,11 @@ class DefinitionTile extends StatelessWidget {
 
   Function()? onTap(BuildContext context) {
     if (isWikipedia) {
-      return screenPusher(context, WikipediaScreen(definition.wikipedia!));
+      return pushScreen(context, WikipediaScreen(definition.wikipedia!));
     }
 
     if (hasExampleSentence) {
-      return screenPusher(context, SentenceDetailsScreen(definition.exampleSentence!));
+      return pushScreen(context, SentenceDetailsScreen(definition.exampleSentence!));
     }
 
     return null;
@@ -59,7 +59,7 @@ class DefinitionTile extends StatelessWidget {
                             color: linkColor,
                             decoration: TextDecoration.underline),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = screenPusher(
+                          ..onTap = pushScreen(
                             context,
                             WordDetailsScreen(seeAlsoWord, search: true),
                           ),

@@ -15,7 +15,7 @@ class SentenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-      onTap: screenPusher(context, SentenceDetailsScreen(sentence)),
+      onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
         title: RubyText(sentence.japanese.toRubyData()),
