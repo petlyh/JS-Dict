@@ -3,7 +3,9 @@ import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/error_indicator.dart";
 import "package:jsdict/widgets/info_chips.dart";
@@ -230,7 +232,6 @@ class _GrammarInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
     final linkColor = Theme.of(context).colorScheme.primary;
-    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
 
     return SliverPadding(
       padding: grammarInfo != null
@@ -252,10 +253,11 @@ class _GrammarInfo extends StatelessWidget {
                           decoration: TextDecoration.underline,
                         ),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            queryProvider.searchController.text = grammarInfo!.possibleInflectionOf;
-                            queryProvider.updateQuery();
-                          },
+                          ..onTap = screenPusher(
+                              context,
+                              WordDetailsScreen(
+                                  grammarInfo!.possibleInflectionOf,
+                                  search: true)),
                       ),
                     ],
                   ))
