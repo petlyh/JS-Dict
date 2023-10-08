@@ -1,7 +1,12 @@
 part of "models.dart";
 
 enum JLPTLevel {
-  n1, n2, n3, n4, n5, none;
+  n1,
+  n2,
+  n3,
+  n4,
+  n5,
+  none;
 
   @override
   String toString() {
@@ -22,7 +27,7 @@ enum JLPTLevel {
       "n3" => n3,
       "n4" => n4,
       "n5" => n5,
-      _ =>  none,
+      _ => none,
     };
   }
 

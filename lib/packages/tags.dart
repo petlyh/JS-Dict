@@ -227,7 +227,8 @@ const wordTags = {
     "Nidan verb (lower class) with su ending (archaic)": "v2s-s",
     "Nidan verb (upper class) with tsu ending (archaic)": "v2t-k",
     "Nidan verb (lower class) with tsu ending (archaic)": "v2t-s",
-    "Nidan verb (lower class) with u ending and we conjugation (archaic)": "v2w-s",
+    "Nidan verb (lower class) with u ending and we conjugation (archaic)":
+        "v2w-s",
     "Nidan verb (upper class) with yu ending (archaic)": "v2y-k",
     "Nidan verb (lower class) with yu ending (archaic)": "v2y-s",
     "Nidan verb (lower class) with zu ending (archaic)": "v2z-s",

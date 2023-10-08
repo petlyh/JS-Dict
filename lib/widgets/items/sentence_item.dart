@@ -15,20 +15,19 @@ class SentenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-      onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-        title: RubyText(sentence.japanese.toRubyData()),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(sentence.english),
-            if (sentence.copyright != null)
-              CopyrightText(sentence.copyright!),
-          ],
-        )
-      )
-    );
+        onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
+        child: ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+            title: RubyText(sentence.japanese.toRubyData()),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(sentence.english),
+                if (sentence.copyright != null)
+                  CopyrightText(sentence.copyright!),
+              ],
+            )));
   }
 }

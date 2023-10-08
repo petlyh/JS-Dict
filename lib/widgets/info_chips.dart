@@ -14,17 +14,19 @@ class InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
-      builder: (dynamicColorScheme, _) => Consumer<ThemeProvider>(
-          builder: (context, themeProvider, _) {
-            final dynamicColorsDisabled = dynamicColorScheme == null || !themeProvider.dynamicColors;
-            return Card(
-              surfaceTintColor: dynamicColorsDisabled ? color : null,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(48)),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(48),
-                onTap: onTap,
-                child: Padding(
+      builder: (dynamicColorScheme, _) =>
+          Consumer<ThemeProvider>(builder: (context, themeProvider, _) {
+        final dynamicColorsDisabled =
+            dynamicColorScheme == null || !themeProvider.dynamicColors;
+
+        return Card(
+            surfaceTintColor: dynamicColorsDisabled ? color : null,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(48),
+              onTap: onTap,
+              child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 child: icon != null
                     ? Row(
@@ -37,9 +39,8 @@ class InfoChip extends StatelessWidget {
                       )
                     : Text(text),
               ),
-              ));
-          }
-            ),
+            ));
+      }),
     );
   }
 }

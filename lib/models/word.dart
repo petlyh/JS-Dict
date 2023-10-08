@@ -19,7 +19,9 @@ class Word implements SearchType {
   String? id;
 
   String inflectionId = "";
-  InflectionType? get inflectionType => inflectionId.isNotEmpty ? Inflection.getType(word.getText(), inflectionId) : null;
+  InflectionType? get inflectionType => inflectionId.isNotEmpty
+      ? Inflection.getType(word.getText(), inflectionId)
+      : null;
 
   List<Collocation> collocations = [];
 
@@ -62,7 +64,7 @@ class WikipediaPage {
 class OtherForm {
   final String form;
   final String reading;
-  
+
   const OtherForm(this.form, this.reading);
 
   @override

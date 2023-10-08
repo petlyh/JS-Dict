@@ -11,7 +11,8 @@ class Parser {
     final response = SearchResponse<T>();
     final body = document.body!;
 
-    response.conversion = body.collect("#number_conversion, #year_conversion", (e) {
+    response.conversion =
+        body.collect("#number_conversion, #year_conversion", (e) {
       final data = e.text.trim().split(" is ");
       assert(data.length == 2);
       return (original: data[0], converted: data[1]);
@@ -23,17 +24,20 @@ class Parser {
     );
 
     response.noMatchesFor = body.collect("#no-matches", (e) {
-      final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
-      return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
-    }) ?? [];
+          final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
+          return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
+        }) ??
+        [];
 
     if (response.noMatchesFor.isNotEmpty) {
       return response;
     }
 
     response.correction = body.collect("#the_corrector", (e) {
-      final effective = e.collect("p > strong > span", (e2) => e2.text.trim()) ?? "";
-      final original = removeTypeTags(e.collect("span.meant > a", (e2) => e2.text.trim()) ?? "");
+      final effective =
+          e.collect("p > strong > span", (e2) => e2.text.trim()) ?? "";
+      final original = removeTypeTags(
+          e.collect("span.meant > a", (e2) => e2.text.trim()) ?? "");
 
       if (original.isNotEmpty) {
         return Correction(effective, original, false);
@@ -41,55 +45,80 @@ class Parser {
 
       return Correction(
         effective,
-        e.collect("p", (e2) => RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!.group(1)!,
+        e
+            .collect(
+                "p",
+                (e2) => RegExp(r"No matches for (.+?)\.")
+                    .firstMatch(e2.text.trim()))!
+            .group(1)!,
         true,
       );
     });
 
-    response.grammarInfo = body.collect("div.grammar-breakdown", (e) => GrammarInfo(
-      e.collect("h6", (e2) => e2.text.split(" could be an inflection").first)!,
-      e.collect("h6 > a", (e2) => e2.text.trim())!,
-      e.collectAll("ul > li", (e2) => e2.text.trim()),
-    ));
+    response.grammarInfo = body.collect(
+        "div.grammar-breakdown",
+        (e) => GrammarInfo(
+              e.collect("h6",
+                  (e2) => e2.text.split(" could be an inflection").first)!,
+              e.collect("h6 > a", (e2) => e2.text.trim())!,
+              e.collectAll("ul > li", (e2) => e2.text.trim()),
+            ));
 
     response.hasNextPage = document.querySelector("a.more") != null;
 
     switch (T) {
       case Kanji:
-        response.addResults(body.collectAll<Kanji>("div.kanji.details", _kanjiDetailsEntry));
+        response.addResults(
+            body.collectAll<Kanji>("div.kanji.details", _kanjiDetailsEntry));
         if (response.results.isNotEmpty) break;
-        response.addResults(body.collectAll<Kanji>("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry));
+        response.addResults(body.collectAll<Kanji>(
+            "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry));
         break;
       case Word:
-        response.addResults(body.collectAll<Word>("div.concepts > .concept_light, div.exact_block > .concept_light", _wordEntry));
+        response.addResults(body.collectAll<Word>(
+            "div.concepts > .concept_light, div.exact_block > .concept_light",
+            _wordEntry));
         break;
       case Sentence:
-        response.addResults(body.collectAll<Sentence>("div.sentences_block > ul > li.entry.sentence", _sentenceEntry));
+        response.addResults(body.collectAll<Sentence>(
+            "div.sentences_block > ul > li.entry.sentence", _sentenceEntry));
         break;
       case Name:
-        response.addResults(body.collectAll<Name>("div.names_block > div.names > div.concept_light", _nameEntry));
+        response.addResults(body.collectAll<Name>(
+            "div.names_block > div.names > div.concept_light", _nameEntry));
     }
 
     return response;
   }
 
   static Name _nameEntry(Element element) {
-    final reading = element.collect("div.concept_light-readings", (e) => e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
-    final meanings = element.collectAll("span.meaning-meaning", (e) => e.text.trim());
+    final reading = element.collect(
+        "div.concept_light-readings",
+        (e) =>
+            e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
+    final meanings =
+        element.collectAll("span.meaning-meaning", (e) => e.text.trim());
 
     return Name(reading, meanings);
   }
 
   static Kanji _kanjiEntry(Element element) {
-    final literal = element.collect("div.literal_block > span > a", (e) => e.text.trim())!;
+    final literal =
+        element.collect("div.literal_block > span > a", (e) => e.text.trim())!;
     final kanji = Kanji(literal);
 
-    kanji.meanings = element.collectAll("div.meanings > span", (e) => e.text.trim().replaceAll(",", ""));
-    kanji.kunReadings = element.collectAll("div.kun > span.japanese_gothic > a", (e) => e.text.trim());
-    kanji.onReadings = element.collectAll("div.on > span.japanese_gothic > a", (e) => e.text.trim());
+    kanji.meanings = element.collectAll(
+        "div.meanings > span", (e) => e.text.trim().replaceAll(",", ""));
+    kanji.kunReadings = element.collectAll(
+        "div.kun > span.japanese_gothic > a", (e) => e.text.trim());
+    kanji.onReadings = element.collectAll(
+        "div.on > span.japanese_gothic > a", (e) => e.text.trim());
 
-    kanji.strokeCount = element.collect(".strokes", (e) => int.parse(e.text.split(" ").first))!;
-    kanji.jlptLevel = element.collect("div.info", (e) => JLPTLevel.findInText(e.text)) ?? JLPTLevel.none;
+    kanji.strokeCount =
+        element.collect(".strokes", (e) => int.parse(e.text.split(" ").first))!;
+    kanji.jlptLevel =
+        element.collect("div.info", (e) => JLPTLevel.findInText(e.text)) ??
+            JLPTLevel.none;
     kanji.type = element.collect<KanjiType?>("div.info", _getKanjiType);
 
     return kanji;
@@ -99,8 +128,11 @@ class Parser {
     final english = element.collect("span.english", (e) => e.text.trim())!;
     final japanese = parseSentenceFurigana(element);
 
-    final copyright = element.collect("span.inline_copyright a", (e) => SentenceCopyright(e.text.trim(), e.attributes["href"]!));
-    final id = element.collect("a.light-details_link", (e) => e.attributes["href"]!.split("/").last) ?? "";
+    final copyright = element.collect("span.inline_copyright a",
+        (e) => SentenceCopyright(e.text.trim(), e.attributes["href"]!));
+    final id = element.collect("a.light-details_link",
+            (e) => e.attributes["href"]!.split("/").last) ??
+        "";
 
     return Sentence.copyright(id, japanese, english, copyright);
   }
@@ -128,25 +160,44 @@ class Parser {
   }
 
   static Kanji _kanjiDetailsEntry(Element element) {
-    final kanjiDetails = Kanji(element.collect("h1.character", (e) => e.text.trim())!);
+    final kanjiDetails =
+        Kanji(element.collect("h1.character", (e) => e.text.trim())!);
 
-    kanjiDetails.meanings = element.collect(".kanji-details__main-meanings", (e) => e.text.trim().split(", "))!;
+    kanjiDetails.meanings = element.collect(
+        ".kanji-details__main-meanings", (e) => e.text.trim().split(", "))!;
 
-    kanjiDetails.strokeCount = element.collect(".kanji-details__stroke_count > strong", (e) => int.parse(e.text.trim()))!;
-    kanjiDetails.jlptLevel = element.collect("div.jlpt > strong", (e) => JLPTLevel.fromString(e.text.trim())) ?? JLPTLevel.none;
+    kanjiDetails.strokeCount = element.collect(
+        ".kanji-details__stroke_count > strong",
+        (e) => int.parse(e.text.trim()))!;
+    kanjiDetails.jlptLevel = element.collect(
+            "div.jlpt > strong", (e) => JLPTLevel.fromString(e.text.trim())) ??
+        JLPTLevel.none;
     kanjiDetails.type = element.collect<KanjiType?>("div.grade", _getKanjiType);
 
-    kanjiDetails.kunReadings = element.collectAll("div.kanji-details__main-readings > dl.kun_yomi > dd > a", (e) => e.text.trim());
-    kanjiDetails.onReadings = element.collectAll("div.kanji-details__main-readings > dl.on_yomi > dd > a", (e) => e.text.trim());
+    kanjiDetails.kunReadings = element.collectAll(
+        "div.kanji-details__main-readings > dl.kun_yomi > dd > a",
+        (e) => e.text.trim());
+    kanjiDetails.onReadings = element.collectAll(
+        "div.kanji-details__main-readings > dl.on_yomi > dd > a",
+        (e) => e.text.trim());
 
-    kanjiDetails.parts = element.collectAll("div.radicals > dl > dd > a", (e) => e.text.trim());
-    kanjiDetails.variants = element.collectAll("dl.variants > dd > a", (e) => e.text.trim());
+    kanjiDetails.parts =
+        element.collectAll("div.radicals > dl > dd > a", (e) => e.text.trim());
+    kanjiDetails.variants =
+        element.collectAll("dl.variants > dd > a", (e) => e.text.trim());
 
-    kanjiDetails.frequency = element.collect("div.frequency > strong", (e) => int.parse(e.text.trim()));
+    kanjiDetails.frequency = element.collect(
+        "div.frequency > strong", (e) => int.parse(e.text.trim()));
 
-    kanjiDetails.radical = element.collect("div.radicals > dl > dd > span", (e) {
-      final character = e.nodes.firstWhere((node) => node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty).text!.trim();
-      final meanings = e.querySelector("span.radical_meaning")!.text.trim().split(", ");
+    kanjiDetails.radical =
+        element.collect("div.radicals > dl > dd > span", (e) {
+      final character = e.nodes
+          .firstWhere((node) =>
+              node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty)
+          .text!
+          .trim();
+      final meanings =
+          e.querySelector("span.radical_meaning")!.text.trim().split(", ");
       return Radical(character, meanings);
     });
 
@@ -167,7 +218,7 @@ class Parser {
       final grade = RegExp(r"grade (\d+)").firstMatch(text)!.group(1)!;
       return Jouyou(int.parse(grade));
     }
-    
+
     if (text.contains("Jinmeiyō")) {
       return Jinmeiyou();
     }
@@ -177,19 +228,22 @@ class Parser {
 
   static List<Compound> _findCompounds(Element element, String type) {
     return element.collectFirstWhere(
-      "div.row.compounds > div.columns",
-      (e) => e.querySelector("h2")!.text.contains("$type reading compounds"),
-      (column) => column.collectAll("ul > li", (e) {
-        final lines = e.text.trim().split("\n");
-        assert(lines.length == 3);
+          "div.row.compounds > div.columns",
+          (e) =>
+              e.querySelector("h2")!.text.contains("$type reading compounds"),
+          (column) => column.collectAll("ul > li", (e) {
+            final lines = e.text.trim().split("\n");
+            assert(lines.length == 3);
 
-        final compound = lines[0].trim();
-        final reading = lines[1].trim().replaceAll("【", "").replaceAll("】", "");
-        final meanings = lines[2].trim().split(", ");
+            final compound = lines[0].trim();
+            final reading =
+                lines[1].trim().replaceAll("【", "").replaceAll("】", "");
+            final meanings = lines[2].trim().split(", ");
 
-        return Compound(compound, reading, meanings);
-      }),
-    ) ?? [];
+            return Compound(compound, reading, meanings);
+          }),
+        ) ??
+        [];
   }
 
   static List<OtherForm> _parseOtherForms(Element element) {
@@ -205,15 +259,19 @@ class Parser {
     final furigana = parseWordFurigana(element);
     final word = Word(furigana);
 
-    word.commonWord = element.querySelector("span.concept_light-common") != null;
+    word.commonWord =
+        element.querySelector("span.concept_light-common") != null;
 
-    word.audioUrl = element.collect("audio > source", (e) => "https:${e.attributes["src"]!}") ?? "";
+    word.audioUrl = element.collect(
+            "audio > source", (e) => "https:${e.attributes["src"]!}") ??
+        "";
 
     word.jlptLevel = element.collectFirstWhere(
-      "span.concept_light-tag",
-      (e) => e.text.contains("JLPT"),
-      (e) => JLPTLevel.fromString(e.text.trim().split(" ")[1]),
-    ) ?? JLPTLevel.none;
+          "span.concept_light-tag",
+          (e) => e.text.contains("JLPT"),
+          (e) => JLPTLevel.fromString(e.text.trim().split(" ")[1]),
+        ) ??
+        JLPTLevel.none;
 
     word.wanikaniLevels = element.collectWhere(
       "span.concept_light-tag",
@@ -230,38 +288,52 @@ class Parser {
         continue;
       }
 
-      final notesElement = definitionElement.querySelector("div.meaning-representation_notes > span");
+      final notesElement = definitionElement
+          .querySelector("div.meaning-representation_notes > span");
       if (notesElement != null) {
-        word.notes = notesElement.text.trim().replaceFirst(RegExp(r"\.$"), "").split(". ");
+        word.notes = notesElement.text
+            .trim()
+            .replaceFirst(RegExp(r"\.$"), "")
+            .split(". ");
         continue;
       }
 
       final definition = Definition();
 
-      if (previousElement != null && previousElement.classes.contains("meaning-tags")) {
+      if (previousElement != null &&
+          previousElement.classes.contains("meaning-tags")) {
         final tagsText = definitionElement.previousElementSibling!.text;
-        definition.types = tagsText.split(", ").map((e) => e.trim()).toList().deduplicate();
+        definition.types =
+            tagsText.split(", ").map((e) => e.trim()).toList().deduplicate();
       }
 
       if (definition.types.isEmpty && word.definitions.isNotEmpty) {
         definition.types = word.definitions.last.types;
       }
 
-      final meaningsElement = definitionElement.querySelector("span.meaning-meaning");
+      final meaningsElement =
+          definitionElement.querySelector("span.meaning-meaning");
       definition.meanings = meaningsElement!.text.trim().split("; ");
 
-      definition.tags = definitionElement.collectAll("span.tag-tag, span.tag-info, span.tag-source", (e) => e.text.trim());
-      definition.seeAlso = definitionElement.collectAll("span.tag-see_also > a", (e) => e.text.trim());
+      definition.tags = definitionElement.collectAll(
+          "span.tag-tag, span.tag-info, span.tag-source", (e) => e.text.trim());
+      definition.seeAlso = definitionElement.collectAll(
+          "span.tag-see_also > a", (e) => e.text.trim());
       // deduplicate
       definition.seeAlso = definition.seeAlso.deduplicate();
 
       if (definition.types.contains("Wikipedia definition") &&
           definitionElement.querySelector("span.meaning-abstract") != null) {
-        final wikipediaDefinition = WikipediaDefinition(definition.meanings.first);
-        wikipediaDefinition.textAbstract = definitionElement.collect("span.meaning-abstract", (e) => e.nodes.first.text!);
-        wikipediaDefinition.wikipediaEnglish = _wikipediaPage(definitionElement, "English Wikipedia");
-        wikipediaDefinition.wikipediaJapanese = _wikipediaPage(definitionElement, "Japanese Wikipedia");
-        wikipediaDefinition.dbpedia = _wikipediaPage(definitionElement, "DBpedia");
+        final wikipediaDefinition =
+            WikipediaDefinition(definition.meanings.first);
+        wikipediaDefinition.textAbstract = definitionElement.collect(
+            "span.meaning-abstract", (e) => e.nodes.first.text!);
+        wikipediaDefinition.wikipediaEnglish =
+            _wikipediaPage(definitionElement, "English Wikipedia");
+        wikipediaDefinition.wikipediaJapanese =
+            _wikipediaPage(definitionElement, "Japanese Wikipedia");
+        wikipediaDefinition.dbpedia =
+            _wikipediaPage(definitionElement, "DBpedia");
         definition.wikipedia = wikipediaDefinition;
       }
 
@@ -273,22 +345,27 @@ class Parser {
       word.definitions.add(definition);
     }
 
-    word.id = element.collect("a.light-details_link", (e) => Uri.decodeComponent(e.attributes["href"]!.split("/").last));
+    word.id = element.collect("a.light-details_link",
+        (e) => Uri.decodeComponent(e.attributes["href"]!.split("/").last));
 
-    word.inflectionId = element.collect("a.show_inflection_table", (e) => e.attributes["data-pos"]!) ?? "";
+    word.inflectionId = element.collect(
+            "a.show_inflection_table", (e) => e.attributes["data-pos"]!) ??
+        "";
 
     word.collocations = element.collectFirstWhere(
-      ".concept_light-status_link",
-      (e) => e.text.contains("collocation"),
-      (e) {
-        final selector = "#${e.attributes["data-reveal-id"]!} > ul > li > a";
-        return element.collectAll(selector, (e2) {
-          final split = e2.text.trim().split(" - ");
-          assert(split.length == 2);
-          return Collocation(split[0], split[1]);
-        });
-      },
-    ) ?? [];
+          ".concept_light-status_link",
+          (e) => e.text.contains("collocation"),
+          (e) {
+            final selector =
+                "#${e.attributes["data-reveal-id"]!} > ul > li > a";
+            return element.collectAll(selector, (e2) {
+              final split = e2.text.trim().split(" - ");
+              assert(split.length == 2);
+              return Collocation(split[0], split[1]);
+            });
+          },
+        ) ??
+        [];
 
     return word;
   }
@@ -297,7 +374,8 @@ class Parser {
     return definitionElement.collectFirstWhere(
       "span.meaning-abstract > a",
       (e) => e.text.contains(name),
-      (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!, e.attributes["href"]!),
+      (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
+          e.attributes["href"]!),
     );
   }
 
@@ -308,7 +386,8 @@ class Parser {
       throw Exception("Word not found");
     }
 
-    word.kanji = document.body!.collectAll("div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
+    word.kanji = document.body!.collectAll(
+        "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
     return word;
   }
 }

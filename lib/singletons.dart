@@ -6,7 +6,8 @@ import "package:shared_preferences/shared_preferences.dart";
 Future<void> registerSingletons() {
   WidgetsFlutterBinding.ensureInitialized();
   GetIt.I.registerLazySingleton<JishoClient>(() => JishoClient());
-  GetIt.I.registerSingletonAsync<SharedPreferences>(() => SharedPreferences.getInstance());
+  GetIt.I.registerSingletonAsync<SharedPreferences>(
+      () => SharedPreferences.getInstance());
   return GetIt.I.allReady();
 }
 

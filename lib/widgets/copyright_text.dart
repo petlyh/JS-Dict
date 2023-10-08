@@ -14,18 +14,19 @@ class CopyrightText extends StatelessWidget {
     final linkColor = Theme.of(context).colorScheme.primary;
 
     return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(text: "— ", style: TextStyle(color: textColor)),
-          TextSpan(
-            text: copyright.name,
-            style: TextStyle(color: linkColor),
-            recognizer: TapGestureRecognizer()..onTap = () {
-              launchUrl(Uri.parse(copyright.url), mode: LaunchMode.externalApplication);
+        text: TextSpan(
+      children: [
+        TextSpan(text: "— ", style: TextStyle(color: textColor)),
+        TextSpan(
+          text: copyright.name,
+          style: TextStyle(color: linkColor),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              launchUrl(Uri.parse(copyright.url),
+                  mode: LaunchMode.externalApplication);
             },
-          ),
-        ],
-      )
-    );
+        ),
+      ],
+    ));
   }
 }

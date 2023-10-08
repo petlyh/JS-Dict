@@ -10,13 +10,14 @@ class ThemeProvider extends ChangeNotifier {
   static const themes = ["System", "Light", "Dark"];
 
   ThemeMode get currentTheme => switch (currentThemeString) {
-    "System" => ThemeMode.system,
-    "Light" => ThemeMode.light,
-    "Dark" => ThemeMode.dark,
-    _ => throw Exception("Unknown theme: $currentThemeString"),
-  };
+        "System" => ThemeMode.system,
+        "Light" => ThemeMode.light,
+        "Dark" => ThemeMode.dark,
+        _ => throw Exception("Unknown theme: $currentThemeString"),
+      };
 
-  String get currentThemeString => _preferences.getString(_themeKey) ?? _defaultThemeString;
+  String get currentThemeString =>
+      _preferences.getString(_themeKey) ?? _defaultThemeString;
 
   void setTheme(String name) async {
     await _preferences.setString(_themeKey, name);
@@ -25,7 +26,7 @@ class ThemeProvider extends ChangeNotifier {
 
   static const _dynamicColorsKey = "DynamicColors";
   bool get dynamicColors => _preferences.getBool(_dynamicColorsKey) ?? true;
-  
+
   void setDynamicColors(bool value) async {
     await _preferences.setBool(_dynamicColorsKey, value);
     notifyListeners();

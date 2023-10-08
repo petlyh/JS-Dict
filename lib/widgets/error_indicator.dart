@@ -71,46 +71,48 @@ class ErrorIndicator extends StatelessWidget {
 
   void showErrorInfoDialog(BuildContext context) {
     showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        titlePadding: const EdgeInsets.only(top: 28, bottom: 12, left: 28, right: 28),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 28),
-        title: const Text("Error Info", style: TextStyle(fontSize: 20)),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _infoText("Type: ", _errorType),
-              _infoText("Message: ", _errorMessage),
-              if (stackTrace != null) ...[
-                _infoText("Stack trace: ", ""),
-                ExpandableText(
-                  stackTrace.toString(),
-                  expandText: "Show",
-                  collapseText: "Hide",
-                  maxLines: 1,
-                  linkColor: Theme.of(context).colorScheme.primary,
+        context: context,
+        builder: (context) => AlertDialog(
+              titlePadding: const EdgeInsets.only(
+                  top: 28, bottom: 12, left: 28, right: 28),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 28),
+              title: const Text("Error Info", style: TextStyle(fontSize: 20)),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _infoText("Type: ", _errorType),
+                    _infoText("Message: ", _errorMessage),
+                    if (stackTrace != null) ...[
+                      _infoText("Stack trace: ", ""),
+                      ExpandableText(
+                        stackTrace.toString(),
+                        expandText: "Show",
+                        collapseText: "Hide",
+                        maxLines: 1,
+                        linkColor: Theme.of(context).colorScheme.primary,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: const Text("Copy"),
+                  onPressed: () => _copyError(context),
+                ),
+                TextButton(
+                  child: const Text("Close"),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ],
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text("Copy"),
-            onPressed: () => _copyError(context),
-          ),
-          TextButton(
-            child: const Text("Close"),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ));
+            ));
   }
 
   void _copyError(BuildContext context) {
-    final copyText = "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n${stackTrace.toString()}```";
+    final copyText =
+        "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n${stackTrace.toString()}```";
 
     Clipboard.setData(ClipboardData(text: copyText)).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(

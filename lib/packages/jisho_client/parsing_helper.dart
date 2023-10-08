@@ -10,7 +10,8 @@ extension ParsingHelper on Element {
     return querySelectorAll(selector).map(handler).toList();
   }
 
-  List<T> collectWhere<T>(String selector, bool Function(Element e) condition, T Function(Element e) handler) {
+  List<T> collectWhere<T>(String selector, bool Function(Element e) condition,
+      T Function(Element e) handler) {
     final List<T> result = [];
 
     for (final foundElement in querySelectorAll(selector)) {
@@ -22,7 +23,8 @@ extension ParsingHelper on Element {
     return result;
   }
 
-  T? collectFirstWhere<T>(String selector, bool Function(Element e) condition, T Function(Element e) handler) {
+  T? collectFirstWhere<T>(String selector, bool Function(Element e) condition,
+      T Function(Element e) handler) {
     final result = collectWhere(selector, condition, handler);
     return result.isNotEmpty ? result.first : null;
   }

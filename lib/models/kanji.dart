@@ -2,35 +2,35 @@ part of "models.dart";
 
 class Kanji implements SearchType {
   final String kanji;
-  
+
   List<String> meanings = [];
   List<String> kunReadings = [];
   List<String> onReadings = [];
 
   KanjiType? type;
-  
+
   int strokeCount = -1;
   JLPTLevel jlptLevel = JLPTLevel.none;
 
   List<String> parts = [];
   List<String> variants = [];
-  
+
   Radical? radical;
-  
+
   int? frequency;
 
   String strokeDiagramUrl = "";
 
   List<Compound> onCompounds = [];
   List<Compound> kunCompounds = [];
-  
+
   Kanji(this.kanji);
 }
 
 class Radical {
   final String character;
   final List<String> meanings;
-  
+
   const Radical(this.character, this.meanings);
 }
 
@@ -58,7 +58,8 @@ class Jouyou extends KanjiType {
 
   final int grade;
 
-  const Jouyou(this.grade) : assert((grade >= 1 && grade <= 6) || grade == juniorHighGrade);
+  const Jouyou(this.grade)
+      : assert((grade >= 1 && grade <= 6) || grade == juniorHighGrade);
   const Jouyou.juniorHigh() : grade = juniorHighGrade;
 
   @override

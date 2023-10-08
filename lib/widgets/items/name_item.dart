@@ -12,16 +12,14 @@ class NameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-      onTap: pushScreen(context, NameDetailsScreen(name)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-        title: Text(name.reading),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: name.meanings.map((e) => Text(e)).toList()
-        )
-      )
-    );
+        onTap: pushScreen(context, NameDetailsScreen(name)),
+        child: ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+            title: Text(name.reading),
+            subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: name.meanings.map((e) => Text(e)).toList())));
   }
 }

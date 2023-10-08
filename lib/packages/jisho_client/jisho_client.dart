@@ -29,7 +29,8 @@ class JishoClient {
         throw NotFoundException(response.request!.url);
       }
 
-      throw HttpException("Unsuccessful response status: ${response.statusCode}");
+      throw HttpException(
+          "Unsuccessful response status: ${response.statusCode}");
     }
 
     return parse(response.body);
@@ -55,14 +56,18 @@ class JishoClient {
   };
 
   // returns query with everything lowercased except for tags
-  String _lowercaseQuery(String query) => query.replaceAllMapped(RegExp(r"(?<=^|\s)\w+"), (match) => match.group(0)!.toLowerCase());
+  String _lowercaseQuery(String query) => query.replaceAllMapped(
+      RegExp(r"(?<=^|\s)\w+"), (match) => match.group(0)!.toLowerCase());
 
-  Future<SearchResponse<T>> search<T extends SearchType>(String query, {int page = 1}) {
-    return _getHtml(_searchPath<T>(query, page: page)).then((document) => Parser.search<T>(document));
+  Future<SearchResponse<T>> search<T extends SearchType>(String query,
+      {int page = 1}) {
+    return _getHtml(_searchPath<T>(query, page: page))
+        .then((document) => Parser.search<T>(document));
   }
 
   Future<Kanji> kanjiDetails(String kanji) {
-    return _getHtml(_searchPath<Kanji>(kanji)).then((document) => Parser.kanjiDetails(document));
+    return _getHtml(_searchPath<Kanji>(kanji))
+        .then((document) => Parser.kanjiDetails(document));
   }
 
   Future<Word> wordDetails(String word) {

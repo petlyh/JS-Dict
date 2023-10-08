@@ -19,6 +19,7 @@ class WordDetailsScreen extends StatelessWidget {
   const WordDetailsScreen(this.inputWord, {super.key, this.search = false});
 
   final String inputWord;
+
   /// Search for the word.
   /// Use if `inputWord` is not the id of the details page.
   final bool search;
@@ -71,7 +72,8 @@ class WordDetailsScreen extends StatelessWidget {
                     if (word.commonWord)
                       const InfoChip("Common", color: Colors.green),
                     if (word.jlptLevel != JLPTLevel.none)
-                      InfoChip("JLPT ${word.jlptLevel.toString()}", color: Colors.blue),
+                      InfoChip("JLPT ${word.jlptLevel.toString()}",
+                          color: Colors.blue),
                     ...word.wanikaniLevels.map((wanikaniLevel) => InfoChip(
                         "WaniKani Lv. $wanikaniLevel",
                         color: Colors.blue)),
@@ -89,7 +91,6 @@ class WordDetailsScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 ...[
                   ExpansionTileCard(
                     shadowColor: shadowColor,
@@ -123,8 +124,9 @@ class WordDetailsScreen extends StatelessWidget {
                                 subtitle: Text(collocation.meaning),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: pushScreen(context, WordDetailsScreen(
-                                        collocation.word,
+                                onTap: pushScreen(
+                                    context,
+                                    WordDetailsScreen(collocation.word,
                                         search: true)),
                               ))
                           .toList()
@@ -154,8 +156,7 @@ class WordDetailsScreen extends StatelessWidget {
                                             style:
                                                 const TextStyle(fontSize: 16)),
                                       ))
-                                  .toList()
-                              ),
+                                  .toList()),
                         )
                       ],
                     ),
@@ -170,7 +171,8 @@ class WordDetailsScreen extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
-                                child: Text(word.notes.deduplicate().join("\n")),
+                                child:
+                                    Text(word.notes.deduplicate().join("\n")),
                               ),
                             ),
                           ],
@@ -178,15 +180,13 @@ class WordDetailsScreen extends StatelessWidget {
                       ],
                     ),
                 ].intersperce(const SizedBox(height: 8)),
-
                 const SizedBox(height: 8),
-
                 ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: word.kanji.length,
-                  itemBuilder: (_, index) => KanjiItem(kanji: word.kanji[index])
-                ),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: word.kanji.length,
+                    itemBuilder: (_, index) =>
+                        KanjiItem(kanji: word.kanji[index])),
               ],
             ),
           ),

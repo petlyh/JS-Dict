@@ -18,10 +18,14 @@ extension FuriganaMethods on Furigana {
   }
 
   String getReading() {
-    return map((part) => part.furigana.isNotEmpty ? part.furigana : part.text).join().trim();
+    return map((part) => part.furigana.isNotEmpty ? part.furigana : part.text)
+        .join()
+        .trim();
   }
 
   List<RubyTextData> toRubyData() {
-    return map((part) => part.furigana.isEmpty ? RubyTextData(part.text) : RubyTextData(part.text, ruby: part.furigana)).toList();
+    return map((part) => part.furigana.isEmpty
+        ? RubyTextData(part.text)
+        : RubyTextData(part.text, ruby: part.furigana)).toList();
   }
 }

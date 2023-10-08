@@ -9,7 +9,8 @@ import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/rounded_bottom_border.dart";
 
 class DefinitionTile extends StatelessWidget {
-  const DefinitionTile(this.definition, {super.key, this.textColor, this.isLast = false});
+  const DefinitionTile(this.definition,
+      {super.key, this.textColor, this.isLast = false});
 
   final Definition definition;
   final Color? textColor;
@@ -24,7 +25,8 @@ class DefinitionTile extends StatelessWidget {
     }
 
     if (hasExampleSentence) {
-      return pushScreen(context, SentenceDetailsScreen(definition.exampleSentence!));
+      return pushScreen(
+          context, SentenceDetailsScreen(definition.exampleSentence!));
     }
 
     return null;
@@ -46,13 +48,12 @@ class DefinitionTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(definition.types.join(", ")),
-          if (definition.tags.isNotEmpty)
-            Text(definition.tags.join(", ")),
+          if (definition.tags.isNotEmpty) Text(definition.tags.join(", ")),
           if (definition.seeAlso.isNotEmpty)
-            RichText(text: TextSpan(
-              children: [
-                TextSpan(text: "See also ", style: TextStyle(color: textColor)),
-                ...definition.seeAlso
+            RichText(
+                text: TextSpan(children: [
+              TextSpan(text: "See also ", style: TextStyle(color: textColor)),
+              ...definition.seeAlso
                   .map((seeAlsoWord) => TextSpan(
                         text: seeAlsoWord,
                         style: TextStyle(
@@ -67,8 +68,7 @@ class DefinitionTile extends StatelessWidget {
                   .toList()
                   .intersperce(
                       TextSpan(text: ", ", style: TextStyle(color: textColor))),
-              ]
-            ))
+            ]))
         ],
       ),
     );

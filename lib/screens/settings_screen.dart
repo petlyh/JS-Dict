@@ -44,7 +44,7 @@ class SettingScreen extends StatelessWidget {
                   ListTile(
                     onTap: () async {
                       final packageInfo = await PackageInfo.fromPlatform();
-                      
+
                       if (context.mounted) {
                         showAboutDialog(
                           context: context,

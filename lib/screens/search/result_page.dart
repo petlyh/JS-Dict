@@ -24,11 +24,12 @@ class ResultPage<T extends SearchType> extends StatefulWidget {
   State<ResultPage<T>> createState() => _ResultPageState<T>();
 }
 
-class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with AutomaticKeepAliveClientMixin<ResultPage<T>> {
+class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
+    with AutomaticKeepAliveClientMixin<ResultPage<T>> {
   @override
   final bool wantKeepAlive = true;
 
-  final PagingController<int, T> _pagingController = PagingController(firstPageKey: 1);
+  final _pagingController = PagingController<int, T>(firstPageKey: 1);
 
   List<String> noMatchesFor = [];
 
@@ -108,7 +109,8 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
       slivers: [
         ValueListenableBuilder(
           valueListenable: zenInfo,
-          builder: (_, zenInfoValue, __) => _ZenBar(zenInfoValue, _selectZenEntry),
+          builder: (_, zenInfoValue, __) =>
+              _ZenBar(zenInfoValue, _selectZenEntry),
         ),
         ValueListenableBuilder(
           valueListenable: conversion,
@@ -127,26 +129,25 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>> with A
           sliver: PagedSliverList<int, T>(
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<T>(
-              itemBuilder: (context, item, index) => _createItem(item),
-              firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                (_pagingController.error.$1 as Object),
-                stackTrace: (_pagingController.error.$2 as StackTrace),
-                onRetry: _pagingController.refresh,
-              ),
-              noItemsFoundIndicatorBuilder: (context) {
-                return Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.all(16),
-                  child: Text(
+                itemBuilder: (context, item, index) => _createItem(item),
+                firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+                      (_pagingController.error.$1 as Object),
+                      stackTrace: (_pagingController.error.$2 as StackTrace),
+                      onRetry: _pagingController.refresh,
+                    ),
+                noItemsFoundIndicatorBuilder: (context) {
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.all(16),
+                    child: Text(
                       noMatchesFor.isNotEmpty
                           ? "No matches for:\n${noMatchesFor.join("\n")}"
                           : "No matches found",
                       textAlign: TextAlign.center,
                       style: const TextStyle(height: 1.75),
                     ),
-                );
-              }
-            ),
+                  );
+                }),
           ),
         ),
       ],
@@ -197,7 +198,9 @@ class _CorrectionInfo extends StatelessWidget {
                     style: TextStyle(color: textColor, height: 1.5),
                     children: [
                       const TextSpan(text: "Searched for "),
-                      TextSpan(text: correction!.effective, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      TextSpan(
+                          text: correction!.effective,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
                       const TextSpan(text: "\n"),
                       if (!correction!.noMatchesForOriginal) ...[
                         const TextSpan(text: "Try searching for "),
@@ -210,12 +213,14 @@ class _CorrectionInfo extends StatelessWidget {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              queryProvider.searchController.text = correction!.original;
+                              queryProvider.searchController.text =
+                                  correction!.original;
                               queryProvider.updateQuery();
                             },
                         ),
                       ] else
-                        TextSpan(text: "No matches for ${correction!.original}"),
+                        TextSpan(
+                            text: "No matches for ${correction!.original}"),
                     ],
                   ))
               : null),

@@ -19,13 +19,15 @@ class CompoundList extends StatelessWidget {
       title: Text("$type reading compounds"),
       children: compounds
           .map((compound) => ListTile(
-                contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 shape:
                     compound == compounds.last ? RoundedBottomBorder(8) : null,
                 title: Text("${compound.compound} 【${compound.reading}】"),
                 subtitle: Text(compound.meanings.join(", ")),
                 trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: pushScreen(context, WordDetailsScreen(compound.compound, search: true)),
+                onTap: pushScreen(context,
+                    WordDetailsScreen(compound.compound, search: true)),
               ))
           .toList()
           .intersperce(const Divider(height: 0)),

@@ -14,15 +14,18 @@ class LinkPopupButton extends StatelessWidget {
   }
 }
 
-List<PopupMenuEntry<dynamic>> Function(BuildContext) linkPopupItemsBuilder(List<(String text, String url)> data) {
+List<PopupMenuEntry<dynamic>> Function(BuildContext) linkPopupItemsBuilder(
+    List<(String text, String url)> data) {
   return (context) => createLinkPopupItems(data);
 }
 
-List<PopupMenuEntry<dynamic>> createLinkPopupItems(List<(String text, String url)> data) {
+List<PopupMenuEntry<dynamic>> createLinkPopupItems(
+    List<(String text, String url)> data) {
   return data
       .map((entry) => PopupMenuItem(
-        child: Text(entry.$1),
-        onTap: () => launchUrl(Uri.parse(entry.$2), mode: LaunchMode.externalApplication),
-      ))
+            child: Text(entry.$1),
+            onTap: () => launchUrl(Uri.parse(entry.$2),
+                mode: LaunchMode.externalApplication),
+          ))
       .toList();
 }

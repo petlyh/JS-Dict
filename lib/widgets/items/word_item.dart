@@ -19,29 +19,32 @@ class WordItem extends StatelessWidget {
     return ItemCard(
       onTap: pushScreen(context, WordDetailsScreen(word.id!)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-        title: RubyText(
-          word.word.toRubyData(),
-          style: const TextStyle(fontSize: 18),
-          rubyStyle: const TextStyle(fontSize: 10),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: word.definitions
-                .map((e) => e.meanings.join("; ")).toList()
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+          title: RubyText(
+            word.word.toRubyData(),
+            style: const TextStyle(fontSize: 18),
+            rubyStyle: const TextStyle(fontSize: 10),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: word.definitions
+                .map((e) => e.meanings.join("; "))
+                .toList()
                 .deduplicateCaseInsensitive()
-                .asMap().entries
+                .asMap()
+                .entries
                 .map((entry) => RichText(
                         text: TextSpan(children: [
                       TextSpan(
                           text: "${entry.key + 1}. ",
-                          style: textStyle.copyWith(fontWeight: FontWeight.w300)),
+                          style:
+                              textStyle.copyWith(fontWeight: FontWeight.w300)),
                       TextSpan(text: entry.value, style: textStyle),
                     ])))
                 .toList(),
-        )
-      ),
+          )),
     );
   }
 }
