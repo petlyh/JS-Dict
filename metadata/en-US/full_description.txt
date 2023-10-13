@@ -1,0 +1,3 @@
+JS-Dict is a convenient app for accessing the powerful Japanese-English dictionary Jisho.org.
+
+This app is Free and Open-Source Software. The source code is available at https://github.com/petlyh/JS-Dict.

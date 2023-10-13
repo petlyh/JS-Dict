@@ -1,0 +1,3 @@
+JS-Dictは強力な和英辞典Jisho.orgにアクセスするための便利なアプリです。
+
+このアプリは自由ソフトウェアです。ソースコードはhttps://github.com/petlyh/JS-Dictで見ることができます。
