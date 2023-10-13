@@ -11,13 +11,13 @@ Japanese-English dictionary app powered by Jisho.org.
 
 ## Screenshots
 
-<img src="metadata/en-US/images/phoneScreenshots/01.png" width="160">
-<img src="metadata/en-US/images/phoneScreenshots/02.png" width="160">
-<img src="metadata/en-US/images/phoneScreenshots/03.png" width="160">
-<img src="metadata/en-US/images/phoneScreenshots/04.png" width="160">
-<img src="metadata/en-US/images/phoneScreenshots/05.png" width="160">
-<img src="metadata/en-US/images/phoneScreenshots/06.png" width="160">
-<img src="metadata/en-US/images/phoneScreenshots/07.png" width="160">
+[<img src="metadata/en-US/images/phoneScreenshots/01.png" width="160">](metadata/en-US/images/phoneScreenshots/01.png)
+[<img src="metadata/en-US/images/phoneScreenshots/02.png" width="160">](metadata/en-US/images/phoneScreenshots/02.png)
+[<img src="metadata/en-US/images/phoneScreenshots/03.png" width="160">](metadata/en-US/images/phoneScreenshots/03.png)
+[<img src="metadata/en-US/images/phoneScreenshots/04.png" width="160">](metadata/en-US/images/phoneScreenshots/04.png)
+[<img src="metadata/en-US/images/phoneScreenshots/05.png" width="160">](metadata/en-US/images/phoneScreenshots/05.png)
+[<img src="metadata/en-US/images/phoneScreenshots/06.png" width="160">](metadata/en-US/images/phoneScreenshots/06.png)
+[<img src="metadata/en-US/images/phoneScreenshots/07.png" width="160">](metadata/en-US/images/phoneScreenshots/07.png)
 
 ## License
 
