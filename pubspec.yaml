@@ -24,7 +24,7 @@ dependencies:
   dynamic_color: ^1.6.5
   shared_preferences: ^2.1.2
   audioplayers: ^5.1.0
-  package_info_plus: ^5.0.0
+  package_info_plus: ^4.1.0
 
 dev_dependencies:
   flutter_test:
