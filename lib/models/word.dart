@@ -11,7 +11,7 @@ class Word implements SearchType {
 
   String audioUrl = "";
 
-  List<String> notes = [];
+  List<Note> notes = [];
 
   List<Kanji> kanji = [];
 
@@ -81,4 +81,29 @@ class Collocation {
   final String meaning;
 
   const Collocation(this.word, this.meaning);
+}
+
+class Note {
+  final String form;
+  final String note;
+
+  const Note(this.form, this.note);
+
+  @override
+  String toString() => "$form: $note";
+
+  static Note parse(String text) {
+    final split = text.split(": ");
+    return Note(split.first, split.last);
+  }
+
+  static List<Note> parseAll(String text) {
+    return text
+        .trim()
+        .replaceFirst(RegExp(r"\.$"), "")
+        .split(". ")
+        .deduplicate<String>()
+        .map(Note.parse)
+        .toList();
+  }
 }

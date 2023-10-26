@@ -111,4 +111,11 @@ void main() {
     final response = await client.search<Word>("灰は灰に");
     expect(response.zenEntries, ["灰", "は", "灰", "に"]);
   });
+
+  test("notes", () async {
+    final response = await client.wordDetails("何方");
+    final note = response.notes.first;
+    expect(note.form, "何方");
+    expect(note.note, "Rarely-used kanji form");
+  });
 }
