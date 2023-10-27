@@ -1,0 +1,3 @@
+- Fixed alignment of furigana on sentences
+- Fixed Japanese text being rendered as Chinese
+- Fixed certain compound entries that lead to the wrong word
