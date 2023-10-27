@@ -1,6 +1,7 @@
 import "package:audioplayers/audioplayers.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/widgets/link_popup.dart";
@@ -62,8 +63,8 @@ class WordDetailsScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: RubyText(
                     word.word.toRubyData(),
-                    style: const TextStyle(fontSize: 28),
-                    rubyStyle: const TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 28).jp(),
+                    rubyStyle: const TextStyle(fontSize: 14).jp(),
                   ),
                 ),
                 Wrap(
@@ -120,7 +121,7 @@ class WordDetailsScreen extends StatelessWidget {
                                 shape: collocation == word.collocations.last
                                     ? RoundedBottomBorder(8)
                                     : null,
-                                title: Text(collocation.word),
+                                title: JpText(collocation.word),
                                 subtitle: Text(collocation.meaning),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
@@ -153,8 +154,9 @@ class WordDetailsScreen extends StatelessWidget {
                                           RubyTextData(otherForm.form,
                                               ruby: otherForm.reading)
                                         ],
-                                            style:
-                                                const TextStyle(fontSize: 16)),
+                                            style: const TextStyle(fontSize: 16)
+                                                .jp(),
+                                            rubyStyle: jpTextStyle),
                                       ))
                                   .toList()),
                         )
@@ -172,7 +174,7 @@ class WordDetailsScreen extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
                                 child:
-                                    Text(word.notes.deduplicate().join("\n")),
+                                    JpText(word.notes.deduplicate().join("\n")),
                               ),
                             ),
                           ],

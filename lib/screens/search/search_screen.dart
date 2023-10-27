@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/query_provider.dart";
@@ -31,6 +32,7 @@ class SearchScreen extends StatelessWidget {
         ),
         appBar: AppBar(
           title: TextField(
+            style: jpTextStyle,
             focusNode: searchFocusNode,
             controller: searchController,
             onSubmitted: (_) => queryProvider.updateQuery(),

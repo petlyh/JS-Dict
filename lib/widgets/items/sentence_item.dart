@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
@@ -19,7 +20,7 @@ class SentenceItem extends StatelessWidget {
         child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-            title: RubyText(sentence.japanese.toRubyData()),
+            title: RubyText(sentence.japanese.toRubyData(), style: jpTextStyle),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

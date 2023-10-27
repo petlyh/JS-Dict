@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/providers/query_provider.dart";
 
 class SearchOptionsScreen extends StatelessWidget {
@@ -23,6 +24,7 @@ class SearchOptionsScreen extends StatelessWidget {
         appBar: AppBar(
           scrolledUnderElevation: 0,
           title: TextField(
+            style: jpTextStyle,
             controller: searchController,
             autofocus: false,
             decoration: InputDecoration(

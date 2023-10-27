@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/query_provider.dart";
@@ -195,7 +196,7 @@ class _CorrectionInfo extends StatelessWidget {
               ? RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: TextStyle(color: textColor, height: 1.5),
+                    style: TextStyle(color: textColor, height: 1.5).jp(),
                     children: [
                       const TextSpan(text: "Searched for "),
                       TextSpan(
@@ -247,7 +248,7 @@ class _GrammarInfo extends StatelessWidget {
               ? RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: TextStyle(color: textColor, height: 1.5),
+                    style: TextStyle(color: textColor, height: 1.5).jp(),
                     children: [
                       TextSpan(text: grammarInfo!.word),
                       const TextSpan(text: " could be an inflection of "),
@@ -284,7 +285,7 @@ class _ConversionInfo extends StatelessWidget {
           : EdgeInsets.zero,
       sliver: SliverToBoxAdapter(
           child: conversion != null
-              ? Text(
+              ? JpText(
                   "${conversion!.original} is ${conversion!.converted}",
                   textAlign: TextAlign.center,
                 )

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
@@ -17,16 +18,16 @@ class KanjiItem extends StatelessWidget {
         child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-            leading: Text(kanji.kanji, style: const TextStyle(fontSize: 35)),
+            leading: JpText(kanji.kanji, style: const TextStyle(fontSize: 35)),
             title: Text(kanji.meanings.join(", "),
                 style: const TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Kun: ${kanji.kunReadings.join("、 ")}"),
-                Text("On: ${kanji.onReadings.join("、 ")}"),
-                Text([
+                JpText("Kun: ${kanji.kunReadings.join("、 ")}"),
+                JpText("On: ${kanji.onReadings.join("、 ")}"),
+                JpText([
                   "${kanji.strokeCount} strokes",
                   if (kanji.jlptLevel != JLPTLevel.none)
                     "JLPT ${kanji.jlptLevel}",

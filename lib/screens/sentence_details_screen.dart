@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
@@ -35,7 +36,7 @@ class SentenceDetailsScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       RubyText(sentence.japanese.toRubyData(),
-                          style: const TextStyle(fontSize: 18)),
+                          style: const TextStyle(fontSize: 18).jp()),
                       const SizedBox(height: 20),
                       Text(sentence.english,
                           style: const TextStyle(fontSize: 18)),

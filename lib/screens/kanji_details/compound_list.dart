@@ -1,5 +1,6 @@
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
@@ -23,7 +24,7 @@ class CompoundList extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 shape:
                     compound == compounds.last ? RoundedBottomBorder(8) : null,
-                title: Text("${compound.compound} 【${compound.reading}】"),
+                title: JpText("${compound.compound} 【${compound.reading}】"),
                 subtitle: Text(compound.meanings.join(", ")),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: pushScreen(context,

@@ -1,5 +1,6 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/radical_search/radical_search.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search_options/search_options_screen.dart";
@@ -240,7 +241,7 @@ class _CustomButton extends StatelessWidget {
         ),
         child: iconData != null
             ? Icon(iconData, size: iconSize, color: iconColor)
-            : Text(text, style: textStyle),
+            : JpText(text, style: textStyle),
       ),
     );
   }

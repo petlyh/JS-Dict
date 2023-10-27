@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
@@ -23,8 +24,8 @@ class WordItem extends StatelessWidget {
               const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
           title: RubyText(
             word.word.toRubyData(),
-            style: const TextStyle(fontSize: 18),
-            rubyStyle: const TextStyle(fontSize: 10),
+            style: const TextStyle(fontSize: 18).jp(),
+            rubyStyle: const TextStyle(fontSize: 10).jp(),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
