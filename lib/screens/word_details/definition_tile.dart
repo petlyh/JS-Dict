@@ -1,5 +1,6 @@
 import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
@@ -48,7 +49,7 @@ class DefinitionTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(definition.types.join(", ")),
-          if (definition.tags.isNotEmpty) Text(definition.tags.join(", ")),
+          if (definition.tags.isNotEmpty) JpText(definition.tags.join(", ")),
           if (definition.seeAlso.isNotEmpty)
             RichText(
                 text: TextSpan(children: [
@@ -58,7 +59,7 @@ class DefinitionTile extends StatelessWidget {
                         text: seeAlsoWord,
                         style: TextStyle(
                             color: linkColor,
-                            decoration: TextDecoration.underline),
+                            decoration: TextDecoration.underline).jp(),
                         recognizer: TapGestureRecognizer()
                           ..onTap = pushScreen(
                             context,

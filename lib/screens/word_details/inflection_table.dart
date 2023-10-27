@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/inflection/inflection.dart";
 import "package:jsdict/models/models.dart";
 import "package:ruby_text/ruby_text.dart";
@@ -86,7 +87,7 @@ class _FuriganaCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: _cellPadding,
-      child: RubyText(furigana.toRubyData()),
+      child: RubyText(furigana.toRubyData(), style: jpTextStyle),
     );
   }
 }

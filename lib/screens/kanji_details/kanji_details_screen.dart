@@ -1,5 +1,6 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
@@ -45,7 +46,7 @@ class KanjiDetailsScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(kanji.kanji,
-                          style: const TextStyle(fontSize: 40)),
+                          style: const TextStyle(fontSize: 40).jp()),
                     ),
                     Wrap(
                       alignment: WrapAlignment.center,
@@ -67,11 +68,11 @@ class KanjiDetailsScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (kanji.kunReadings.isNotEmpty)
-                            Text("Kun: ${kanji.kunReadings.join("、 ")}"),
+                            JpText("Kun: ${kanji.kunReadings.join("、 ")}"),
                           if (kanji.onReadings.isNotEmpty)
-                            Text("On: ${kanji.onReadings.join("、 ")}"),
+                            JpText("On: ${kanji.onReadings.join("、 ")}"),
                           if (kanji.radical != null)
-                            Text(
+                            JpText(
                                 "Radical: ${kanji.radical!.meanings.join(', ')} ${kanji.radical!.character}"),
                         ],
                       ),
@@ -92,8 +93,8 @@ class KanjiDetailsScreen extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8),
                                         child: Text(part,
-                                            style:
-                                                const TextStyle(fontSize: 20)),
+                                            style: const TextStyle(fontSize: 20)
+                                                .jp()),
                                       ),
                                     ),
                                   ))

@@ -1,5 +1,6 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/providers/theme_provider.dart";
 import "package:provider/provider.dart";
 
@@ -34,10 +35,10 @@ class InfoChip extends StatelessWidget {
                         children: [
                           Icon(icon, size: 16),
                           const SizedBox(width: 2),
-                          Text(text),
+                          JpText(text),
                         ],
                       )
-                    : Text(text),
+                    : JpText(text),
               ),
             ));
       }),

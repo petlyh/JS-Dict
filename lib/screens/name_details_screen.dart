@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
@@ -33,7 +34,7 @@ class NameDetailsScreen extends StatelessWidget {
                                     .split("\n")
                                     .reversed
                                     .join("\n"),
-                                style: const TextStyle(fontSize: 20),
+                                style: const TextStyle(fontSize: 20).jp(),
                                 textAlign: TextAlign.center),
                             const SizedBox(height: 16),
                             Text(name.meanings.join(", "),
