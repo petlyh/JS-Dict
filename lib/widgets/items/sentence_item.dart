@@ -20,7 +20,10 @@ class SentenceItem extends StatelessWidget {
         child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-            title: RubyText(sentence.japanese.toRubyData(), style: jpTextStyle),
+            title: RubyText(sentence.japanese.toRubyData(),
+                style: jpTextStyle,
+                rubyAlign: CrossAxisAlignment.start,
+                wrapAlign: TextAlign.start),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

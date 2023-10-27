@@ -579,10 +579,11 @@ packages:
   ruby_text:
     dependency: "direct main"
     description:
-      name: ruby_text
-      sha256: c9fe49dfe703c240f2ef8274d75c33654ec893685fa7180fd0dcdaf32b850511
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "492b148c9fddfbbc03658063efc76f51d1e851c1"
+      resolved-ref: "492b148c9fddfbbc03658063efc76f51d1e851c1"
+      url: "https://github.com/petlyh/RubyText"
+    source: git
     version: "3.0.3"
   shared_preferences:
     dependency: "direct main"

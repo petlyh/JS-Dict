@@ -13,7 +13,10 @@ dependencies:
 
   html: ^0.15.3
   http: ^1.0.0
-  ruby_text: ^3.0.1
+  ruby_text:
+    git: # fork adds extra alignment options
+      url: https://github.com/petlyh/RubyText
+      ref: 492b148c9fddfbbc03658063efc76f51d1e851c1
   url_launcher: ^6.1.10
   get_it: ^7.3.0
   collection: ^1.17.0
