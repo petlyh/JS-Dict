@@ -6,8 +6,8 @@ import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
+import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/link_span.dart";
-import "package:jsdict/widgets/rounded_bottom_border.dart";
 
 class DefinitionTile extends StatelessWidget {
   const DefinitionTile(this.definition,
@@ -35,13 +35,10 @@ class DefinitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return EntryTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      shape: isLast ? RoundedBottomBorder(8) : null,
+      isLast: isLast,
       onTap: onTap(context),
-      trailing: isWikipedia || hasExampleSentence
-          ? const Icon(Icons.keyboard_arrow_right)
-          : null,
       title: Text(definition.meanings.join("; ")),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,13 +4,13 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/loader.dart";
-import "package:jsdict/widgets/rounded_bottom_border.dart";
 import "package:ruby_text/ruby_text.dart";
 
 import "definition_tile.dart";
@@ -117,14 +117,10 @@ class WordDetailsScreen extends StatelessWidget {
                       shadowColor: shadowColor,
                       title: const Text("Collocations"),
                       children: word.collocations
-                          .map((collocation) => ListTile(
-                                shape: collocation == word.collocations.last
-                                    ? RoundedBottomBorder(8)
-                                    : null,
+                          .map((collocation) => EntryTile(
+                                isLast: collocation == word.collocations.last,
                                 title: JpText(collocation.word),
                                 subtitle: Text(collocation.meaning),
-                                trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: pushScreen(
                                     context,
                                     WordDetailsScreen(collocation.word,
