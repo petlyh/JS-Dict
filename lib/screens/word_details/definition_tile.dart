@@ -1,4 +1,3 @@
-import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
@@ -7,6 +6,7 @@ import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
+import "package:jsdict/widgets/link_span.dart";
 import "package:jsdict/widgets/rounded_bottom_border.dart";
 
 class DefinitionTile extends StatelessWidget {
@@ -35,8 +35,6 @@ class DefinitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final linkColor = Theme.of(context).colorScheme.primary;
-
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       shape: isLast ? RoundedBottomBorder(8) : null,
@@ -55,16 +53,13 @@ class DefinitionTile extends StatelessWidget {
                 text: TextSpan(children: [
               TextSpan(text: "See also ", style: TextStyle(color: textColor)),
               ...definition.seeAlso
-                  .map((seeAlsoWord) => TextSpan(
+                  .map((seeAlsoWord) => LinkSpan(
+                        context,
                         text: seeAlsoWord,
-                        style: TextStyle(
-                            color: linkColor,
-                            decoration: TextDecoration.underline).jp(),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = pushScreen(
-                            context,
-                            WordDetailsScreen(seeAlsoWord, search: true),
-                          ),
+                        onTap: pushScreen(
+                          context,
+                          WordDetailsScreen(seeAlsoWord, search: true),
+                        ),
                       ))
                   .toList()
                   .intersperce(

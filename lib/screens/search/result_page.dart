@@ -1,5 +1,4 @@
 import "package:collection/collection.dart";
-import "package:flutter/gestures.dart";
 import "package:flutter/material.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:jsdict/jp_text.dart";
@@ -14,6 +13,7 @@ import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";
 import "package:jsdict/widgets/items/word_item.dart";
+import "package:jsdict/widgets/link_span.dart";
 import "package:provider/provider.dart";
 
 class ResultPage<T extends SearchType> extends StatefulWidget {
@@ -184,7 +184,6 @@ class _CorrectionInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final linkColor = Theme.of(context).colorScheme.primary;
     final queryProvider = Provider.of<QueryProvider>(context, listen: false);
 
     return SliverPadding(
@@ -205,20 +204,12 @@ class _CorrectionInfo extends StatelessWidget {
                       const TextSpan(text: "\n"),
                       if (!correction!.noMatchesForOriginal) ...[
                         const TextSpan(text: "Try searching for "),
-                        TextSpan(
-                          text: correction!.original,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: linkColor,
-                            decoration: TextDecoration.underline,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              queryProvider.searchController.text =
-                                  correction!.original;
-                              queryProvider.updateQuery();
-                            },
-                        ),
+                        LinkSpan(context,
+                            text: correction!.original, bold: true, onTap: () {
+                          queryProvider.searchController.text =
+                              correction!.original;
+                          queryProvider.updateQuery();
+                        }),
                       ] else
                         TextSpan(
                             text: "No matches for ${correction!.original}"),
@@ -237,7 +228,6 @@ class _GrammarInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final linkColor = Theme.of(context).colorScheme.primary;
 
     return SliverPadding(
       padding: grammarInfo != null
@@ -252,19 +242,13 @@ class _GrammarInfo extends StatelessWidget {
                     children: [
                       TextSpan(text: grammarInfo!.word),
                       const TextSpan(text: " could be an inflection of "),
-                      TextSpan(
-                        text: grammarInfo!.possibleInflectionOf,
-                        style: TextStyle(
-                          color: linkColor,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = pushScreen(
+                      LinkSpan(context,
+                          text: grammarInfo!.possibleInflectionOf,
+                          onTap: pushScreen(
                               context,
                               WordDetailsScreen(
                                   grammarInfo!.possibleInflectionOf,
-                                  search: true)),
-                      ),
+                                  search: true))),
                     ],
                   ))
               : null),
