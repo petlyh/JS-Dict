@@ -1,0 +1,2 @@
+- Various visual fixes.
+- Various codebase improvements.
