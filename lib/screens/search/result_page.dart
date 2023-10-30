@@ -1,4 +1,5 @@
 import "package:collection/collection.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:jsdict/jp_text.dart";
@@ -105,25 +106,75 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
   Widget build(BuildContext context) {
     super.build(context);
 
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
+
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
-        ValueListenableBuilder(
-          valueListenable: zenInfo,
-          builder: (_, zenInfoValue, __) =>
-              _ZenBar(zenInfoValue, _selectZenEntry),
+        SearchMetaInfo(
+          listenable: zenInfo,
+          builder: (context, value) => Wrap(
+            alignment: WrapAlignment.center,
+            children: value.entries.mapIndexed((index, entry) {
+              final selected = value.selectedIndex == index;
+
+              return InfoChip(
+                entry,
+                icon: selected ? Icons.check : null,
+                onTap: !selected ? () => _selectZenEntry(index) : null,
+              );
+            }).toList(),
+          ),
         ),
-        ValueListenableBuilder(
-          valueListenable: conversion,
-          builder: (_, conversionValue, __) => _ConversionInfo(conversionValue),
+        SearchMetaInfo(
+          listenable: conversion,
+          builder: (_, value) => JpText(
+            "${value.original} is ${value.converted}",
+            textAlign: TextAlign.center,
+          ),
         ),
-        ValueListenableBuilder(
-          valueListenable: grammarInfo,
-          builder: (_, grammarInfoValue, __) => _GrammarInfo(grammarInfoValue),
+        SearchMetaInfo(
+          listenable: grammarInfo,
+          builder: (context, value) => RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(color: textColor, height: 1.5).jp(),
+                children: [
+                  TextSpan(text: value.word),
+                  const TextSpan(text: " could be an inflection of "),
+                  LinkSpan(context,
+                      text: value.possibleInflectionOf,
+                      onTap: pushScreen(
+                          context,
+                          WordDetailsScreen(value.possibleInflectionOf,
+                              search: true))),
+                ],
+              )),
         ),
-        ValueListenableBuilder(
-          valueListenable: correction,
-          builder: (_, correctionValue, __) => _CorrectionInfo(correctionValue),
+        SearchMetaInfo(
+          listenable: correction,
+          builder: (_, value) => RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(color: textColor, height: 1.5).jp(),
+                children: [
+                  const TextSpan(text: "Searched for "),
+                  TextSpan(
+                      text: value.effective,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  const TextSpan(text: "\n"),
+                  if (!value.noMatchesForOriginal) ...[
+                    const TextSpan(text: "Try searching for "),
+                    LinkSpan(context, text: value.original, bold: true,
+                        onTap: () {
+                      queryProvider.searchController.text = value.original;
+                      queryProvider.updateQuery();
+                    }),
+                  ] else
+                    TextSpan(text: "No matches for ${value.original}"),
+                ],
+              )),
         ),
         SliverPadding(
           padding: const EdgeInsets.all(8.0),
@@ -176,104 +227,29 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
   }
 }
 
-class _CorrectionInfo extends StatelessWidget {
-  const _CorrectionInfo(this.correction);
+class SearchMetaInfo<T> extends StatelessWidget {
+  const SearchMetaInfo({
+    super.key,
+    required this.listenable,
+    required this.builder,
+  });
 
-  final Correction? correction;
+  final ValueListenable<T?> listenable;
+  final Widget Function(BuildContext context, T value) builder;
 
-  @override
-  Widget build(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
-
-    return SliverPadding(
-      padding: correction != null
-          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
-          : EdgeInsets.zero,
-      sliver: SliverToBoxAdapter(
-          child: correction != null
-              ? RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TextStyle(color: textColor, height: 1.5).jp(),
-                    children: [
-                      const TextSpan(text: "Searched for "),
-                      TextSpan(
-                          text: correction!.effective,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                      const TextSpan(text: "\n"),
-                      if (!correction!.noMatchesForOriginal) ...[
-                        const TextSpan(text: "Try searching for "),
-                        LinkSpan(context,
-                            text: correction!.original, bold: true, onTap: () {
-                          queryProvider.searchController.text =
-                              correction!.original;
-                          queryProvider.updateQuery();
-                        }),
-                      ] else
-                        TextSpan(
-                            text: "No matches for ${correction!.original}"),
-                    ],
-                  ))
-              : null),
-    );
-  }
-}
-
-class _GrammarInfo extends StatelessWidget {
-  const _GrammarInfo(this.grammarInfo);
-
-  final GrammarInfo? grammarInfo;
+  static final padding =
+      const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12);
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-
-    return SliverPadding(
-      padding: grammarInfo != null
-          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
-          : EdgeInsets.zero,
-      sliver: SliverToBoxAdapter(
-          child: grammarInfo != null
-              ? RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: TextStyle(color: textColor, height: 1.5).jp(),
-                    children: [
-                      TextSpan(text: grammarInfo!.word),
-                      const TextSpan(text: " could be an inflection of "),
-                      LinkSpan(context,
-                          text: grammarInfo!.possibleInflectionOf,
-                          onTap: pushScreen(
-                              context,
-                              WordDetailsScreen(
-                                  grammarInfo!.possibleInflectionOf,
-                                  search: true))),
-                    ],
-                  ))
-              : null),
-    );
-  }
-}
-
-class _ConversionInfo extends StatelessWidget {
-  const _ConversionInfo(this.conversion);
-
-  final Conversion? conversion;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: conversion != null
-          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
-          : EdgeInsets.zero,
-      sliver: SliverToBoxAdapter(
-          child: conversion != null
-              ? JpText(
-                  "${conversion!.original} is ${conversion!.converted}",
-                  textAlign: TextAlign.center,
-                )
-              : null),
+    return ValueListenableBuilder<T?>(
+      valueListenable: listenable,
+      builder: (_, value, __) => SliverPadding(
+        padding: value != null ? padding : EdgeInsets.zero,
+        sliver: SliverToBoxAdapter(
+          child: value != null ? builder(context, value) : null,
+        ),
+      ),
     );
   }
 }
@@ -287,35 +263,4 @@ class ZenInfo {
   String get selectedEntry => entries[selectedIndex];
 
   ZenInfo withSelected(int index) => ZenInfo(entries, selectedIndex: index);
-}
-
-class _ZenBar extends StatelessWidget {
-  const _ZenBar(this.zenInfo, this.onSelect);
-
-  final ZenInfo? zenInfo;
-  final void Function(int index) onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: zenInfo != null
-          ? const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12)
-          : EdgeInsets.zero,
-      sliver: SliverToBoxAdapter(
-          child: zenInfo != null
-              ? Wrap(
-                  alignment: WrapAlignment.center,
-                  children: zenInfo!.entries.mapIndexed((index, entry) {
-                    final selected = zenInfo!.selectedIndex == index;
-
-                    return InfoChip(
-                      entry,
-                      icon: selected ? Icons.check : null,
-                      onTap: !selected ? () => onSelect(index) : null,
-                    );
-                  }).toList(),
-                )
-              : null),
-    );
-  }
 }
