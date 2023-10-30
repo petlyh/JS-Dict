@@ -35,7 +35,7 @@ class SentenceDetailsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     children: [
-                      RubyText(sentence.japanese.toRubyData(),
+                      RubyText(sentence.japanese.rubyData,
                           style: const TextStyle(fontSize: 18).jp(),
                           rubyAlign: CrossAxisAlignment.start,
                           wrapAlign: TextAlign.start),

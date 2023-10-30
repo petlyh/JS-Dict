@@ -62,7 +62,7 @@ class WordDetailsScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: RubyText(
-                    word.word.toRubyData(),
+                    word.word.rubyData,
                     style: const TextStyle(fontSize: 28).jp(),
                     rubyStyle: const TextStyle(fontSize: 14).jp(),
                   ),

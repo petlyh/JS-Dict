@@ -23,9 +23,6 @@ extension FuriganaMethods on Furigana {
         .trim();
   }
 
-  List<RubyTextData> toRubyData() {
-    return map((part) => part.furigana.isEmpty
-        ? RubyTextData(part.text)
-        : RubyTextData(part.text, ruby: part.furigana)).toList();
-  }
+  List<RubyTextData> get rubyData => map((part) => RubyTextData(part.text,
+      ruby: part.furigana.isNotEmpty ? part.furigana : null)).toList();
 }

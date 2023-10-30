@@ -23,7 +23,7 @@ class WordItem extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
           title: RubyText(
-            word.word.toRubyData(),
+            word.word.rubyData,
             style: const TextStyle(fontSize: 18).jp(),
             rubyStyle: const TextStyle(fontSize: 10).jp(),
           ),
