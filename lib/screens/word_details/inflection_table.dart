@@ -87,7 +87,8 @@ class _FuriganaCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: _cellPadding,
-      child: RubyText(furigana.rubyData, style: jpTextStyle),
+      child: RubyText(furigana.rubyData,
+          style: jpTextStyle, wrapAlign: TextAlign.start),
     );
   }
 }
