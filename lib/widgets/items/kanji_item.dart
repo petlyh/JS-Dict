@@ -20,7 +20,8 @@ class KanjiItem extends StatelessWidget {
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
             leading: JpText(kanji.kanji, style: const TextStyle(fontSize: 35)),
             title: Text(kanji.meanings.join(", "),
-                style: const TextStyle(fontWeight: FontWeight.w500)),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
