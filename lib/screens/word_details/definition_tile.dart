@@ -52,7 +52,8 @@ class DefinitionTile extends StatelessWidget {
               ...definition.seeAlso
                   .map((seeAlsoWord) => LinkSpan(
                         context,
-                        text: seeAlsoWord,
+                        // remove reading
+                        text: seeAlsoWord.split(" ").first,
                         onTap: pushScreen(
                           context,
                           WordDetailsScreen(seeAlsoWord, search: true),
