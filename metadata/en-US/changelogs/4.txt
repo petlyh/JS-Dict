@@ -1,0 +1,1 @@
+Fixed furigana layout for certain kanji compounds.
