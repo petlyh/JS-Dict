@@ -3,6 +3,18 @@ import "package:html/dom.dart";
 import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
 
+/// checks whether [text] only contains kanji characters.
+bool isKanji(String text) {
+  const cjkUnifiedIdeographsStart = 0x4E00;
+  const cjkUnifiedIdeographsEnd = 0x9FFF;
+
+  final codeUnits = text.trim().codeUnits;
+  final nonKanji = codeUnits.firstWhereOrNull((unit) =>
+      !(cjkUnifiedIdeographsStart <= unit && unit <= cjkUnifiedIdeographsEnd));
+
+  return nonKanji == null;
+}
+
 Furigana parseSentenceFurigana(Element element) {
   final nodes =
       element.querySelector("ul.japanese_sentence, ul.japanese")!.nodes;
@@ -61,6 +73,14 @@ Furigana parseWordFurigana(Element element) {
   }
 
   assert(furiganaParts.length == textParts.length);
+
+  final text = textParts.join("");
+  final reading = furiganaParts.join("");
+
+  // kanji compounds that don't specify ruby locations
+  if (isKanji(text) && furiganaParts.first == reading) {
+    return [FuriganaPart(text, reading)];
+  }
 
   return textParts
       .mapIndexed((index, text) => FuriganaPart(text, furiganaParts[index]))
