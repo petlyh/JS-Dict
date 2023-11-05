@@ -15,6 +15,9 @@ bool isKanji(String text) {
   return nonKanji == null;
 }
 
+bool hasEmpty(List<String> list) =>
+    list.firstWhereOrNull((part) => part.isEmpty) != null;
+
 Furigana parseSentenceFurigana(Element element) {
   final nodes =
       element.querySelector("ul.japanese_sentence, ul.japanese")!.nodes;
@@ -75,11 +78,10 @@ Furigana parseWordFurigana(Element element) {
   assert(furiganaParts.length == textParts.length);
 
   final text = textParts.join("");
-  final reading = furiganaParts.join("");
 
   // kanji compounds that don't specify ruby locations
-  if (isKanji(text) && furiganaParts.first == reading) {
-    return [FuriganaPart(text, reading)];
+  if (isKanji(text) && hasEmpty(furiganaParts)) {
+    return [FuriganaPart(text, furiganaParts.join(""))];
   }
 
   return textParts
