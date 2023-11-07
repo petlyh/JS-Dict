@@ -1,12 +1,17 @@
 part of "models.dart";
 
 class Name implements SearchType {
-  final String reading;
-  final String name;
+  final String japanese;
+  final String? reading;
+  final String english;
   final String type;
 
   /// id of a corresponding [Word] that has a Wikipedia definition
   final String? wikipediaWord;
 
-  const Name(this.reading, this.name, this.type, {this.wikipediaWord});
+  @override
+  String toString() => reading != null ? "$reading【$japanese】" : japanese;
+
+  const Name(
+      this.japanese, this.reading, this.english, this.type, this.wikipediaWord);
 }
