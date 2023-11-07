@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/loader.dart";
@@ -42,6 +44,11 @@ class NameDetailsScreen extends StatelessWidget {
                                 textAlign: TextAlign.center),
                           ],
                         )),
+                    if (name.wikipediaWord != null)
+                      ElevatedButton(
+                          onPressed: pushScreen(context,
+                              WikipediaScreen.fromWord(name.wikipediaWord!)),
+                          child: const Text("Wikipedia")),
                     const SizedBox(height: 20),
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
