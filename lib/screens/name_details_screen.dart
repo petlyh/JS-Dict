@@ -37,7 +37,7 @@ class NameDetailsScreen extends StatelessWidget {
                                 style: const TextStyle(fontSize: 20).jp(),
                                 textAlign: TextAlign.center),
                             const SizedBox(height: 16),
-                            Text(name.meanings.join(", "),
+                            Text(name.name,
                                 style: const TextStyle(fontSize: 16),
                                 textAlign: TextAlign.center),
                           ],
