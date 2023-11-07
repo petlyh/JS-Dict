@@ -18,9 +18,6 @@ class NameItem extends StatelessWidget {
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
             title: JpText(name.reading),
-            subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: name.meanings.map((e) => Text(e)).toList())));
+            subtitle: Text(name.name)));
   }
 }

@@ -96,10 +96,12 @@ class Parser {
         "div.concept_light-readings",
         (e) =>
             e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
-    final meanings =
-        element.collectAll("span.meaning-meaning", (e) => e.text.trim());
+    final name = element.collect("span.meaning-meaning", (e) => e.text.trim());
 
-    return Name(reading, meanings);
+    final wikipediaWord = element.collect("span.meaning-abstract > a",
+        (e) => Uri.decodeFull(e.attributes["href"]!).split("/word/").last);
+
+    return Name(reading, name!, wikipediaWord: wikipediaWord);
   }
 
   static Kanji _kanjiEntry(Element element) {
