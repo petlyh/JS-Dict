@@ -25,6 +25,10 @@ class Word implements SearchType {
 
   List<Collocation> collocations = [];
 
+  WikipediaDefinition? get wikipedia => definitions
+      .firstWhereOrNull((definition) => definition.wikipedia != null)
+      ?.wikipedia;
+
   Word(this.word);
 }
 
