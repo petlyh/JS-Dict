@@ -48,13 +48,13 @@ class NameDetailsScreen extends StatelessWidget {
                     ],
                   )),
               InfoChip(name.type),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               if (name.wikipediaWord != null)
                 ElevatedButton(
                     onPressed: pushScreen(
                         context, WikipediaScreen.fromWord(name.wikipediaWord!)),
                     child: const Text("Wikipedia")),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               LoaderWidget(
                   onLoad: _getKanji,
                   handler: (kanjiList) => ListView.builder(
