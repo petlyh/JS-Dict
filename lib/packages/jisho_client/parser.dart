@@ -105,7 +105,7 @@ class Parser {
         : null;
 
     final english =
-        element.collect("span.meaning-meaning", (e) => e.text.trim())!;
+        element.collectAll("span.meaning-meaning", (e) => e.text.trim()).last;
     final type = element.collect("div.meaning-tags", (e) => e.text.trim())!;
 
     final wikipediaWord = element.collect("span.meaning-abstract > a",
