@@ -59,6 +59,16 @@ void main() {
     expect(word.otherForms.first.form, "観る");
   });
 
+  test("name", () async {
+    final response = await client.search<Name>("yoko shimomura");
+    expect(response.results, hasLength(1));
+
+    final name = response.results.first;
+    expect(name.reading, "しもむらようこ 【下村陽子】");
+    expect(name.name, "Shimomura Youko (1967.10.19-)");
+    expect(name.type, "Full name");
+  });
+
   test("search correction", () async {
     final response = await client.search<Word>("atatakai");
     expect(response.correction, isNotNull);
