@@ -4,6 +4,7 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/loader.dart";
 
@@ -45,18 +46,20 @@ class NameDetailsScreen extends StatelessWidget {
                                         : ""),
                                 style: const TextStyle(fontSize: 20).jp(),
                                 textAlign: TextAlign.center),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 12),
                             Text(name.english,
-                                style: const TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 18),
                                 textAlign: TextAlign.center),
                           ],
                         )),
+                    InfoChip(name.type),
+                    const SizedBox(height: 12),
                     if (name.wikipediaWord != null)
                       ElevatedButton(
                           onPressed: pushScreen(context,
                               WikipediaScreen.fromWord(name.wikipediaWord!)),
                           child: const Text("Wikipedia")),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
