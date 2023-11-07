@@ -92,18 +92,26 @@ class Parser {
   }
 
   static Name _nameEntry(Element element) {
-    final reading = element.collect(
+    final japaneseText = element.collect(
         "div.concept_light-readings",
         (e) =>
             e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
 
-    final name = element.collect("span.meaning-meaning", (e) => e.text.trim());
-    final type = element.collect("div.meaning-tags", (e) => e.text.trim());
+    final japanese =
+        japaneseText.split("【").last.replaceFirst(RegExp(r"】$"), "");
+
+    final reading = japaneseText.contains("【")
+        ? japaneseText.split("【").first.trim()
+        : null;
+
+    final english =
+        element.collect("span.meaning-meaning", (e) => e.text.trim())!;
+    final type = element.collect("div.meaning-tags", (e) => e.text.trim())!;
 
     final wikipediaWord = element.collect("span.meaning-abstract > a",
         (e) => Uri.decodeFull(e.attributes["href"]!).split("/word/").last);
 
-    return Name(reading, name!, type!, wikipediaWord: wikipediaWord);
+    return Name(japanese, reading, english, type, wikipediaWord);
   }
 
   static Kanji _kanjiEntry(Element element) {

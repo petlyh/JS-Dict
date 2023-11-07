@@ -17,7 +17,7 @@ class NameDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Name")),
       body: LoaderWidget(
-          onLoad: () => getClient().search<Kanji>(name.reading),
+          onLoad: () => getClient().search<Kanji>(name.japanese),
           handler: (response) {
             return SingleChildScrollView(
               child: Container(
@@ -30,16 +30,14 @@ class NameDetailsScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                                name.reading
-                                    .replaceFirst("【", "\n")
-                                    .replaceFirst("】", "")
-                                    .split("\n")
-                                    .reversed
-                                    .join("\n"),
+                                name.japanese +
+                                    (name.reading != null
+                                        ? "\n${name.reading}"
+                                        : ""),
                                 style: const TextStyle(fontSize: 20).jp(),
                                 textAlign: TextAlign.center),
                             const SizedBox(height: 16),
-                            Text(name.name,
+                            Text(name.english,
                                 style: const TextStyle(fontSize: 16),
                                 textAlign: TextAlign.center),
                           ],
