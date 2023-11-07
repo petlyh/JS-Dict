@@ -12,13 +12,22 @@ class NameDetailsScreen extends StatelessWidget {
 
   final Name name;
 
+  Future<List<Kanji>> _getKanji() async {
+    if (name.reading == null) {
+      return [];
+    }
+
+    final response = await getClient().search<Kanji>(name.japanese);
+    return response.results;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Name")),
       body: LoaderWidget(
-          onLoad: () => getClient().search<Kanji>(name.japanese),
-          handler: (response) {
+          onLoad: _getKanji,
+          handler: (kanjiList) {
             return SingleChildScrollView(
               child: Container(
                 margin: const EdgeInsets.all(8.0),
@@ -51,9 +60,9 @@ class NameDetailsScreen extends StatelessWidget {
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: response.results.length,
+                        itemCount: kanjiList.length,
                         itemBuilder: (_, index) =>
-                            KanjiItem(kanji: response.results[index]))
+                            KanjiItem(kanji: kanjiList[index]))
                   ],
                 ),
               ),
