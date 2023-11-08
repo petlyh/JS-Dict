@@ -94,6 +94,18 @@ class Parser {
   static final lifespanPattern =
       RegExp(r" \(\d+(?:\.\d+)?(?:\.\d+)?-(?:\d+(?:\.\d+)?(?:\.\d+)?)?\)");
 
+  static String? _nameType(String input) {
+    if (input.contains("Unclassified")) {
+      return null;
+    }
+
+    if (input.contains("gender not specified")) {
+      return input.split(", ").first;
+    }
+
+    return input;
+  }
+
   static Name _nameEntry(Element element) {
     final japaneseText = element.collect(
         "div.concept_light-readings",
@@ -112,8 +124,8 @@ class Parser {
         .first
         .replaceFirst(lifespanPattern, "");
 
-    final type = element.collect("div.meaning-tags",
-        (e) => !e.text.contains("Unclassified") ? e.text.trim() : null);
+    final type =
+        element.collect("div.meaning-tags", (e) => _nameType(e.text.trim()));
 
     final wikipediaWord = element.collect("span.meaning-abstract > a",
         (e) => Uri.decodeFull(e.attributes["href"]!).split("/word/").last);
