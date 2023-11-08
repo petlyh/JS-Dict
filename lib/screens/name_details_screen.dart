@@ -6,6 +6,7 @@ import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
+import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/loader.dart";
 
 class NameDetailsScreen extends StatelessWidget {
@@ -25,7 +26,18 @@ class NameDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Name")),
+      appBar: AppBar(
+        title: const Text("Name"),
+        actions: [
+          if (name.wikipediaWord != null)
+            LinkPopupButton([
+              (
+                "Open in Browser",
+                "https://jisho.org/word/${name.wikipediaWord}"
+              )
+            ]),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(8.0),
