@@ -12,7 +12,7 @@ class Name implements SearchType {
   final String? wikipediaWord;
 
   @override
-  String toString() => reading != null ? "$reading【$japanese】" : japanese;
+  String toString() => reading != null ? "$japanese【$reading】" : japanese;
 
   const Name(
       this.japanese, this.reading, this.english, this.type, this.wikipediaWord);
