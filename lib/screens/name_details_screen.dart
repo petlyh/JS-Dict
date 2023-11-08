@@ -47,8 +47,10 @@ class NameDetailsScreen extends StatelessWidget {
                           textAlign: TextAlign.center),
                     ],
                   )),
-              InfoChip(name.type),
-              const SizedBox(height: 10),
+              if (name.type != null) ...[
+                InfoChip(name.type!),
+                const SizedBox(height: 10),
+              ],
               if (name.wikipediaWord != null)
                 ElevatedButton(
                     onPressed: pushScreen(

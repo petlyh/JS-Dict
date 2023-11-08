@@ -106,7 +106,9 @@ class Parser {
 
     final english =
         element.collectAll("span.meaning-meaning", (e) => e.text.trim()).last;
-    final type = element.collect("div.meaning-tags", (e) => e.text.trim())!;
+
+    final type = element.collect("div.meaning-tags",
+        (e) => !e.text.contains("Unclassified") ? e.text.trim() : null);
 
     final wikipediaWord = element.collect("span.meaning-abstract > a",
         (e) => Uri.decodeFull(e.attributes["href"]!).split("/word/").last);
