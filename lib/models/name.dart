@@ -4,7 +4,9 @@ class Name implements SearchType {
   final String japanese;
   final String? reading;
   final String english;
-  final String type;
+
+  /// null if type is "Unclassified name"
+  final String? type;
 
   /// id of a corresponding [Word] that has a Wikipedia definition
   final String? wikipediaWord;
