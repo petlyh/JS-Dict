@@ -9,7 +9,7 @@ class LoaderWidget<T> extends StatefulWidget {
       required this.handler,
       this.placeholder = const Text("")});
 
-  final Future<T>? Function() onLoad;
+  final Future<T> Function() onLoad;
   final Widget Function(T data) handler;
   final Widget placeholder;
 
@@ -18,7 +18,7 @@ class LoaderWidget<T> extends StatefulWidget {
 }
 
 class _LoaderWidgetState<T> extends State<LoaderWidget<T>> {
-  Future<T>? _future;
+  late Future<T> _future;
 
   @override
   void initState() {
