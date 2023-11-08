@@ -66,7 +66,7 @@ void main() {
     final name = response.results.first;
     expect(name.japanese, "下村陽子");
     expect(name.reading, "しもむらようこ");
-    expect(name.english, "Shimomura Youko (1967.10.19-)");
+    expect(name.english, "Shimomura Youko");
     expect(name.type, "Full name");
   });
 
