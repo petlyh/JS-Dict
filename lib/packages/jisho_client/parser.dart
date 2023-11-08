@@ -91,6 +91,9 @@ class Parser {
     return response;
   }
 
+  static final lifespanPattern =
+      RegExp(r" \(\d+(?:\.\d+)?(?:\.\d+)?-(?:\d+(?:\.\d+)?(?:\.\d+)?)?\)");
+
   static Name _nameEntry(Element element) {
     final japaneseText = element.collect(
         "div.concept_light-readings",
@@ -104,8 +107,10 @@ class Parser {
         ? japaneseText.split("【").first.trim()
         : null;
 
-    final english =
-        element.collectAll("span.meaning-meaning", (e) => e.text.trim()).last;
+    final english = element
+        .collectAll("span.meaning-meaning", (e) => e.text.trim())
+        .first
+        .replaceFirst(lifespanPattern, "");
 
     final type = element.collect("div.meaning-tags",
         (e) => !e.text.contains("Unclassified") ? e.text.trim() : null);
