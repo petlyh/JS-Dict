@@ -20,11 +20,11 @@ class InflectionTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rows = _headerRow + _getRows();
+    final borderColor = Theme.of(context).dividerColor;
 
     return Table(
-      border: const TableBorder(
-        horizontalInside: BorderSide(width: 0.5),
-        // verticalInside: BorderSide(width: 0.5),
+      border: TableBorder(
+        horizontalInside: BorderSide(width: 0.4, color: borderColor),
       ),
       columnWidths: const {
         0: IntrinsicColumnWidth(),
