@@ -1,4 +1,5 @@
 import "package:audioplayers/audioplayers.dart";
+import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
@@ -93,6 +94,18 @@ class _WordDetails extends StatelessWidget {
       shrinkWrap: true,
       itemCount: kanji.length,
       itemBuilder: (_, index) => KanjiItem(kanji: kanji[index]));
+
+  /// checks whether [text] doesn't contain any kanji characters.
+  bool isNonKanji(String text) {
+    const cjkUnifiedIdeographsStart = 0x4E00;
+    const cjkUnifiedIdeographsEnd = 0x9FFF;
+
+    final codeUnits = text.trim().codeUnits;
+    final firstKanji = codeUnits.firstWhereOrNull((unit) =>
+        cjkUnifiedIdeographsStart <= unit && unit <= cjkUnifiedIdeographsEnd);
+
+    return firstKanji == null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,10 +227,11 @@ class _WordDetails extends StatelessWidget {
             if (word.kanji.isNotEmpty) ...[
               _kanjiWidget(word.kanji),
             ] else ...[
-              LoaderWidget(
-                onLoad: () => getClient().wordDetails(word.id!),
-                handler: (wordDetails) => _kanjiWidget(wordDetails.kanji),
-              ),
+              if (!isNonKanji(word.word.getText()))
+                LoaderWidget(
+                  onLoad: () => getClient().wordDetails(word.id!),
+                  handler: (wordDetails) => _kanjiWidget(wordDetails.kanji),
+                ),
             ],
           ],
         ),
