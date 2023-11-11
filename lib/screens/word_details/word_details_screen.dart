@@ -26,15 +26,23 @@ class WordDetailsScreen extends StatelessWidget {
   final idValue = ValueNotifier<String?>(null);
   String? get id => word?.id ?? idValue.value;
 
+  final audioUrlValue = ValueNotifier<String?>(null);
+  String? get audioUrl => word?.audioUrl ?? audioUrlValue.value;
+
   Future<Word> _getFuture() {
     return getClient().search<Word>(searchWord!).then((response) {
       if (response.results.isEmpty) {
         throw Exception("Word not found");
       }
 
-      idValue.value = response.results.first.id;
+      final word = response.results.first;
+      idValue.value = word.id;
 
-      return response.results.first;
+      if (word.audioUrl.isNotEmpty) {
+        audioUrlValue.value = word.audioUrl;
+      }
+
+      return word;
     });
   }
 
@@ -44,6 +52,18 @@ class WordDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Word"),
         actions: [
+          ValueListenableBuilder(
+            valueListenable: audioUrlValue,
+            builder: (_, __, ___) => audioUrl != null
+                ? IconButton(
+                    onPressed: () => AudioPlayer().play(
+                          UrlSource(audioUrl!),
+                          mode: PlayerMode.lowLatency,
+                          ctx: AudioContextConfig(duckAudio: true).build(),
+                        ),
+                    icon: const Icon(Icons.play_arrow))
+                : const SizedBox(),
+          ),
           ValueListenableBuilder(
             valueListenable: idValue,
             builder: (_, __, ___) => id != null
@@ -105,17 +125,6 @@ class _WordDetails extends StatelessWidget {
                 ...word.wanikaniLevels.map((wanikaniLevel) => InfoChip(
                     "WaniKani Lv. $wanikaniLevel",
                     color: Colors.blue)),
-                if (word.audioUrl.isNotEmpty)
-                  InfoChip(
-                    "Audio",
-                    color: Colors.green,
-                    icon: Icons.play_arrow,
-                    onTap: () => AudioPlayer().play(
-                      UrlSource(word.audioUrl),
-                      mode: PlayerMode.lowLatency,
-                      ctx: AudioContextConfig(duckAudio: true).build(),
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: 16),
