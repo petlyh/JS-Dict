@@ -37,11 +37,9 @@ class WordDetailsScreen extends StatelessWidget {
         }
 
         final word = response.results.first;
-        idValue.value = word.id;
 
-        if (word.audioUrl.isNotEmpty) {
-          audioUrlValue.value = word.audioUrl;
-        }
+        idValue.value = word.id;
+        audioUrlValue.value = word.audioUrl;
 
         return word;
       });

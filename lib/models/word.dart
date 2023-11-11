@@ -9,7 +9,7 @@ class Word implements SearchType {
   List<int> wanikaniLevels = [];
   JLPTLevel jlptLevel = JLPTLevel.none;
 
-  String audioUrl = "";
+  String? audioUrl;
 
   List<Note> notes = [];
 

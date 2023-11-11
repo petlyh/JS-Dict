@@ -294,8 +294,7 @@ class Parser {
         element.querySelector("span.concept_light-common") != null;
 
     word.audioUrl = element.collect(
-            "audio > source", (e) => "https:${e.attributes["src"]!}") ??
-        "";
+        "audio > source", (e) => "https:${e.attributes["src"]!}");
 
     word.jlptLevel = element.collectFirstWhere(
           "span.concept_light-tag",
