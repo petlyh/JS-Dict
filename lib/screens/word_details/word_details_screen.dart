@@ -29,22 +29,21 @@ class WordDetailsScreen extends StatelessWidget {
   final audioUrlValue = ValueNotifier<String?>(null);
   String? get audioUrl => word?.audioUrl ?? audioUrlValue.value;
 
-  Future<Word> _getFuture() {
-    return getClient().search<Word>(searchWord!).then((response) {
-      if (response.results.isEmpty) {
-        throw Exception("Word not found");
-      }
+  Future<Word> _searchFuture() =>
+      getClient().search<Word>(searchWord!).then((response) {
+        if (response.results.isEmpty) {
+          throw Exception("Word not found");
+        }
 
-      final word = response.results.first;
-      idValue.value = word.id;
+        final word = response.results.first;
+        idValue.value = word.id;
 
-      if (word.audioUrl.isNotEmpty) {
-        audioUrlValue.value = word.audioUrl;
-      }
+        if (word.audioUrl.isNotEmpty) {
+          audioUrlValue.value = word.audioUrl;
+        }
 
-      return word;
-    });
-  }
+        return word;
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +76,7 @@ class WordDetailsScreen extends StatelessWidget {
       body: word != null
           ? _WordDetails(word!)
           : LoaderWidget(
-              onLoad: _getFuture,
+              onLoad: _searchFuture,
               handler: (word) => _WordDetails(word),
             ),
     );
