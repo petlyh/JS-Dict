@@ -28,9 +28,8 @@ class CompoundList extends StatelessWidget {
                 subtitle: Text(compound.meanings.join(", ")),
                 onTap: pushScreen(
                     context,
-                    WordDetailsScreen(
-                        "${compound.compound} ${convertKatakana(compound.reading)}",
-                        search: true)),
+                    WordDetailsScreen.search(
+                        "${compound.compound} ${convertKatakana(compound.reading)}")),
               ))
           .toList()
           .intersperce(const Divider(height: 0)),

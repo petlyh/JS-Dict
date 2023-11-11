@@ -147,8 +147,8 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
                       text: value.possibleInflectionOf,
                       onTap: pushScreen(
                           context,
-                          WordDetailsScreen(value.possibleInflectionOf,
-                              search: true))),
+                          WordDetailsScreen.search(
+                              value.possibleInflectionOf))),
                 ],
               )),
         ),

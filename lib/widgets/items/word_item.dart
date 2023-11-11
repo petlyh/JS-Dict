@@ -18,7 +18,7 @@ class WordItem extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodyMedium!;
 
     return ItemCard(
-      onTap: pushScreen(context, WordDetailsScreen(word.id!)),
+      onTap: pushScreen(context, WordDetailsScreen(word)),
       child: ListTile(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),

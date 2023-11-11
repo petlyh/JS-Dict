@@ -56,7 +56,7 @@ class DefinitionTile extends StatelessWidget {
                         text: seeAlsoWord.split(" ").first,
                         onTap: pushScreen(
                           context,
-                          WordDetailsScreen(seeAlsoWord, search: true),
+                          WordDetailsScreen.search(seeAlsoWord),
                         ),
                       ))
                   .toList()
