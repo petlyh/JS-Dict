@@ -17,14 +17,17 @@ void main() {
 
     expect(kanji.strokeCount, 13);
     expect(kanji.jlptLevel, JLPTLevel.n3);
-    expect(kanji.frequency, 943);
-    expect(kanji.strokeDiagramUrl, isNotEmpty);
 
-    expect(kanji.parts, ["冖", "夕", "艾", "買"]);
-    expect(kanji.variants, ["梦", "夣"]);
+    final details = kanji.details!;
 
-    expect(kanji.onCompounds, hasLength(4));
-    expect(kanji.kunCompounds, hasLength(5));
+    expect(details.frequency, 943);
+    expect(details.strokeDiagramUrl, isNotEmpty);
+
+    expect(details.parts, ["冖", "夕", "艾", "買"]);
+    expect(details.variants, ["梦", "夣"]);
+
+    expect(details.onCompounds, hasLength(4));
+    expect(details.kunCompounds, hasLength(5));
   });
 
   test("decoding HTML entities", () async {
