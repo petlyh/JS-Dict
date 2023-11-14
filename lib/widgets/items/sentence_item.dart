@@ -29,8 +29,10 @@ class SentenceItem extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(sentence.english),
-                if (sentence.copyright != null)
+                if (sentence.copyright != null) ...[
+                  const SizedBox(height: 4),
                   CopyrightText(sentence.copyright!),
+                ]
               ],
             )));
   }
