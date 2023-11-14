@@ -1,4 +1,5 @@
 import "package:collection/collection.dart";
+import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/navigation.dart";
@@ -152,11 +153,57 @@ class _KanjiDetailsWidget extends StatelessWidget {
                   .toList()),
           const Divider(),
         ],
+        if (kanjiDetails.variants.isNotEmpty)
+          _VariantsWidget(kanjiDetails.variants),
         if (kanjiDetails.onCompounds.isNotEmpty)
           CompoundList("On", kanjiDetails.onCompounds),
         const SizedBox(height: 4),
         if (kanjiDetails.kunCompounds.isNotEmpty)
           CompoundList("Kun", kanjiDetails.kunCompounds),
+      ],
+    );
+  }
+}
+
+class _VariantsWidget extends StatelessWidget {
+  const _VariantsWidget(this.variants);
+
+  final List<String> variants;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTileCard(
+      shadowColor: Theme.of(context).colorScheme.shadow,
+      title: const Text("Variants"),
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Wrap(
+                children: variants
+                    .map(
+                      (variant) => Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(4),
+                          onTap: pushScreen(
+                              context, KanjiDetailsScreen.search(variant)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12),
+                            child: Text(variant,
+                                style: const TextStyle(fontSize: 20).jp()),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
