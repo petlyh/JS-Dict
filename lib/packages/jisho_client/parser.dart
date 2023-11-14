@@ -184,44 +184,43 @@ class Parser {
         (e) => strokeDiagramUrlRegex.firstMatch(e.text)!.group(1));
 
     if (strokeDiagramUrl != null) {
-      kanji.strokeDiagramUrl = "https:$strokeDiagramUrl";
+      kanji.details!.strokeDiagramUrl = "https:$strokeDiagramUrl";
     }
 
     return kanji;
   }
 
   static Kanji _kanjiDetailsEntry(Element element) {
-    final kanjiDetails =
-        Kanji(element.collect("h1.character", (e) => e.text.trim())!);
+    final kanji = Kanji(element.collect("h1.character", (e) => e.text.trim())!);
 
-    kanjiDetails.meanings = element.collect(
+    kanji.meanings = element.collect(
         ".kanji-details__main-meanings", (e) => e.text.trim().split(", "))!;
 
-    kanjiDetails.strokeCount = element.collect(
-        ".kanji-details__stroke_count > strong",
+    kanji.strokeCount = element.collect(".kanji-details__stroke_count > strong",
         (e) => int.parse(e.text.trim()))!;
-    kanjiDetails.jlptLevel = element.collect(
+    kanji.jlptLevel = element.collect(
             "div.jlpt > strong", (e) => JLPTLevel.fromString(e.text.trim())) ??
         JLPTLevel.none;
-    kanjiDetails.type = element.collect<KanjiType?>("div.grade", _getKanjiType);
+    kanji.type = element.collect<KanjiType?>("div.grade", _getKanjiType);
 
-    kanjiDetails.kunReadings = element.collectAll(
+    kanji.kunReadings = element.collectAll(
         "div.kanji-details__main-readings > dl.kun_yomi > dd > a",
         (e) => e.text.trim());
-    kanjiDetails.onReadings = element.collectAll(
+    kanji.onReadings = element.collectAll(
         "div.kanji-details__main-readings > dl.on_yomi > dd > a",
         (e) => e.text.trim());
 
-    kanjiDetails.parts =
+    final details = KanjiDetails();
+
+    details.parts =
         element.collectAll("div.radicals > dl > dd > a", (e) => e.text.trim());
-    kanjiDetails.variants =
+    details.variants =
         element.collectAll("dl.variants > dd > a", (e) => e.text.trim());
 
-    kanjiDetails.frequency = element.collect(
+    details.frequency = element.collect(
         "div.frequency > strong", (e) => int.parse(e.text.trim()));
 
-    kanjiDetails.radical =
-        element.collect("div.radicals > dl > dd > span", (e) {
+    details.radical = element.collect("div.radicals > dl > dd > span", (e) {
       final character = e.nodes
           .firstWhere((node) =>
               node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty)
@@ -232,10 +231,11 @@ class Parser {
       return Radical(character, meanings);
     });
 
-    kanjiDetails.onCompounds = _findCompounds(element, "On");
-    kanjiDetails.kunCompounds = _findCompounds(element, "Kun");
+    details.onCompounds = _findCompounds(element, "On");
+    details.kunCompounds = _findCompounds(element, "Kun");
 
-    return kanjiDetails;
+    kanji.details = details;
+    return kanji;
   }
 
   static KanjiType? _getKanjiType(Element element) {

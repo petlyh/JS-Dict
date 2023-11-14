@@ -77,7 +77,7 @@ class WordDetailsScreen extends StatelessWidget {
           ? _WordContentWidget(word!)
           : LoaderWidget(
               onLoad: _searchFuture,
-              handler: (word) => _WordContentWidget(word),
+              handler: _WordContentWidget.new,
             ),
     );
   }

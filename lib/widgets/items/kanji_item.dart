@@ -14,7 +14,7 @@ class KanjiItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-        onTap: pushScreen(context, KanjiDetailsScreen(kanji.kanji)),
+        onTap: pushScreen(context, KanjiDetailsScreen(kanji)),
         child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),

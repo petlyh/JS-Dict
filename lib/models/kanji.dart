@@ -12,6 +12,12 @@ class Kanji implements SearchType {
   int strokeCount = -1;
   JLPTLevel jlptLevel = JLPTLevel.none;
 
+  KanjiDetails? details;
+
+  Kanji(this.kanji);
+}
+
+class KanjiDetails {
   List<String> parts = [];
   List<String> variants = [];
 
@@ -23,8 +29,6 @@ class Kanji implements SearchType {
 
   List<Compound> onCompounds = [];
   List<Compound> kunCompounds = [];
-
-  Kanji(this.kanji);
 }
 
 class Radical {
