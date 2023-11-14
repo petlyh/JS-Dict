@@ -31,7 +31,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
   @override
   final bool wantKeepAlive = true;
 
-  final _pagingController = PagingController<int, T>(firstPageKey: 1);
+  final pagingController = PagingController<int, T>(firstPageKey: 1);
 
   List<String> noMatchesFor = [];
 
@@ -44,7 +44,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
 
   @override
   void initState() {
-    _pagingController.addPageRequestListener(_fetchPage);
+    pagingController.addPageRequestListener(_fetchPage);
     super.initState();
   }
 
@@ -54,7 +54,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
     }
 
     zenInfo.value = zenInfo.value!.withSelected(index);
-    _pagingController.refresh();
+    pagingController.refresh();
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -92,13 +92,13 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
       }
 
       if (!response.hasNextPage) {
-        _pagingController.appendLastPage(response.results);
+        pagingController.appendLastPage(response.results);
         return;
       }
 
-      _pagingController.appendPage(response.results, pageKey + 1);
+      pagingController.appendPage(response.results, pageKey + 1);
     } catch (error, stackTrace) {
-      _pagingController.error = (error, stackTrace);
+      pagingController.error = (error, stackTrace);
     }
   }
 
@@ -179,13 +179,13 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
         SliverPadding(
           padding: const EdgeInsets.all(8.0),
           sliver: PagedSliverList<int, T>(
-            pagingController: _pagingController,
+            pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate<T>(
                 itemBuilder: (context, item, index) => _createItem(item),
                 firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                      (_pagingController.error.$1 as Object),
-                      stackTrace: (_pagingController.error.$2 as StackTrace),
-                      onRetry: _pagingController.refresh,
+                      (pagingController.error.$1 as Object),
+                      stackTrace: (pagingController.error.$2 as StackTrace),
+                      onRetry: pagingController.refresh,
                     ),
                 noItemsFoundIndicatorBuilder: (context) {
                   return Container(
@@ -218,7 +218,7 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
 
   @override
   void dispose() {
-    _pagingController.dispose();
+    pagingController.dispose();
     zenInfo.dispose();
     correction.dispose();
     grammarInfo.dispose();

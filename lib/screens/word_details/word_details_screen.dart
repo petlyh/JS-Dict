@@ -1,10 +1,10 @@
 import "package:audioplayers/audioplayers.dart";
-import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/widgets/wikipedia.dart";
 import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
@@ -54,6 +54,7 @@ class WordDetailsScreen extends StatelessWidget {
             valueListenable: audioUrlValue,
             builder: (_, __, ___) => audioUrl != null
                 ? IconButton(
+                    tooltip: "Play Audio",
                     onPressed: () => AudioPlayer().play(
                           UrlSource(audioUrl!),
                           mode: PlayerMode.lowLatency,
@@ -73,37 +74,19 @@ class WordDetailsScreen extends StatelessWidget {
         ],
       ),
       body: word != null
-          ? _WordDetails(word!)
+          ? _WordContentWidget(word!)
           : LoaderWidget(
               onLoad: _searchFuture,
-              handler: (word) => _WordDetails(word),
+              handler: (word) => _WordContentWidget(word),
             ),
     );
   }
 }
 
-class _WordDetails extends StatelessWidget {
-  const _WordDetails(this.word);
+class _WordContentWidget extends StatelessWidget {
+  const _WordContentWidget(this.word);
 
   final Word word;
-
-  Widget _kanjiWidget(List<Kanji> kanji) => ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: kanji.length,
-      itemBuilder: (_, index) => KanjiItem(kanji: kanji[index]));
-
-  /// checks whether [text] doesn't contain any kanji characters.
-  bool isNonKanji(String text) {
-    const cjkUnifiedIdeographsStart = 0x4E00;
-    const cjkUnifiedIdeographsEnd = 0x9FFF;
-
-    final codeUnits = text.trim().codeUnits;
-    final firstKanji = codeUnits.firstWhereOrNull((unit) =>
-        cjkUnifiedIdeographsStart <= unit && unit <= cjkUnifiedIdeographsEnd);
-
-    return firstKanji == null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,18 +205,38 @@ class _WordDetails extends StatelessWidget {
                 ),
             ].intersperce(const SizedBox(height: 8)),
             const SizedBox(height: 8),
-            if (word.kanji.isNotEmpty) ...[
-              _kanjiWidget(word.kanji),
+            if (word.details != null) ...[
+              _WordDetailsWidget(word.details!),
             ] else ...[
-              if (!isNonKanji(word.word.getText()))
+              if (word.shouldLoadDetails)
                 LoaderWidget(
                   onLoad: () => getClient().wordDetails(word.id!),
-                  handler: (wordDetails) => _kanjiWidget(wordDetails.kanji),
+                  handler: (loadedWord) =>
+                      _WordDetailsWidget(loadedWord.details!),
                 ),
             ],
           ],
         ),
       ),
+    );
+  }
+}
+
+class _WordDetailsWidget extends StatelessWidget {
+  const _WordDetailsWidget(this.wordDetails);
+
+  final WordDetails wordDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (wordDetails.wikipedia != null) ...[
+          WikipediaWidget(wordDetails.wikipedia!),
+          const SizedBox(height: 8),
+        ],
+        KanjiItemList(wordDetails.kanji),
+      ],
     );
   }
 }

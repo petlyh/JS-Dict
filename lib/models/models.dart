@@ -1,5 +1,5 @@
-import "package:collection/collection.dart";
 import "package:jsdict/packages/inflection/inflection.dart";
+import "package:jsdict/packages/is_kanji.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:ruby_text/ruby_text.dart";
 

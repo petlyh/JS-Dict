@@ -38,3 +38,18 @@ class KanjiItem extends StatelessWidget {
             )));
   }
 }
+
+class KanjiItemList extends StatelessWidget {
+  const KanjiItemList(this.kanjiList, {super.key});
+
+  final List<Kanji> kanjiList;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: kanjiList.length,
+        itemBuilder: (_, index) => KanjiItem(kanji: kanjiList[index]));
+  }
+}

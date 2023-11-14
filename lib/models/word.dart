@@ -13,8 +13,6 @@ class Word implements SearchType {
 
   List<Note> notes = [];
 
-  List<Kanji> kanji = [];
-
   // Form of word used to get details page
   String? id;
 
@@ -25,11 +23,19 @@ class Word implements SearchType {
 
   List<Collocation> collocations = [];
 
-  WikipediaDefinition? get wikipedia => definitions
-      .firstWhereOrNull((definition) => definition.wikipedia != null)
-      ?.wikipedia;
+  bool hasWikipedia = false;
+
+  /// whether there is any point in loading details
+  bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.getText());
+
+  WordDetails? details;
 
   Word(this.word);
+}
+
+class WordDetails {
+  List<Kanji> kanji = [];
+  WikipediaInfo? wikipedia;
 }
 
 class Definition {
@@ -37,8 +43,6 @@ class Definition {
   List<String> types = [];
   List<String> tags = [];
   List<String> seeAlso = [];
-
-  WikipediaDefinition? wikipedia;
 
   Sentence? exampleSentence;
 
@@ -48,14 +52,14 @@ class Definition {
   }
 }
 
-class WikipediaDefinition {
+class WikipediaInfo {
   final String name;
   String? textAbstract;
   WikipediaPage? wikipediaEnglish;
   WikipediaPage? wikipediaJapanese;
   WikipediaPage? dbpedia;
 
-  WikipediaDefinition(this.name);
+  WikipediaInfo(this.name);
 }
 
 class WikipediaPage {

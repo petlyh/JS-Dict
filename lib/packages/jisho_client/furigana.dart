@@ -1,19 +1,8 @@
 import "package:collection/collection.dart";
 import "package:html/dom.dart";
+import "package:jsdict/packages/is_kanji.dart";
 import "package:jsdict/packages/jisho_client/parsing_helper.dart";
 import "package:jsdict/models/models.dart";
-
-/// checks whether [text] only contains kanji characters.
-bool isKanji(String text) {
-  const cjkUnifiedIdeographsStart = 0x4E00;
-  const cjkUnifiedIdeographsEnd = 0x9FFF;
-
-  final codeUnits = text.trim().codeUnits;
-  final nonKanji = codeUnits.firstWhereOrNull((unit) =>
-      !(cjkUnifiedIdeographsStart <= unit && unit <= cjkUnifiedIdeographsEnd));
-
-  return nonKanji == null;
-}
 
 bool hasEmpty(List<String> list) =>
     list.firstWhereOrNull((part) => part.isEmpty) != null;

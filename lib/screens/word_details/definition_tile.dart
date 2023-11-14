@@ -4,7 +4,6 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
-import "package:jsdict/screens/wikipedia_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/link_span.dart";
@@ -17,14 +16,9 @@ class DefinitionTile extends StatelessWidget {
   final Color? textColor;
   final bool isLast;
 
-  bool get isWikipedia => definition.wikipedia != null;
   bool get hasExampleSentence => definition.exampleSentence != null;
 
   Function()? onTap(BuildContext context) {
-    if (isWikipedia) {
-      return pushScreen(context, WikipediaScreen(definition.wikipedia!));
-    }
-
     if (hasExampleSentence) {
       return pushScreen(
           context, SentenceDetailsScreen(definition.exampleSentence!));

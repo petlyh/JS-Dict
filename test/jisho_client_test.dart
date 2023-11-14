@@ -44,8 +44,8 @@ void main() {
     expect(word.notes, isEmpty);
     expect(word.inflectionId, "v1");
 
-    expect(word.kanji, hasLength(1));
-    expect(word.kanji.first.kanji, "見");
+    expect(word.details!.kanji, hasLength(1));
+    expect(word.details!.kanji.first.kanji, "見");
 
     expect(word.collocations, hasLength(16));
     expect(word.collocations.first.word, "見るに堪えない");
@@ -66,7 +66,7 @@ void main() {
     final name = response.results.first;
     expect(name.japanese, "下村陽子");
     expect(name.reading, "しもむらようこ");
-    expect(name.english, "Shimomura Youko");
+    expect(name.english, "Yoko Shimomura");
     expect(name.type, "Full name");
   });
 

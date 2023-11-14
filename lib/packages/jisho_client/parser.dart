@@ -121,7 +121,7 @@ class Parser {
 
     final english = element
         .collectAll("span.meaning-meaning", (e) => e.text.trim())
-        .first
+        .last
         .replaceFirst(lifespanPattern, "");
 
     final type =
@@ -346,22 +346,17 @@ class Parser {
           "span.tag-tag, span.tag-info, span.tag-source", (e) => e.text.trim());
       definition.seeAlso = definitionElement.collectAll(
           "span.tag-see_also > a", (e) => e.text.trim());
-      // deduplicate
       definition.seeAlso = definition.seeAlso.deduplicate();
 
-      if (definition.types.contains("Wikipedia definition") &&
-          definitionElement.querySelector("span.meaning-abstract") != null) {
-        final wikipediaDefinition =
-            WikipediaDefinition(definition.meanings.first);
-        wikipediaDefinition.textAbstract = definitionElement.collect(
-            "span.meaning-abstract", (e) => e.nodes.first.text!);
-        wikipediaDefinition.wikipediaEnglish =
-            _wikipediaPage(definitionElement, "English Wikipedia");
-        wikipediaDefinition.wikipediaJapanese =
-            _wikipediaPage(definitionElement, "Japanese Wikipedia");
-        wikipediaDefinition.dbpedia =
-            _wikipediaPage(definitionElement, "DBpedia");
-        definition.wikipedia = wikipediaDefinition;
+      // don't add wikipedia definition since it's handled separately
+      if (definition.types.contains("Wikipedia definition")) {
+        // except if there are no other definitions
+        if (word.definitions.isEmpty) {
+          definition.types = ["Word"];
+          word.definitions.add(definition);
+        }
+
+        continue;
       }
 
       definition.exampleSentence = definitionElement.collect(
@@ -394,6 +389,17 @@ class Parser {
         ) ??
         [];
 
+    final wikipediaTagElement = element.collectFirstWhere("div.meaning-tags",
+        (e) => e.text.contains("Wikipedia definition"), (e) => e);
+
+    if (wikipediaTagElement != null) {
+      final wikipediaElement = wikipediaTagElement.nextElementSibling!;
+
+      if (wikipediaElement.getElementsByTagName("a").isNotEmpty) {
+        word.hasWikipedia = true;
+      }
+    }
+
     return word;
   }
 
@@ -413,8 +419,38 @@ class Parser {
       throw Exception("Word not found");
     }
 
-    word.kanji = document.body!.collectAll(
+    word.details = WordDetails();
+
+    word.details!.kanji = document.body!.collectAll(
         "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
+
+    final wikipediaTagElement = document.body!.collectFirstWhere(
+        "div.meaning-tags",
+        (e) => e.text.contains("Wikipedia definition"),
+        (e) => e);
+
+    if (wikipediaTagElement != null) {
+      final wikipediaElement = wikipediaTagElement.nextElementSibling!;
+
+      if (wikipediaElement.querySelector("span.meaning-abstract") == null) {
+        return word;
+      }
+
+      final title = wikipediaElement.collect(
+          "span.meaning-meaning", (e) => e.text.trim())!;
+      final wikipediaDefinition = WikipediaInfo(title);
+
+      wikipediaDefinition.textAbstract = wikipediaElement.collect(
+          "span.meaning-abstract", (e) => e.nodes.first.text!);
+      wikipediaDefinition.wikipediaEnglish =
+          _wikipediaPage(wikipediaElement, "English Wikipedia");
+      wikipediaDefinition.wikipediaJapanese =
+          _wikipediaPage(wikipediaElement, "Japanese Wikipedia");
+      wikipediaDefinition.dbpedia = _wikipediaPage(wikipediaElement, "DBpedia");
+
+      word.details!.wikipedia = wikipediaDefinition;
+    }
+
     return word;
   }
 }

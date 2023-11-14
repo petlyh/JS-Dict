@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
-import "package:jsdict/packages/navigation.dart";
-import "package:jsdict/screens/wikipedia_screen.dart";
+import "package:jsdict/packages/is_kanji.dart";
+import "package:jsdict/widgets/wikipedia.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
@@ -13,15 +13,6 @@ class NameDetailsScreen extends StatelessWidget {
   const NameDetailsScreen(this.name, {super.key});
 
   final Name name;
-
-  Future<List<Kanji>> _getKanji() async {
-    if (name.reading == null) {
-      return [];
-    }
-
-    final response = await getClient().search<Kanji>(name.japanese);
-    return response.results;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,20 +54,22 @@ class NameDetailsScreen extends StatelessWidget {
                 InfoChip(name.type!),
                 const SizedBox(height: 10),
               ],
-              if (name.wikipediaWord != null)
-                ElevatedButton(
-                    onPressed: pushScreen(
-                        context, WikipediaScreen.fromWord(name.wikipediaWord!)),
-                    child: const Text("Wikipedia")),
-              const SizedBox(height: 14),
-              LoaderWidget(
-                  onLoad: _getKanji,
-                  handler: (kanjiList) => ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: kanjiList.length,
-                      itemBuilder: (_, index) =>
-                          KanjiItem(kanji: kanjiList[index]))),
+              if (name.wikipediaWord != null) ...[
+                LoaderWidget(
+                  onLoad: () => getClient().wordDetails(name.wikipediaWord!),
+                  handler: (word) => Column(
+                    children: [
+                      WikipediaWidget(word.details!.wikipedia!),
+                      const SizedBox(height: 8),
+                      KanjiItemList(word.details!.kanji),
+                    ],
+                  ),
+                ),
+              ] else if (!isNonKanji(name.japanese))
+                LoaderWidget(
+                  onLoad: () => getClient().search<Kanji>(name.japanese),
+                  handler: (response) => KanjiItemList(response.results),
+                ),
             ],
           ),
         ),
