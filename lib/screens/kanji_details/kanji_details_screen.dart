@@ -21,20 +21,19 @@ class KanjiDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final kanjiId = searchKanji ?? kanji!.kanji;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Kanji"),
         actions: [
           LinkPopupButton([
-            (
-              "Open in Browser",
-              "https://jisho.org/search/$searchKanji %23kanji"
-            ),
+            ("Open in Browser", "https://jisho.org/search/$kanjiId %23kanji"),
             (
               "Unihan database",
-              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$searchKanji&useutf8=true"
+              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$kanjiId&useutf8=true"
             ),
-            ("Wiktionary", "http://en.wiktionary.org/wiki/$searchKanji"),
+            ("Wiktionary", "http://en.wiktionary.org/wiki/$kanjiId"),
           ]),
         ],
       ),
