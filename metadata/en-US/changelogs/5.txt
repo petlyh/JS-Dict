@@ -1,0 +1,5 @@
+- Show stroke order diagram for kanji
+- Show kanji variants
+- Show name type and Wikipedia info on Name pages
+- Partially load word and kanji details
+- Various fixes and visual changes
