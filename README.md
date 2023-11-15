@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="icon/icon.png" width="150">
+<img src="assets/icon.png" width="150">
 
 # **JS-Dict**
 
