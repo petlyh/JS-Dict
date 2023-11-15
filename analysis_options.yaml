@@ -28,6 +28,9 @@ linter:
     - avoid_print
     - prefer_final_locals
     - prefer_final_in_for_each
+    - prefer_const_constructors
+    - prefer_const_constructors_in_immutables
+    - prefer_const_declarations
 
 analyzer:
   language:
