@@ -27,8 +27,8 @@ class KanjiDetails {
 
   /// URL to the KanjiVG data.
   /// Responds with 404 if the kanji doesn't have KanjiVG data.
-  /// Therefore, check if [kanjiVgData] is null instead to check if it the kanji
-  /// has KanjiVG data.
+  /// Therefore, check if [kanjiVgData] is null instead to check if
+  /// the kanji has KanjiVG data.
   String? kanjiVgUrl;
 
   /// String containing KanjiVG data downloaded from [kanjiVgUrl].
