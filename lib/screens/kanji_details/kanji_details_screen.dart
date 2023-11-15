@@ -10,6 +10,7 @@ import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/loader.dart";
 
 import "compound_list.dart";
+import "stroke_diagram.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
   const KanjiDetailsScreen(this.kanji, {super.key}) : searchKanji = null;
@@ -155,6 +156,8 @@ class _KanjiDetailsWidget extends StatelessWidget {
         ],
         if (kanjiDetails.variants.isNotEmpty)
           _VariantsWidget(kanjiDetails.variants),
+        if (kanjiDetails.kanjiVgData != null)
+          StrokeDiagramWidget(kanjiDetails.kanjiVgData!),
         if (kanjiDetails.onCompounds.isNotEmpty)
           CompoundList("On", kanjiDetails.onCompounds),
         const SizedBox(height: 4),

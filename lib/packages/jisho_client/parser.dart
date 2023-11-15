@@ -184,7 +184,7 @@ class Parser {
         (e) => strokeDiagramUrlRegex.firstMatch(e.text)!.group(1));
 
     if (strokeDiagramUrl != null) {
-      kanji.details!.strokeDiagramUrl = "https:$strokeDiagramUrl";
+      kanji.details!.kanjiVgUrl = "https:$strokeDiagramUrl";
     }
 
     return kanji;

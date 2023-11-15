@@ -66,8 +66,23 @@ class JishoClient {
   }
 
   Future<Kanji> kanjiDetails(String kanji) {
-    return _getHtml(_searchPath<Kanji>(kanji))
-        .then((document) => Parser.kanjiDetails(document));
+    return _getHtml(_searchPath<Kanji>(kanji)).then((document) async {
+      final kanji = Parser.kanjiDetails(document);
+      final kanjiVgUrl = kanji.details?.kanjiVgUrl;
+
+      // KanjiVG data must be downloaded here because the only way to check
+      // whether the kanji has KanjiVG data is to check whether a 404 NOT FOUND
+      // status code is returned.
+      if (kanjiVgUrl != null) {
+        final response = await _client.get(Uri.parse(kanjiVgUrl));
+
+        if (response.statusCode == 200) {
+          kanji.details?.kanjiVgData = response.body;
+        }
+      }
+
+      return kanji;
+    });
   }
 
   Future<Word> wordDetails(String word) {

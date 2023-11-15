@@ -28,6 +28,8 @@ dependencies:
   shared_preferences: ^2.1.2
   audioplayers: ^5.1.0
   package_info_plus: ^4.1.0
+  xml: ^6.3.0
+  flutter_svg: ^2.0.9
 
 dev_dependencies:
   flutter_test:
