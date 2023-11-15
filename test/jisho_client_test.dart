@@ -21,7 +21,7 @@ void main() {
     final details = kanji.details!;
 
     expect(details.frequency, 943);
-    expect(details.strokeDiagramUrl, isNotEmpty);
+    expect(details.kanjiVgUrl, isNotEmpty);
 
     expect(details.parts, ["冖", "夕", "艾", "買"]);
     expect(details.variants, ["梦", "夣"]);
@@ -52,7 +52,8 @@ void main() {
 
     expect(word.collocations, hasLength(16));
     expect(word.collocations.first.word, "見るに堪えない");
-    expect(word.collocations.first.meaning, "so miserable that it is painful to look at");
+    expect(word.collocations.first.meaning,
+        "so miserable that it is painful to look at");
 
     expect(word.definitions, hasLength(6));
     expect(word.definitions.first.meanings, contains("to observe"));
@@ -105,7 +106,8 @@ void main() {
     expect(response.grammarInfo, isNotNull);
     expect(response.grammarInfo!.word, "ありふれた");
     expect(response.grammarInfo!.possibleInflectionOf, "ありふれる");
-    expect(response.grammarInfo!.formInfos, ["Ta-form. It indicates the past tense of the verb."]);
+    expect(response.grammarInfo!.formInfos,
+        ["Ta-form. It indicates the past tense of the verb."]);
   });
 
   test("year converion", () async {
@@ -142,5 +144,17 @@ void main() {
     final note = response.notes.first;
     expect(note.form, "何方");
     expect(note.note, "Rarely-used kanji form");
+  });
+
+  test("kanji stroke diagram", () async {
+    final kanji = await client.kanjiDetails("使");
+    expect(kanji.details?.kanjiVgUrl, startsWith("https://"));
+    expect(kanji.details?.kanjiVgData, isNotEmpty);
+  });
+
+  test("kanji no stroke diagram", () async {
+    final kanji = await client.kanjiDetails("坫");
+    expect(kanji.details?.kanjiVgUrl, startsWith("https://"));
+    expect(kanji.details?.kanjiVgData, isNull);
   });
 }
