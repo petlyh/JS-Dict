@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/packages/string_util.dart";
 import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
 
 import "item_card.dart";
@@ -27,9 +28,11 @@ class KanjiItem extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (kanji.kunReadings.isNotEmpty)
-                  JpText("Kun: ${kanji.kunReadings.join("、 ")}"),
+                  JpText(
+                      "Kun: ${kanji.kunReadings.join("、$zeroWidthSpace").noBreak}"),
                 if (kanji.onReadings.isNotEmpty)
-                  JpText("On: ${kanji.onReadings.join("、 ")}"),
+                  JpText(
+                      "On: ${kanji.onReadings.join("、$zeroWidthSpace").noBreak}"),
                 JpText([
                   "${kanji.strokeCount} strokes",
                   if (kanji.jlptLevel != JLPTLevel.none)
