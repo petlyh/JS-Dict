@@ -26,8 +26,10 @@ class KanjiItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                JpText("Kun: ${kanji.kunReadings.join("、 ")}"),
-                JpText("On: ${kanji.onReadings.join("、 ")}"),
+                if (kanji.kunReadings.isNotEmpty)
+                  JpText("Kun: ${kanji.kunReadings.join("、 ")}"),
+                if (kanji.onReadings.isNotEmpty)
+                  JpText("On: ${kanji.onReadings.join("、 ")}"),
                 JpText([
                   "${kanji.strokeCount} strokes",
                   if (kanji.jlptLevel != JLPTLevel.none)
