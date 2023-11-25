@@ -13,9 +13,6 @@ class ErrorIndicator extends StatelessWidget {
   final Function()? onRetry;
   final StackTrace? stackTrace;
 
-  String get _errorType => error.runtimeType.toString();
-  String get _errorMessage => error.toString();
-
   String get _userMessage {
     if (error is NotFoundException) {
       return "Page not found";
@@ -40,7 +37,8 @@ class ErrorIndicator extends StatelessWidget {
             const SizedBox(height: 8),
             ElevatedButton(
               child: const Text("Show Error"),
-              onPressed: () => showErrorInfoDialog(context),
+              onPressed: () =>
+                  showErrorInfoDialog(context, error, stackTrace: stackTrace),
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 4),
@@ -55,6 +53,22 @@ class ErrorIndicator extends StatelessWidget {
       ),
     );
   }
+}
+
+void showErrorInfoDialog(BuildContext context, Object error,
+        {StackTrace? stackTrace}) =>
+    showDialog(
+        context: context,
+        builder: (context) => ErrorInfoDialog(error, stackTrace: stackTrace));
+
+class ErrorInfoDialog extends StatelessWidget {
+  const ErrorInfoDialog(this.error, {super.key, this.stackTrace});
+
+  final Object error;
+  final StackTrace? stackTrace;
+
+  String get _errorType => error.runtimeType.toString();
+  String get _errorMessage => error.toString();
 
   Widget _infoText(String title, String info, {TextStyle? style}) {
     return Text.rich(
@@ -69,47 +83,6 @@ class ErrorIndicator extends StatelessWidget {
     );
   }
 
-  void showErrorInfoDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              titlePadding: const EdgeInsets.only(
-                  top: 28, bottom: 12, left: 28, right: 28),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 28),
-              title: const Text("Error Info", style: TextStyle(fontSize: 20)),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _infoText("Type: ", _errorType),
-                    _infoText("Message: ", _errorMessage),
-                    if (stackTrace != null) ...[
-                      _infoText("Stack trace: ", ""),
-                      ExpandableText(
-                        stackTrace.toString(),
-                        expandText: "Show",
-                        collapseText: "Hide",
-                        maxLines: 1,
-                        linkColor: Theme.of(context).colorScheme.primary,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  child: const Text("Copy"),
-                  onPressed: () => _copyError(context),
-                ),
-                TextButton(
-                  child: const Text("Close"),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ));
-  }
-
   void _copyError(BuildContext context) {
     final copyText =
         "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n${stackTrace.toString()}```";
@@ -121,5 +94,45 @@ class ErrorIndicator extends StatelessWidget {
     });
 
     Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      titlePadding:
+          const EdgeInsets.only(top: 28, bottom: 12, left: 28, right: 28),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 28),
+      title: const Text("Error Info", style: TextStyle(fontSize: 20)),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _infoText("Type: ", _errorType),
+            _infoText("Message: ", _errorMessage),
+            if (stackTrace != null) ...[
+              _infoText("Stack trace: ", ""),
+              ExpandableText(
+                stackTrace.toString(),
+                expandText: "Show",
+                collapseText: "Hide",
+                maxLines: 1,
+                linkColor: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: const Text("Copy"),
+          onPressed: () => _copyError(context),
+        ),
+        TextButton(
+          child: const Text("Close"),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
   }
 }
