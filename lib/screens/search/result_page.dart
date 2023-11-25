@@ -17,6 +17,20 @@ import "package:jsdict/widgets/items/word_item.dart";
 import "package:jsdict/widgets/link_span.dart";
 import "package:provider/provider.dart";
 
+class ResultPageScreen<T extends SearchType> extends StatelessWidget {
+  const ResultPageScreen(this.query, {super.key});
+
+  final String query;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(query)),
+      body: ResultPage<T>(query),
+    );
+  }
+}
+
 class ResultPage<T extends SearchType> extends StatefulWidget {
   const ResultPage(this.query, {super.key});
 

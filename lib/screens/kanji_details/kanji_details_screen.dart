@@ -2,12 +2,16 @@ import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/packages/katakana_convert.dart";
+import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
+import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/link_span.dart";
 import "package:jsdict/widgets/loader.dart";
 
 import "compound_list.dart";
@@ -94,9 +98,9 @@ class _KanjiContentWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (kanji.kunReadings.isNotEmpty)
-                    JpText("Kun: ${kanji.kunReadings.join("、$zeroWidthSpace").noBreak}"),
+                    _ReadingsWidget("Kun", kanji.kanji, kanji.kunReadings),
                   if (kanji.onReadings.isNotEmpty)
-                    JpText("On: ${kanji.onReadings.join("、$zeroWidthSpace").noBreak}"),
+                    _ReadingsWidget("On", kanji.kanji, kanji.onReadings),
                   ValueListenableBuilder(
                     valueListenable: radicalValue,
                     builder: (_, __, ___) => radical != null
@@ -119,6 +123,38 @@ class _KanjiContentWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _ReadingsWidget extends StatelessWidget {
+  const _ReadingsWidget(this.name, this.kanji, this.readings);
+
+  final String name;
+  final String kanji;
+  final List<String> readings;
+
+  String query(String reading) =>
+      "$kanji ${convertKatakana(reading.replaceAll(RegExp(r"[\.-]"), ""))}";
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+
+    return RichText(
+        text: TextSpan(
+            style: TextStyle(color: textColor, height: 1.5).jp(),
+            children: [
+                  TextSpan(
+                      text: "$name: ", style: TextStyle(color: textColor).jp())
+                ] +
+                readings
+                    .map((reading) => LinkSpan(context,
+                        text: reading.noBreak,
+                        onTap: pushScreen(
+                            context, ResultPageScreen<Word>(query(reading)))))
+                    .toList()
+                    .intersperce(TextSpan(
+                        text: "、 ", style: TextStyle(color: textColor).jp()))));
   }
 }
 
