@@ -453,4 +453,22 @@ class Parser {
 
     return word;
   }
+
+  static Sentence sentenceDetails(Document document) {
+    final sentence =
+        document.body!.collect("li.entry.sentence", _sentenceEntry);
+
+    if (sentence == null) {
+      throw Exception("Sentence not found");
+    }
+
+    final kanji = document.body!.collectAll(
+        "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
+
+    if (kanji.isNotEmpty) {
+      return sentence.withKanji(kanji);
+    }
+
+    return sentence;
+  }
 }

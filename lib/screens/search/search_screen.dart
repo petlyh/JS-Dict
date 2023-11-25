@@ -9,6 +9,7 @@ import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/screens/search_options/radical_search_screen.dart";
 import "package:jsdict/screens/search_options/tag_selection_screen.dart";
+import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/settings_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/error_indicator.dart";
@@ -36,6 +37,11 @@ class _SearchScreenState extends State<SearchScreen> {
     if (url.path.startsWith("/word/")) {
       final word = url.pathSegments.last;
       pushScreen(context, WordDetailsScreen.search(word)).call();
+    }
+
+    if (url.path.startsWith("/sentences/")) {
+      final sentenceId = url.pathSegments.last;
+      pushScreen(context, SentenceDetailsScreen.search(sentenceId)).call();
     }
   }
 

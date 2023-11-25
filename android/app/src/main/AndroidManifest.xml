@@ -38,6 +38,7 @@
                 <data android:host="jisho.org" />
                 <data android:host="www.jisho.org" />
                 <data android:pathPrefix="/word/" />
+                <data android:pathPrefix="/sentences/" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
