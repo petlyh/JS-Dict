@@ -41,7 +41,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (url.path.startsWith("/sentences/")) {
       final sentenceId = url.pathSegments.last;
-      pushScreen(context, SentenceDetailsScreen.search(sentenceId)).call();
+      pushScreen(context, SentenceDetailsScreen.id(sentenceId)).call();
     }
   }
 

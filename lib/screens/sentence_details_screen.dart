@@ -9,24 +9,25 @@ import "package:jsdict/widgets/loader.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
-  const SentenceDetailsScreen(this.sentence, {super.key}) : sentenceId = null;
-  const SentenceDetailsScreen.search(this.sentenceId, {super.key})
+  const SentenceDetailsScreen(Sentence this.sentence, {super.key})
+      : sentenceId = null;
+  const SentenceDetailsScreen.id(String this.sentenceId, {super.key})
       : sentence = null;
 
   final Sentence? sentence;
   final String? sentenceId;
 
-  String? get id => sentence?.id ?? sentenceId;
+  String? get _id => sentence?.id ?? sentenceId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(id == null ? "Example Sentence" : "Sentence"),
+        title: Text(_id == null ? "Example Sentence" : "Sentence"),
         actions: [
-          if (id != null)
+          if (_id != null)
             LinkPopupButton([
-              ("Open in Browser", "https://jisho.org/sentences/$id"),
+              ("Open in Browser", "https://jisho.org/sentences/$_id"),
             ]),
         ],
       ),

@@ -18,34 +18,34 @@ import "compound_list.dart";
 import "stroke_diagram.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
-  const KanjiDetailsScreen(this.kanji, {super.key}) : searchKanji = null;
-  const KanjiDetailsScreen.search(this.searchKanji, {super.key}) : kanji = null;
+  const KanjiDetailsScreen(Kanji this.kanji, {super.key}) : kanjiId = null;
+  const KanjiDetailsScreen.id(String this.kanjiId, {super.key}) : kanji = null;
 
   final Kanji? kanji;
-  final String? searchKanji;
+  final String? kanjiId;
+
+  String get _id => kanjiId ?? kanji!.kanji;
 
   @override
   Widget build(BuildContext context) {
-    final kanjiId = searchKanji ?? kanji!.kanji;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Kanji"),
         actions: [
           LinkPopupButton([
-            ("Open in Browser", "https://jisho.org/search/$kanjiId %23kanji"),
+            ("Open in Browser", "https://jisho.org/search/$_id %23kanji"),
             (
               "Unihan database",
-              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$kanjiId&useutf8=true"
+              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$_id&useutf8=true"
             ),
-            ("Wiktionary", "http://en.wiktionary.org/wiki/$kanjiId"),
+            ("Wiktionary", "http://en.wiktionary.org/wiki/$_id"),
           ]),
         ],
       ),
       body: kanji != null
           ? _KanjiContentWidget(kanji!)
           : LoaderWidget(
-              onLoad: () => getClient().kanjiDetails(searchKanji!),
+              onLoad: () => getClient().kanjiDetails(kanjiId!),
               handler: _KanjiContentWidget.new,
             ),
     );
@@ -178,8 +178,8 @@ class _KanjiDetailsWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4)),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(4),
-                          onTap: pushScreen(
-                              context, KanjiDetailsScreen.search(part)),
+                          onTap:
+                              pushScreen(context, KanjiDetailsScreen.id(part)),
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(part,
@@ -228,7 +228,7 @@ class _VariantsWidget extends StatelessWidget {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(4),
                           onTap: pushScreen(
-                              context, KanjiDetailsScreen.search(variant)),
+                              context, KanjiDetailsScreen.id(variant)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 12),

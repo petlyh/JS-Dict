@@ -18,8 +18,8 @@ import "definition_tile.dart";
 import "inflection_table.dart";
 
 class WordDetailsScreen extends StatelessWidget {
-  WordDetailsScreen(this.word, {super.key}) : searchWord = null;
-  WordDetailsScreen.search(this.searchWord, {super.key}) : word = null;
+  WordDetailsScreen(Word this.word, {super.key}) : searchWord = null;
+  WordDetailsScreen.search(String this.searchWord, {super.key}) : word = null;
 
   final Word? word;
   final String? searchWord;
