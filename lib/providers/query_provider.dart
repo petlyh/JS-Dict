@@ -12,9 +12,15 @@ class QueryProvider extends ChangeNotifier {
   String _query = "";
   String get query => _query;
 
+  set query(String text) {
+    searchController.text = text;
+    updateQuery();
+  }
+
   void sanitizeText() {
-    searchController.text =
-        searchController.text.trim().replaceAll(RegExp(r"\s+"), " ");
+    searchController.text = removeTypeTags(searchController.text)
+        .trim()
+        .replaceAll(RegExp(r"\s+"), " ");
   }
 
   void updateQuery() {
