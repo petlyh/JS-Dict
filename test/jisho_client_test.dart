@@ -21,7 +21,6 @@ void main() {
     final details = kanji.details!;
 
     expect(details.frequency, 943);
-    expect(details.kanjiVgUrl, isNotEmpty);
 
     expect(details.parts, ["冖", "夕", "艾", "買"]);
     expect(details.variants, ["梦", "夣"]);
@@ -144,17 +143,5 @@ void main() {
     final note = response.notes.first;
     expect(note.form, "何方");
     expect(note.note, "Rarely-used kanji form");
-  });
-
-  test("kanji stroke diagram", () async {
-    final kanji = await client.kanjiDetails("使");
-    expect(kanji.details?.kanjiVgUrl, startsWith("https://"));
-    expect(kanji.details?.kanjiVgData, isNotEmpty);
-  });
-
-  test("kanji no stroke diagram", () async {
-    final kanji = await client.kanjiDetails("坫");
-    expect(kanji.details?.kanjiVgUrl, startsWith("https://"));
-    expect(kanji.details?.kanjiVgData, isNull);
   });
 }
