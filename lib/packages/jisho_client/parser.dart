@@ -178,15 +178,6 @@ class Parser {
       throw Exception("Kanji not found");
     }
 
-    final strokeDiagramUrl = document.body!.collectFirstWhere(
-        "script",
-        (e) => strokeDiagramUrlRegex.firstMatch(e.text) != null,
-        (e) => strokeDiagramUrlRegex.firstMatch(e.text)!.group(1));
-
-    if (strokeDiagramUrl != null) {
-      kanji.details!.kanjiVgUrl = "https:$strokeDiagramUrl";
-    }
-
     return kanji;
   }
 

@@ -192,8 +192,7 @@ class _KanjiDetailsWidget extends StatelessWidget {
         ],
         if (kanjiDetails.variants.isNotEmpty)
           _VariantsWidget(kanjiDetails.variants),
-        if (kanjiDetails.kanjiVgData != null)
-          StrokeDiagramWidget(kanjiDetails.kanjiVgData!),
+        StrokeDiagramWidget(kanji.code),
         if (kanjiDetails.onCompounds.isNotEmpty)
           CompoundList("On", kanjiDetails.onCompounds),
         const SizedBox(height: 4),

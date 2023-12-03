@@ -1,5 +1,7 @@
 import "package:dynamic_color/dynamic_color.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/providers/theme_provider.dart";
 import "package:jsdict/screens/search/search_screen.dart";
@@ -8,8 +10,14 @@ import "package:provider/provider.dart";
 
 void main() async {
   await registerSingletons();
+  registerKanjivgLicense();
   runApp(const JsDictApp());
 }
+
+void registerKanjivgLicense() => LicenseRegistry.addLicense(() async* {
+      yield LicenseEntryWithLineBreaks(["KanjiVg"],
+          await rootBundle.loadString("assets/kanjivg/LICENSE.kanjivg.txt"));
+    });
 
 const mainColor = Color(0xFF27CA27);
 

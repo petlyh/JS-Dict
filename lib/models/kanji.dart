@@ -3,6 +3,8 @@ part of "models.dart";
 class Kanji implements SearchType {
   final String kanji;
 
+  String get code => kanji.codeUnitAt(0).toRadixString(16).padLeft(5, "0");
+
   List<String> meanings = [];
   List<String> kunReadings = [];
   List<String> onReadings = [];
@@ -24,17 +26,6 @@ class KanjiDetails {
   Radical? radical;
 
   int? frequency;
-
-  /// URL to the KanjiVG data.
-  /// Responds with 404 if the kanji doesn't have KanjiVG data.
-  /// Therefore, check if [kanjiVgData] is null instead to check if
-  /// the kanji has KanjiVG data.
-  String? kanjiVgUrl;
-
-  /// String containing KanjiVG data downloaded from [kanjiVgUrl].
-  /// Is null if [kanjiVgUrl] is null or if the request to [kanjiVgUrl]
-  /// didn't return a 200 OK status code.
-  String? kanjiVgData;
 
   List<Compound> onCompounds = [];
   List<Compound> kunCompounds = [];
