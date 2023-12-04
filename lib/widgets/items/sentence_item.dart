@@ -3,6 +3,7 @@ import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
+import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/copyright_text.dart";
 import "package:ruby_text/ruby_text.dart";
 
@@ -17,6 +18,11 @@ class SentenceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ItemCard(
         onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
+        onLongPress: () => showActionDialog(context, [
+              ...urlActionTiles(sentence.url),
+              CopyActionTile("Japanese", sentence.japanese.getText()),
+              CopyActionTile("English", sentence.english),
+            ]),
         child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),

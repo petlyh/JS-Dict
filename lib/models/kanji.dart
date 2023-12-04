@@ -14,6 +14,9 @@ class Kanji implements SearchType {
   int strokeCount = -1;
   JLPTLevel jlptLevel = JLPTLevel.none;
 
+  String get url =>
+      "https://jisho.org/search/${Uri.encodeComponent("$kanji #kanji")}";
+
   KanjiDetails? details;
 
   Kanji(this.kanji);

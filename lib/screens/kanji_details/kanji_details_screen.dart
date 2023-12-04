@@ -7,6 +7,7 @@ import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
 import "package:jsdict/screens/search/result_page.dart";
+import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
@@ -180,6 +181,8 @@ class _KanjiDetailsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           onTap:
                               pushScreen(context, KanjiDetailsScreen.id(part)),
+                          onLongPress: () => showActionDialog(
+                              context, urlActionTiles(Kanji(part).url)),
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(part,
@@ -228,6 +231,8 @@ class _VariantsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           onTap: pushScreen(
                               context, KanjiDetailsScreen.id(variant)),
+                          onLongPress: () => showActionDialog(
+                              context, urlActionTiles(Kanji(variant).url)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 12),

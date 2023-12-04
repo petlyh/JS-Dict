@@ -4,6 +4,7 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
+import "package:jsdict/widgets/action_dialog.dart";
 import "package:ruby_text/ruby_text.dart";
 
 import "item_card.dart";
@@ -19,6 +20,12 @@ class WordItem extends StatelessWidget {
 
     return ItemCard(
       onTap: pushScreen(context, WordDetailsScreen(word)),
+      onLongPress: () => showActionDialog(context, [
+        ...urlActionTiles(word.url),
+        CopyActionTile("word", word.word.getText()),
+        if (word.word.getReading() != word.word.getText())
+          CopyActionTile("reading", word.word.getReading()),
+      ]),
       child: ListTile(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),

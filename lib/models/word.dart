@@ -28,6 +28,9 @@ class Word implements SearchType {
   /// whether there is any point in loading details
   bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.getText());
 
+  String get url =>
+      "https://jisho.org/word/${Uri.encodeComponent(id ?? word.getText())}";
+
   WordDetails? details;
 
   Word(this.word);

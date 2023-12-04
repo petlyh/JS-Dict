@@ -9,6 +9,8 @@ class Sentence implements SearchType {
 
   bool get isExample => id == null;
 
+  String get url => "https://jisho.org/sentences/$id";
+
   const Sentence(this.id, this.japanese, this.english)
       : copyright = null,
         kanji = null;

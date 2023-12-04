@@ -4,6 +4,7 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
 import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
+import "package:jsdict/widgets/action_dialog.dart";
 
 import "item_card.dart";
 
@@ -16,6 +17,11 @@ class KanjiItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ItemCard(
         onTap: pushScreen(context, KanjiDetailsScreen(kanji)),
+        onLongPress: () => showActionDialog(context, [
+              ...urlActionTiles(kanji.url),
+              CopyActionTile("Kanji", kanji.kanji),
+              CopyActionTile("meanings", kanji.meanings.join(", ")),
+            ]),
         child: ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
