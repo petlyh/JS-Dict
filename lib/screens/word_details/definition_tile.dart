@@ -33,7 +33,7 @@ class DefinitionTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       isLast: isLast,
       onTap: onTap(context),
-      title: Text(definition.meanings.join("; ")),
+      title: SelectableText(definition.meanings.join("; ")),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

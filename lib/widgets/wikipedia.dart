@@ -49,7 +49,7 @@ class WikipediaWidget extends StatelessWidget {
           child: Column(
             children: [
               if (abstractText.isNotEmpty) ...[
-                Text(abstractText),
+                SelectableText(abstractText),
                 const SizedBox(height: 12),
               ],
               Wrap(

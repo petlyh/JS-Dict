@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/wikipedia.dart";
 import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/models/models.dart";
@@ -12,7 +13,6 @@ import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/loader.dart";
-import "package:ruby_text/ruby_text.dart";
 
 import "definition_tile.dart";
 import "inflection_table.dart";
@@ -101,8 +101,8 @@ class _WordContentWidget extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: RubyText(
-                word.word.rubyData,
+              child: CopyableFuriganaText(
+                word.word,
                 style: const TextStyle(fontSize: 28).jp(),
                 rubyStyle: const TextStyle(fontSize: 14).jp(),
               ),
@@ -173,13 +173,10 @@ class _WordContentWidget extends StatelessWidget {
                               .map((otherForm) => Container(
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 6),
-                                    child: RubyText([
-                                      RubyTextData(otherForm.form,
-                                          ruby: otherForm.reading)
-                                    ],
-                                        style:
-                                            const TextStyle(fontSize: 16).jp(),
-                                        rubyStyle: jpTextStyle),
+                                    child: CopyableFuriganaText([
+                                      FuriganaPart(
+                                          otherForm.form, otherForm.reading)
+                                    ], style: const TextStyle(fontSize: 16)),
                                   ))
                               .toList()),
                     )

@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/copyright_text.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/loader.dart";
-import "package:ruby_text/ruby_text.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
   const SentenceDetailsScreen(Sentence this.sentence, {super.key})
@@ -57,12 +57,12 @@ class _SentenceDetails extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   children: [
-                    RubyText(sentence.japanese.rubyData,
+                    CopyableFuriganaText(sentence.japanese,
                         style: const TextStyle(fontSize: 18).jp(),
                         rubyAlign: CrossAxisAlignment.start,
                         wrapAlign: TextAlign.start),
                     const SizedBox(height: 20),
-                    Text(sentence.english,
+                    SelectableText(sentence.english,
                         style: const TextStyle(fontSize: 18)),
                     const SizedBox(height: 20),
                     if (!sentence.isExample) CopyrightText(sentence.copyright!),

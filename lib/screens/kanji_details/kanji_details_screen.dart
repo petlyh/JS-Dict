@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/packages/copy.dart";
 import "package:jsdict/packages/katakana_convert.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
@@ -74,11 +75,14 @@ class _KanjiContentWidget extends StatelessWidget {
         margin: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child:
-                  Text(kanji.kanji, style: const TextStyle(fontSize: 40).jp()),
+            GestureDetector(
+              onLongPress: () => copyText(context, kanji.kanji),
+              child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(kanji.kanji,
+                    style: const TextStyle(fontSize: 40).jp()),
+              ),
             ),
             Wrap(
               alignment: WrapAlignment.center,
@@ -93,7 +97,7 @@ class _KanjiContentWidget extends StatelessWidget {
             ),
             const Divider(),
             ListTile(
-              title: Text(kanji.meanings.join(", ")),
+              title: SelectableText(kanji.meanings.join(", ")),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -141,21 +145,22 @@ class _ReadingsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
 
-    return RichText(
-        text: TextSpan(
-            style: TextStyle(color: textColor, height: 1.5).jp(),
-            children: [
-                  TextSpan(
-                      text: "$name: ", style: TextStyle(color: textColor).jp())
-                ] +
-                readings
-                    .map((reading) => LinkSpan(context,
-                        text: reading.noBreak,
-                        onTap: pushScreen(
-                            context, ResultPageScreen<Word>(query(reading)))))
-                    .toList()
-                    .intersperce(TextSpan(
-                        text: "、 ", style: TextStyle(color: textColor).jp()))));
+    return SelectableText.rich(
+      TextSpan(
+          children: [
+                TextSpan(
+                    text: "$name: ", style: TextStyle(color: textColor).jp())
+              ] +
+              readings
+                  .map((reading) => LinkSpan(context,
+                      text: reading.noBreak,
+                      onTap: pushScreen(
+                          context, ResultPageScreen<Word>(query(reading)))))
+                  .toList()
+                  .intersperce(TextSpan(
+                      text: "、 ", style: TextStyle(color: textColor).jp()))),
+      style: TextStyle(color: textColor, height: 1.5).jp(),
+    );
   }
 }
 
@@ -181,8 +186,10 @@ class _KanjiDetailsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           onTap:
                               pushScreen(context, KanjiDetailsScreen.id(part)),
-                          onLongPress: () => showActionDialog(
-                              context, urlActionTiles(Kanji(part).url)),
+                          onLongPress: () => showActionDialog(context, [
+                            ...urlActionTiles(Kanji(part).url),
+                            CopyActionTile("Kanji", part),
+                          ]),
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Text(part,
@@ -231,8 +238,10 @@ class _VariantsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           onTap: pushScreen(
                               context, KanjiDetailsScreen.id(variant)),
-                          onLongPress: () => showActionDialog(
-                              context, urlActionTiles(Kanji(variant).url)),
+                          onLongPress: () => showActionDialog(context, [
+                            ...urlActionTiles(Kanji(variant).url),
+                            CopyActionTile("Kanji", variant),
+                          ]),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 12),

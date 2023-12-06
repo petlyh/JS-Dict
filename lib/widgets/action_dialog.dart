@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:flutter/services.dart";
+import "package:jsdict/packages/copy.dart";
 import "package:share_plus/share_plus.dart";
 import "package:url_launcher/url_launcher.dart";
 
@@ -61,11 +61,7 @@ class CopyActionTile extends ActionTile {
   String get text => "Copy $name";
   @override
   Function(BuildContext) get onTap =>
-      (context) => Clipboard.setData(ClipboardData(text: data)).then((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Copied $name")),
-            );
-          });
+      (context) => copyText(context, data, name: name);
 }
 
 class ShareActionTile extends ActionTile {

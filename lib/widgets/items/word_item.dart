@@ -23,7 +23,7 @@ class WordItem extends StatelessWidget {
       onLongPress: () => showActionDialog(context, [
         ...urlActionTiles(word.url),
         CopyActionTile("word", word.word.getText()),
-        if (word.word.getReading() != word.word.getText())
+        if (word.word.hasFurigana)
           CopyActionTile("reading", word.word.getReading()),
       ]),
       child: ListTile(

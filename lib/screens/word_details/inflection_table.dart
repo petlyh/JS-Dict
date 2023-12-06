@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/inflection/inflection.dart";
 import "package:jsdict/models/models.dart";
-import "package:ruby_text/ruby_text.dart";
+import "package:jsdict/widgets/copyable_furigana_text.dart";
 
 class InflectionTable extends StatelessWidget {
   const InflectionTable(this.inflectionType, {super.key});
@@ -87,8 +87,10 @@ class _FuriganaCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: _cellPadding,
-      child: RubyText(furigana.rubyData,
-          style: jpTextStyle, wrapAlign: TextAlign.start),
+      child: furigana.hasFurigana
+          ? CopyableFuriganaText(furigana, wrapAlign: TextAlign.start)
+          : SelectableText(furigana.getText(),
+              style: jpTextStyle, textAlign: TextAlign.start),
     );
   }
 }

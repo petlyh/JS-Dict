@@ -168,9 +168,9 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
         ),
         SearchMetaInfo(
           listenable: correction,
-          builder: (_, value) => RichText(
+          builder: (_, value) => SelectableText.rich(
               textAlign: TextAlign.center,
-              text: TextSpan(
+              TextSpan(
                 style: TextStyle(color: textColor, height: 1.5).jp(),
                 children: [
                   const TextSpan(text: "Searched for "),

@@ -39,13 +39,13 @@ class NameDetailsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     children: [
-                      Text(
+                      SelectableText(
                           name.japanese +
                               (name.reading != null ? "\n${name.reading}" : ""),
                           style: const TextStyle(fontSize: 20).jp(),
                           textAlign: TextAlign.center),
                       const SizedBox(height: 12),
-                      Text(name.english,
+                      SelectableText(name.english,
                           style: const TextStyle(fontSize: 18),
                           textAlign: TextAlign.center),
                     ],
