@@ -126,14 +126,19 @@ class _WordContentWidget extends StatelessWidget {
                 shadowColor: shadowColor,
                 initiallyExpanded: true,
                 title: const Text("Definitions"),
-                children: word.definitions
-                    .map((definition) => DefinitionTile(
-                          definition,
-                          textColor: textColor,
-                          isLast: definition == word.definitions.last,
-                        ))
-                    .toList()
-                    .intersperce(const Divider(height: 0)),
+                children: [
+                  SelectionArea(
+                      child: Column(
+                    children: word.definitions
+                        .map((definition) => DefinitionTile(
+                              definition,
+                              textColor: textColor,
+                              isLast: definition == word.definitions.last,
+                            ))
+                        .toList()
+                        .intersperce(const Divider(height: 0)),
+                  ))
+                ],
               ),
               if (word.inflectionType != null)
                 ExpansionTileCard(

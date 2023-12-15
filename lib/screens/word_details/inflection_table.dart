@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/inflection/inflection.dart";
 import "package:jsdict/models/models.dart";
-import "package:jsdict/widgets/copyable_furigana_text.dart";
+import "package:ruby_text/ruby_text.dart";
 
 class InflectionTable extends StatelessWidget {
   const InflectionTable(this.inflectionType, {super.key});
@@ -22,7 +22,8 @@ class InflectionTable extends StatelessWidget {
     final rows = _headerRow + _getRows();
     final borderColor = Theme.of(context).dividerColor;
 
-    return Table(
+    return SelectionArea(
+        child: Table(
       border: TableBorder(
         horizontalInside: BorderSide(width: 0.4, color: borderColor),
       ),
@@ -33,7 +34,7 @@ class InflectionTable extends StatelessWidget {
       },
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: rows,
-    );
+    ));
   }
 
   List<TableRow> _getRows() {
@@ -88,8 +89,8 @@ class _FuriganaCell extends StatelessWidget {
     return Padding(
       padding: _cellPadding,
       child: furigana.hasFurigana
-          ? CopyableFuriganaText(furigana, wrapAlign: TextAlign.start)
-          : SelectableText(furigana.getText(),
+          ? RubyText(furigana.rubyData, wrapAlign: TextAlign.start)
+          : Text(furigana.getText(),
               style: jpTextStyle, textAlign: TextAlign.start),
     );
   }

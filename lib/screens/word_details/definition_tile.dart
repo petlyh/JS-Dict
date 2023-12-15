@@ -33,15 +33,14 @@ class DefinitionTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       isLast: isLast,
       onTap: onTap(context),
-      title: SelectableText(definition.meanings.join("; ")),
+      title: Text(definition.meanings.join("; ")),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(definition.types.join(", ")),
           if (definition.tags.isNotEmpty) JpText(definition.tags.join(", ")),
           if (definition.seeAlso.isNotEmpty)
-            RichText(
-                text: TextSpan(children: [
+            SelectableText.rich(TextSpan(children: [
               TextSpan(text: "See also ", style: TextStyle(color: textColor)),
               ...definition.seeAlso
                   .map((seeAlsoWord) => LinkSpan(

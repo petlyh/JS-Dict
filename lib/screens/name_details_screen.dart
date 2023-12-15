@@ -34,22 +34,25 @@ class NameDetailsScreen extends StatelessWidget {
           margin: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      SelectableText(
-                          name.japanese +
-                              (name.reading != null ? "\n${name.reading}" : ""),
-                          style: const TextStyle(fontSize: 20).jp(),
-                          textAlign: TextAlign.center),
-                      const SizedBox(height: 12),
-                      SelectableText(name.english,
-                          style: const TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center),
-                    ],
-                  )),
+              SelectionArea(
+                  child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Text(
+                              name.japanese +
+                                  (name.reading != null
+                                      ? "\n${name.reading}"
+                                      : ""),
+                              style: const TextStyle(fontSize: 20).jp(),
+                              textAlign: TextAlign.center),
+                          const SizedBox(height: 12),
+                          Text(name.english,
+                              style: const TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center),
+                        ],
+                      ))),
               if (name.type != null) ...[
                 InfoChip(name.type!),
                 const SizedBox(height: 10),

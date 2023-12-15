@@ -143,16 +143,17 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
         ),
         SearchMetaInfo(
           listenable: conversion,
-          builder: (_, value) => JpText(
+          builder: (_, value) => SelectableText(
             "${value.original} is ${value.converted}",
             textAlign: TextAlign.center,
+            style: jpTextStyle,
           ),
         ),
         SearchMetaInfo(
           listenable: grammarInfo,
-          builder: (context, value) => RichText(
+          builder: (context, value) => SelectableText.rich(
               textAlign: TextAlign.center,
-              text: TextSpan(
+              TextSpan(
                 style: TextStyle(color: textColor, height: 1.5).jp(),
                 children: [
                   TextSpan(text: value.word),

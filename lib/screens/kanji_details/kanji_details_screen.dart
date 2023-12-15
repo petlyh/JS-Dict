@@ -145,8 +145,8 @@ class _ReadingsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
 
-    return SelectableText.rich(
-      TextSpan(
+    return RichText(
+      text: TextSpan(
           children: [
                 TextSpan(
                     text: "$name: ", style: TextStyle(color: textColor).jp())
@@ -158,8 +158,8 @@ class _ReadingsWidget extends StatelessWidget {
                           context, ResultPageScreen<Word>(query(reading)))))
                   .toList()
                   .intersperce(TextSpan(
-                      text: "、 ", style: TextStyle(color: textColor).jp()))),
-      style: TextStyle(color: textColor, height: 1.5).jp(),
+                      text: "、 ", style: TextStyle(color: textColor).jp())),
+          style: TextStyle(color: textColor, height: 1.5).jp()),
     );
   }
 }
