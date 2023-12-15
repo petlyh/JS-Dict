@@ -23,6 +23,10 @@ class Parser {
       (e) => e.attributes["data-word"]!,
     );
 
+    if (response.zenEntries.length == 1) {
+      response.zenEntries.clear();
+    }
+
     response.noMatchesFor = body.collect("#no-matches", (e) {
           final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
           return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
