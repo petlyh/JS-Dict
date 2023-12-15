@@ -136,7 +136,7 @@ class _RadicalSelection extends StatelessWidget {
                             fontSize: 20,
                             color: isValid ? textColor : disabledColor),
                       );
-                    }).toList(),
+                    }),
                   ])
               .flattened),
         ),
@@ -184,8 +184,7 @@ class _KanjiSelection extends StatelessWidget {
                               textStyle:
                                   TextStyle(fontSize: 20, color: textColor),
                               padding: 1.5,
-                            ))
-                        .toList(),
+                            )),
                   ],
                 ),
               ),

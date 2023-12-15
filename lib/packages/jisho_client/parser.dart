@@ -73,23 +73,23 @@ class Parser {
     response.hasNextPage = document.querySelector("a.more") != null;
 
     switch (T) {
-      case Kanji:
+      case const (Kanji):
         response.addResults(
             body.collectAll<Kanji>("div.kanji.details", _kanjiDetailsEntry));
         if (response.results.isNotEmpty) break;
         response.addResults(body.collectAll<Kanji>(
             "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry));
         break;
-      case Word:
+      case const (Word):
         response.addResults(body.collectAll<Word>(
             "div.concepts > .concept_light, div.exact_block > .concept_light",
             _wordEntry));
         break;
-      case Sentence:
+      case const (Sentence):
         response.addResults(body.collectAll<Sentence>(
             "div.sentences_block > ul > li.entry.sentence", _sentenceEntry));
         break;
-      case Name:
+      case const (Name):
         response.addResults(body.collectAll<Name>(
             "div.names_block > div.names > div.concept_light", _nameEntry));
     }

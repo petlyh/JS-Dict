@@ -223,10 +223,10 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
 
   Widget _createItem(T item) {
     return switch (T) {
-      Word => WordItem(word: item as Word),
-      Kanji => KanjiItem(kanji: item as Kanji),
-      Sentence => SentenceItem(sentence: item as Sentence),
-      Name => NameItem(name: item as Name),
+      const (Word) => WordItem(word: item as Word),
+      const (Kanji) => KanjiItem(kanji: item as Kanji),
+      const (Sentence) => SentenceItem(sentence: item as Sentence),
+      const (Name) => NameItem(name: item as Name),
       _ => throw Exception("Unknown type"),
     };
   }
