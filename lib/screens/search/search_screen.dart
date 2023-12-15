@@ -173,6 +173,7 @@ class _SearchScreenState extends State<SearchScreen>
             : TabBar(
                 controller: _tabController,
                 isScrollable: true,
+                tabAlignment: TabAlignment.center,
                 tabs: const [
                     Tab(text: "Words"),
                     Tab(text: "Kanji"),
