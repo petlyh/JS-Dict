@@ -15,7 +15,9 @@ class Parser {
         body.collect("#number_conversion, #year_conversion", (e) {
       final data = e.text.trim().split(" is ");
       assert(data.length == 2);
-      return (original: data[0], converted: data[1]);
+      final original = removeTags(data[0]);
+      final converted = data[1];
+      return (original: original, converted: converted);
     });
 
     response.zenEntries = body.collectAll(
