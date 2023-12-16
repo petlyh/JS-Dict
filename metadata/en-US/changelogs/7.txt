@@ -1,0 +1,6 @@
+- Add long-press dialogs
+- Support opening Jisho.org links
+- Add a screen showing words using a specific kanji reading
+- Allow copying text
+- Load stroke order diagram data locally
+- Fix a couple of bugs
