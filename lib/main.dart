@@ -36,7 +36,7 @@ class JsDictApp extends StatelessWidget {
             final themeProvider = Provider.of<ThemeProvider>(context);
 
             return MaterialApp(
-              title: "JS-Dict",
+              title: createTitle("JS-Dict"),
               themeMode: themeProvider.currentTheme,
               theme: ThemeData(
                 useMaterial3: true,
@@ -59,5 +59,15 @@ class JsDictApp extends StatelessWidget {
             );
           });
     });
+  }
+
+  // Adds a "Debug" suffix if the app is running in debug mode.
+  String createTitle(String title) {
+    var fullTitle = title;
+    assert(() {
+      fullTitle += " Debug";
+      return true;
+    }());
+    return fullTitle;
   }
 }
