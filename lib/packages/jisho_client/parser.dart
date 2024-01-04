@@ -98,7 +98,7 @@ class Parser {
   }
 
   static final lifespanPattern =
-      RegExp(r" \(\d+(?:\.\d+)?(?:\.\d+)?-(?:\d+(?:\.\d+)?(?:\.\d+)?)?\)");
+      RegExp(r" \(\d+(?:\.\d+){,2}-(?:\d+(?:\.\d+){,2})?\)");
 
   static String? _nameType(String input) {
     if (input.contains("Unclassified")) {
