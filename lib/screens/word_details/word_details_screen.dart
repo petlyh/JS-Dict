@@ -192,17 +192,17 @@ class _WordContentWidget extends StatelessWidget {
                   shadowColor: shadowColor,
                   title: const Text("Notes"),
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
+                    SelectionArea(
+                      child: Row(
+                        children: [
+                          Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             child: JpText(word.notes.deduplicate().join("\n")),
                           ),
-                        ),
-                      ],
-                    )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
             ].intersperce(const SizedBox(height: 8)),
