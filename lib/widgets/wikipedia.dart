@@ -20,23 +20,6 @@ class WikipediaWidget extends StatelessWidget {
         ),
       );
 
-  String get abstractText {
-    if (wikipedia.textAbstract == null) {
-      return "";
-    }
-
-    final text = wikipedia.textAbstract!;
-
-    if (text.startsWith("is ") ||
-        text.startsWith("was ") ||
-        text.startsWith(", ") ||
-        text.startsWith("(")) {
-      return "${wikipedia.name} $text";
-    }
-
-    return text;
-  }
-
   @override
   Widget build(BuildContext context) {
     final shadowColor = Theme.of(context).colorScheme.shadow;
@@ -49,8 +32,8 @@ class WikipediaWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             children: [
-              if (abstractText.isNotEmpty) ...[
-                SelectableText(abstractText),
+              if (wikipedia.textAbstract != null) ...[
+                SelectableText(wikipedia.textAbstract!),
                 const SizedBox(height: 12),
               ],
               Wrap(

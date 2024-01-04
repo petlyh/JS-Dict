@@ -57,10 +57,23 @@ class Definition {
 
 class WikipediaInfo {
   final String name;
-  String? textAbstract;
+  String? _textAbstract;
   WikipediaPage? wikipediaEnglish;
   WikipediaPage? wikipediaJapanese;
   WikipediaPage? dbpedia;
+
+  static final _abstractFixPattern = RegExp(r"^(?:is |was |, |\()");
+
+  set textAbstract(String? text) => _textAbstract = text;
+  String? get textAbstract {
+    if (_textAbstract == null) {
+      return null;
+    }
+
+    return _abstractFixPattern.hasMatch(_textAbstract!)
+        ? "$name $_textAbstract"
+        : _textAbstract;
+  }
 
   WikipediaInfo(this.name);
 }

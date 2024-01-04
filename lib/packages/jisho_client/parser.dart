@@ -427,28 +427,30 @@ class Parser {
         (e) => e);
 
     if (wikipediaTagElement != null) {
-      final wikipediaElement = wikipediaTagElement.nextElementSibling!;
-
-      if (wikipediaElement.querySelector("span.meaning-abstract") == null) {
-        return word;
-      }
-
-      final title = wikipediaElement.collect(
-          "span.meaning-meaning", (e) => e.text.trim())!;
-      final wikipediaDefinition = WikipediaInfo(title);
-
-      wikipediaDefinition.textAbstract = wikipediaElement.collect(
-          "span.meaning-abstract", (e) => e.nodes.first.text!);
-      wikipediaDefinition.wikipediaEnglish =
-          _wikipediaPage(wikipediaElement, "English Wikipedia");
-      wikipediaDefinition.wikipediaJapanese =
-          _wikipediaPage(wikipediaElement, "Japanese Wikipedia");
-      wikipediaDefinition.dbpedia = _wikipediaPage(wikipediaElement, "DBpedia");
-
-      word.details!.wikipedia = wikipediaDefinition;
+      word.details!.wikipedia =
+          wikipediaInfo(wikipediaTagElement.nextElementSibling!);
     }
 
     return word;
+  }
+
+  static WikipediaInfo? wikipediaInfo(Element element) {
+    if (element.querySelector("span.meaning-abstract") == null) {
+      return null;
+    }
+
+    final title =
+        element.collect("span.meaning-meaning", (e) => e.text.trim())!;
+    final wikipedia = WikipediaInfo(title);
+
+    wikipedia.textAbstract =
+        element.collect("span.meaning-abstract", (e) => e.nodes.first.text!);
+
+    wikipedia.wikipediaEnglish = _wikipediaPage(element, "English Wikipedia");
+    wikipedia.wikipediaJapanese = _wikipediaPage(element, "Japanese Wikipedia");
+    wikipedia.dbpedia = _wikipediaPage(element, "DBpedia");
+
+    return wikipedia;
   }
 
   static Sentence sentenceDetails(Document document) {
