@@ -29,7 +29,8 @@ class WikipediaWidget extends StatelessWidget {
 
     if (text.startsWith("is ") ||
         text.startsWith("was ") ||
-        text.startsWith(", ")) {
+        text.startsWith(", ") ||
+        text.startsWith("(")) {
       return "${wikipedia.name} $text";
     }
 
