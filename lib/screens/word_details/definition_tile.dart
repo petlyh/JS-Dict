@@ -16,23 +16,15 @@ class DefinitionTile extends StatelessWidget {
   final Color? textColor;
   final bool isLast;
 
-  bool get hasExampleSentence => definition.exampleSentence != null;
-
-  Function()? onTap(BuildContext context) {
-    if (hasExampleSentence) {
-      return pushScreen(
-          context, SentenceDetailsScreen(definition.exampleSentence!));
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return EntryTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       isLast: isLast,
-      onTap: onTap(context),
+      onTap: definition.exampleSentence != null
+          ? pushScreen(
+              context, SentenceDetailsScreen(definition.exampleSentence!))
+          : null,
       title: Text(definition.meanings.join("; ")),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,24 +32,28 @@ class DefinitionTile extends StatelessWidget {
           Text(definition.types.join(", ")),
           if (definition.tags.isNotEmpty) JpText(definition.tags.join(", ")),
           if (definition.seeAlso.isNotEmpty)
-            SelectableText.rich(TextSpan(children: [
-              TextSpan(text: "See also ", style: TextStyle(color: textColor)),
-              ...definition.seeAlso
-                  .map((seeAlsoWord) => LinkSpan(
-                        context,
-                        // remove reading
-                        text: seeAlsoWord.split(" ").first,
-                        onTap: pushScreen(
-                          context,
-                          WordDetailsScreen.search(seeAlsoWord),
-                        ),
-                      ))
-                  .toList()
-                  .intersperce(
-                      TextSpan(text: ", ", style: TextStyle(color: textColor))),
-            ]))
+            seeAlsoText(context, definition.seeAlso),
         ],
       ),
     );
+  }
+
+  Widget seeAlsoText(BuildContext context, List<String> words) {
+    return SelectableText.rich(TextSpan(children: [
+      TextSpan(text: "See also ", style: TextStyle(color: textColor)),
+      ...words
+          .map((word) => LinkSpan(
+                context,
+                // remove reading
+                text: word.split(" ").first,
+                onTap: pushScreen(
+                  context,
+                  WordDetailsScreen.search(word),
+                ),
+              ))
+          .toList()
+          .intersperce(
+              TextSpan(text: ", ", style: TextStyle(color: textColor))),
+    ]));
   }
 }
