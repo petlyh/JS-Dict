@@ -443,14 +443,24 @@ class Parser {
         element.collect("span.meaning-meaning", (e) => e.text.trim())!;
     final wikipedia = WikipediaInfo(title);
 
-    wikipedia.textAbstract =
-        element.collect("span.meaning-abstract", (e) => e.nodes.first.text!);
+    wikipedia.textAbstract = _fixWikipediaAbstract(title,
+        element.collect("span.meaning-abstract", (e) => e.nodes.first.text!));
 
     wikipedia.wikipediaEnglish = _wikipediaPage(element, "English Wikipedia");
     wikipedia.wikipediaJapanese = _wikipediaPage(element, "Japanese Wikipedia");
     wikipedia.dbpedia = _wikipediaPage(element, "DBpedia");
 
     return wikipedia;
+  }
+
+  static final _abstractFixPattern = RegExp(r"^(?:is |was |, |\()");
+
+  static String? _fixWikipediaAbstract(String title, String? text) {
+    if (text == null) {
+      return null;
+    }
+
+    return _abstractFixPattern.hasMatch(text) ? "$title $text" : text;
   }
 
   static Sentence sentenceDetails(Document document) {
