@@ -400,15 +400,6 @@ class Parser {
     return word;
   }
 
-  static WikipediaPage? _wikipediaPage(Element definitionElement, String name) {
-    return definitionElement.collectFirstWhere(
-      "span.meaning-abstract > a",
-      (e) => e.text.contains(name),
-      (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
-          e.attributes["href"]!),
-    );
-  }
-
   static Word wordDetails(Document document) {
     final word = document.body!.collect("div.concept_light", _wordEntry);
 
@@ -441,21 +432,29 @@ class Parser {
 
     final title =
         element.collect("span.meaning-meaning", (e) => e.text.trim())!;
-    final wikipedia = WikipediaInfo(title);
 
-    wikipedia.textAbstract = _fixWikipediaAbstract(title,
-        element.collect("span.meaning-abstract", (e) => e.nodes.first.text!));
+    return WikipediaInfo(
+      title,
+      textAbstract: _wikipediaAbstract(title,
+          element.collect("span.meaning-abstract", (e) => e.nodes.first.text!)),
+      wikipediaEnglish: _wikipediaPage(element, "English Wikipedia"),
+      wikipediaJapanese: _wikipediaPage(element, "Japanese Wikipedia"),
+      dbpedia: _wikipediaPage(element, "DBpedia"),
+    );
+  }
 
-    wikipedia.wikipediaEnglish = _wikipediaPage(element, "English Wikipedia");
-    wikipedia.wikipediaJapanese = _wikipediaPage(element, "Japanese Wikipedia");
-    wikipedia.dbpedia = _wikipediaPage(element, "DBpedia");
-
-    return wikipedia;
+  static WikipediaPage? _wikipediaPage(Element definitionElement, String name) {
+    return definitionElement.collectFirstWhere(
+      "span.meaning-abstract > a",
+      (e) => e.text.contains(name),
+      (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
+          e.attributes["href"]!),
+    );
   }
 
   static final _abstractFixPattern = RegExp(r"^(?:is |was |, |\()");
 
-  static String? _fixWikipediaAbstract(String title, String? text) {
+  static String? _wikipediaAbstract(String title, String? text) {
     if (text == null) {
       return null;
     }

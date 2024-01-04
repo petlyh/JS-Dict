@@ -56,13 +56,17 @@ class Definition {
 }
 
 class WikipediaInfo {
-  final String name;
-  String? textAbstract;
-  WikipediaPage? wikipediaEnglish;
-  WikipediaPage? wikipediaJapanese;
-  WikipediaPage? dbpedia;
+  final String title;
+  final String? textAbstract;
+  final WikipediaPage? wikipediaEnglish;
+  final WikipediaPage? wikipediaJapanese;
+  final WikipediaPage? dbpedia;
 
-  WikipediaInfo(this.name);
+  const WikipediaInfo(this.title,
+      {this.textAbstract,
+      this.wikipediaEnglish,
+      this.wikipediaJapanese,
+      this.dbpedia});
 }
 
 class WikipediaPage {
