@@ -37,8 +37,10 @@ class Word implements SearchType {
 }
 
 class WordDetails {
-  List<Kanji> kanji = [];
-  WikipediaInfo? wikipedia;
+  final List<Kanji> kanji;
+  final WikipediaInfo? wikipedia;
+
+  const WordDetails({this.kanji = const [], this.wikipedia});
 }
 
 class Definition {

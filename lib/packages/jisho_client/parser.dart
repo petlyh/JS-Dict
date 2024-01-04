@@ -407,20 +407,18 @@ class Parser {
       throw Exception("Word not found");
     }
 
-    word.details = WordDetails();
-
-    word.details!.kanji = document.body!.collectAll(
-        "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry);
-
     final wikipediaTagElement = document.body!.collectFirstWhere(
         "div.meaning-tags",
         (e) => e.text.contains("Wikipedia definition"),
         (e) => e);
 
-    if (wikipediaTagElement != null) {
-      word.details!.wikipedia =
-          wikipediaInfo(wikipediaTagElement.nextElementSibling!);
-    }
+    word.details = WordDetails(
+      kanji: document.body!.collectAll(
+          "div.kanji_light_block > div.entry.kanji_light", _kanjiEntry),
+      wikipedia: wikipediaTagElement != null
+          ? wikipediaInfo(wikipediaTagElement.nextElementSibling!)
+          : null,
+    );
 
     return word;
   }
