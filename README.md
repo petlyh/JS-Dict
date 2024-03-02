@@ -6,8 +6,8 @@
 
 Japanese-English dictionary app powered by Jisho.org.
 
-<a href="https://f-droid.org/packages/io.github.petlyh.jsdict"><img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"></a>
-<a href="https://github.com/petlyh/JS-Dict/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="90"></a>
+<a href="https://f-droid.org/packages/io.github.petlyh.jsdict"><img src="assets/fdroid_badge.png" alt="Get it on F-Droid" height="90"></a>
+<a href="https://github.com/petlyh/JS-Dict/releases/latest"><img src="assets/github_badge.png" height="90"></a>
 
 <a href="https://github.com/petlyh/JS-Dict/releases/latest"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/petlyh/JS-Dict?logo=github&style=flat-square"></a>
 <a href="https://f-droid.org/en/packages/io.github.petlyh.jsdict"><img alt="F-Droid" src="https://img.shields.io/f-droid/v/io.github.petlyh.jsdict?style=flat-square&logo=fdroid"></a>
