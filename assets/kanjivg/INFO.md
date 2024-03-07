@@ -12,7 +12,7 @@ https://github.com/KanjiVG/kanjivg/tree/14048e27809d1850c2ab5ccdce250800e06adbc6
     These are unneeded, as the app only shows diagrams for the main schoolbook style.
 
     ```sh
-    $ fd '-' -e svg --batch-size 100 -x rm
+    $ fd '-' -e svg --batch-size 100 -X rm -v
     ```
 
 2. Run the preprocessing script on the files
@@ -20,7 +20,7 @@ https://github.com/KanjiVG/kanjivg/tree/14048e27809d1850c2ab5ccdce250800e06adbc6
     The script removes everything that isn't needed for the diagram generation.
 
     ```sh
-    $ fd . './data/' -e svg -x python ./kanjivg_preprocess.py
+    $ fd . './data/' -e svg -X python ./kanjivg_preprocess.py
     ```
 
 ## License
