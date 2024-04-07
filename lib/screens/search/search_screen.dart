@@ -168,18 +168,16 @@ class _SearchScreenState extends State<SearchScreen>
             tooltip: "Settings",
           ),
         ],
-        bottom: Provider.of<QueryProvider>(context).query.isEmpty
-            ? null
-            : TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.center,
-                tabs: const [
-                    Tab(text: "Words"),
-                    Tab(text: "Kanji"),
-                    Tab(text: "Names"),
-                    Tab(text: "Sentences"),
-                  ]),
+        bottom: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
+            tabs: const [
+              Tab(text: "Words"),
+              Tab(text: "Kanji"),
+              Tab(text: "Names"),
+              Tab(text: "Sentences"),
+            ]),
       ),
       body: Consumer<QueryProvider>(
         builder: (_, provider, __) => provider.query.isEmpty
