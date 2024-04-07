@@ -58,7 +58,9 @@ class WordDetailsScreen extends StatelessWidget {
                     onPressed: () => AudioPlayer().play(
                           UrlSource(audioUrl!),
                           mode: PlayerMode.lowLatency,
-                          ctx: AudioContextConfig(duckAudio: true).build(),
+                          ctx: AudioContextConfig(
+                            focus: AudioContextConfigFocus.duckOthers,
+                          ).build(),
                         ),
                     icon: const Icon(Icons.play_arrow))
                 : const SizedBox(),
