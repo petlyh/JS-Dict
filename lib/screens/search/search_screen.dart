@@ -24,18 +24,21 @@ class _SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late LinkHandler _linkHandler;
+  late FocusNode _searchFocusNode;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 4);
     _linkHandler = LinkHandler(context, _tabController);
+    _searchFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     _linkHandler.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -43,7 +46,6 @@ class _SearchScreenState extends State<SearchScreen>
   Widget build(BuildContext context) {
     final queryProvider = QueryProvider.of(context);
     final searchController = queryProvider.searchController;
-    final searchFocusNode = FocusNode();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -55,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen>
       appBar: AppBar(
         title: TextField(
           style: jpTextStyle,
-          focusNode: searchFocusNode,
+          focusNode: _searchFocusNode,
           controller: searchController,
           onSubmitted: (_) => queryProvider.updateQuery(),
           autofocus: false,
@@ -66,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen>
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
-                  searchFocusNode.requestFocus();
+                  _searchFocusNode.requestFocus();
                   searchController.clear();
                 },
                 tooltip: "Clear",
