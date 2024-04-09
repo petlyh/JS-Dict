@@ -9,23 +9,13 @@ class LinkPopupButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      itemBuilder: linkPopupItemsBuilder(data),
+      itemBuilder: (context) => data
+          .map((entry) => PopupMenuItem(
+                child: Text(entry.$1),
+                onTap: () => launchUrl(Uri.parse(entry.$2),
+                    mode: LaunchMode.externalApplication),
+              ))
+          .toList(),
     );
   }
-}
-
-List<PopupMenuEntry<dynamic>> Function(BuildContext) linkPopupItemsBuilder(
-    List<(String text, String url)> data) {
-  return (context) => createLinkPopupItems(data);
-}
-
-List<PopupMenuEntry<dynamic>> createLinkPopupItems(
-    List<(String text, String url)> data) {
-  return data
-      .map((entry) => PopupMenuItem(
-            child: Text(entry.$1),
-            onTap: () => launchUrl(Uri.parse(entry.$2),
-                mode: LaunchMode.externalApplication),
-          ))
-      .toList();
 }
