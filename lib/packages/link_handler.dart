@@ -37,16 +37,13 @@ class LinkHandler {
   }
 
   /// Cancels the subscription stream that handles incoming links.
-  Future<void> dispose() async {
-    await _stream.cancel();
-  }
+  Future<void> dispose() => _stream.cancel();
 
-  void _showError(dynamic error) {
-    // Ignore platform message error from intial link.
-    if (context.mounted && error is! PlatformException) {
-      showErrorInfoDialog(context, error as Object);
-    }
-  }
+  void _showError(dynamic error) =>
+      // Ignore platform message error from intial link.
+      context.mounted && error is! PlatformException
+          ? showErrorInfoDialog(context, error as Object)
+          : null;
 
   void _handleUrl(Uri? url) {
     if (url == null || !context.mounted) {
@@ -60,12 +57,14 @@ class LinkHandler {
       "word" => WordDetailsScreen.search(data),
       "sentences" => SentenceDetailsScreen.id(data),
       "search" => () {
-          if (_typeTagRegex("kanji").hasMatch(data)) {
-            final rawQuery = removeTags(data).trim();
+          final rawQuery = removeTags(data).trim();
 
-            if (rawQuery.length == 1 && isKanji(rawQuery)) {
-              return KanjiDetailsScreen.id(rawQuery);
-            }
+          // Go directly to kanji details if it's
+          // a kanji search with only one character
+          if (_typeTagRegex("kanji").hasMatch(data) &&
+              rawQuery.length == 1 &&
+              isKanji(rawQuery)) {
+            return KanjiDetailsScreen.id(rawQuery);
           }
 
           tabController.index = _tabIndex(data);
