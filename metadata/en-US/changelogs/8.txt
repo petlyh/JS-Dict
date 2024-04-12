@@ -1,0 +1,5 @@
+- Overhaul long-press dialogs
+- Allow searching for text shared from another app
+- Always show the search tab bar
+- Make word notes selectable
+- Fix another Wikipedia abstract edge-case
