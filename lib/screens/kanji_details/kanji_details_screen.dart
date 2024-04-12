@@ -187,8 +187,8 @@ class _KanjiDetailsWidget extends StatelessWidget {
                           onTap:
                               pushScreen(context, KanjiDetailsScreen.id(part)),
                           onLongPress: () => showActionDialog(context, [
-                            ...urlActionTiles(Kanji(part).url),
-                            CopyActionTile("Kanji", part),
+                            ActionTile.url(Kanji(part).url),
+                            ActionTile.text("Kanji", part),
                           ]),
                           child: Padding(
                             padding: const EdgeInsets.all(8),
@@ -239,8 +239,8 @@ class _VariantsWidget extends StatelessWidget {
                           onTap: pushScreen(
                               context, KanjiDetailsScreen.id(variant)),
                           onLongPress: () => showActionDialog(context, [
-                            ...urlActionTiles(Kanji(variant).url),
-                            CopyActionTile("Kanji", variant),
+                            ActionTile.url(Kanji(variant).url),
+                            ActionTile.text("Kanji", variant),
                           ]),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(

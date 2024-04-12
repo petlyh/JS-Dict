@@ -21,10 +21,10 @@ class WordItem extends StatelessWidget {
     return ItemCard(
       onTap: pushScreen(context, WordDetailsScreen(word)),
       onLongPress: () => showActionDialog(context, [
-        ...urlActionTiles(word.url),
-        CopyActionTile("word", word.word.getText()),
+        ActionTile.url(word.url),
+        ActionTile.text("Word", word.word.getText()),
         if (word.word.hasFurigana)
-          CopyActionTile("reading", word.word.getReading()),
+          ActionTile.text("Reading", word.word.getReading()),
       ]),
       child: ListTile(
           contentPadding:

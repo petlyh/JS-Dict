@@ -17,12 +17,12 @@ class NameItem extends StatelessWidget {
         onTap: pushScreen(context, NameDetailsScreen(name)),
         onLongPress: () => showActionDialog(context, [
               if (name.wikipediaWord != null)
-                ...urlActionTiles(
+                ActionTile.url(
                     "https://jisho.org/word/${Uri.encodeComponent(name.wikipediaWord!)}"),
-              CopyActionTile("name", name.japanese),
+              ActionTile.text("Name", name.japanese),
               if (name.reading != null)
-                CopyActionTile("reading", name.reading!),
-              CopyActionTile("English", name.english),
+                ActionTile.text("Reading", name.reading!),
+              ActionTile.text("English", name.english),
             ]),
         child: ListTile(
             contentPadding:

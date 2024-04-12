@@ -17,77 +17,69 @@ class ActionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: actions,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: actions,
+      ),
     );
   }
 }
 
-List<ActionTile> urlActionTiles(String url) => [
-      BrowserActionTile(url),
-      ShareActionTile(url),
-      CopyActionTile("link", url),
-    ];
+class ActionTile extends StatelessWidget {
+  const ActionTile.text(this.name, this.data, {super.key}) : isURL = false;
+  const ActionTile.url(this.data, {super.key})
+      : isURL = true,
+        name = "Link";
 
-sealed class ActionTile extends StatelessWidget {
-  const ActionTile({super.key});
+  final String name;
+  final String data;
+  final bool isURL;
 
-  IconData get icon;
-  String get text;
-  Function(BuildContext context) get onTap;
+  void onCopy(BuildContext context) =>
+      copyText(context, data, name: name.toLowerCase());
+
+  void onShare(BuildContext context) =>
+      isURL ? Share.shareUri(Uri.parse(data)) : Share.share(data);
+
+  void onOpenBrowser(BuildContext context) =>
+      launchUrl(Uri.parse(data), mode: LaunchMode.externalApplication);
+
+  void Function() pop(
+          BuildContext context, void Function(BuildContext context) callback) =>
+      () {
+        Navigator.of(context).pop();
+        callback(context);
+      };
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(text),
-      onTap: () {
-        Navigator.of(context).pop();
-        onTap(context);
-      },
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Text(name),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isURL)
+            IconButton(
+                tooltip: "Open in Browser",
+                onPressed: pop(context, onOpenBrowser),
+                icon: const Icon(Icons.open_in_browser)),
+          IconButton(
+              tooltip: "Copy",
+              onPressed: pop(context, onCopy),
+              icon: const Icon(Icons.copy)),
+          IconButton(
+              tooltip: "Share",
+              onPressed: pop(context, onShare),
+              icon: const Icon(Icons.share)),
+        ],
+      ),
     );
   }
-}
-
-class CopyActionTile extends ActionTile {
-  const CopyActionTile(this.name, this.data, {super.key});
-
-  final String name;
-  final String data;
-
-  @override
-  IconData get icon => Icons.copy;
-  @override
-  String get text => "Copy $name";
-  @override
-  Function(BuildContext) get onTap =>
-      (context) => copyText(context, data, name: name);
-}
-
-class ShareActionTile extends ActionTile {
-  const ShareActionTile(this.url, {super.key});
-
-  final String url;
-
-  @override
-  IconData get icon => Icons.share;
-  @override
-  String get text => "Share link";
-  @override
-  Function(BuildContext) get onTap =>
-      (context) => Share.shareUri(Uri.parse(url));
-}
-
-class BrowserActionTile extends ActionTile {
-  const BrowserActionTile(this.url, {super.key});
-
-  final String url;
-
-  @override
-  IconData get icon => Icons.open_in_browser;
-  @override
-  String get text => "Open in Browser";
-  @override
-  Function(BuildContext) get onTap => (context) =>
-      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 }
