@@ -3,6 +3,7 @@ import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/link_handler.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/packages/share_intent_handler.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/screens/search_options/radical_search_screen.dart";
@@ -24,6 +25,7 @@ class _SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late LinkHandler _linkHandler;
+  late ShareIntentHandler _shareIntentHandler;
   late FocusNode _searchFocusNode;
 
   @override
@@ -31,6 +33,7 @@ class _SearchScreenState extends State<SearchScreen>
     super.initState();
     _tabController = TabController(vsync: this, length: 4);
     _linkHandler = LinkHandler(context, _tabController);
+    _shareIntentHandler = ShareIntentHandler(context, _tabController);
     _searchFocusNode = FocusNode();
   }
 
@@ -38,6 +41,7 @@ class _SearchScreenState extends State<SearchScreen>
   void dispose() {
     _tabController.dispose();
     _linkHandler.dispose();
+    _shareIntentHandler.dispose();
     _searchFocusNode.dispose();
     super.dispose();
   }

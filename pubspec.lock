@@ -632,6 +632,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  receive_sharing_intent:
+    dependency: "direct main"
+    description:
+      name: receive_sharing_intent
+      sha256: fcf167ad5aed85937c42d985dc31c7e50dbb3cf97dc5063a2bcfd26147023b34
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.8"
   ruby_text:
     dependency: "direct main"
     description:
