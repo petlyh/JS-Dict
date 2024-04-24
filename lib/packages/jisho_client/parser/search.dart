@@ -5,13 +5,7 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
 
   response.conversion = document
       .querySelector("#number_conversion, #year_conversion")
-      ?.transform((e) {
-    final data = e.text.trim().split(" is ");
-    assert(data.length == 2);
-    final original = removeTags(data[0]);
-    final converted = data[1];
-    return (original: original, converted: converted);
-  });
+      ?.transform(_parseConversion);
 
   response.zenEntries = document
       .querySelectorAll("#zen_bar span.japanese_word__text_wrapper > a")
@@ -22,49 +16,20 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
     response.zenEntries.clear();
   }
 
-  response.noMatchesFor = document.querySelector("#no-matches")?.transform((e) {
-        final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
-        return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
-      }) ??
-      [];
+  response.noMatchesFor =
+      document.querySelector("#no-matches")?.transform(_parseNoMatchesFor) ??
+          [];
 
   if (response.noMatchesFor.isNotEmpty) {
     return response;
   }
 
   response.correction =
-      document.querySelector("#the_corrector")?.transform((e) {
-    final effective = e
-            .querySelector("p > strong > span")
-            ?.transform((e2) => e2.text.trim()) ??
-        "";
-    final original = removeTypeTags(
-        e.querySelector("span.meant > a")?.transform((e2) => e2.text.trim()) ??
-            "");
-
-    if (original.isNotEmpty) {
-      return Correction(effective, original, false);
-    }
-
-    return Correction(
-      effective,
-      e
-          .querySelector("p")!
-          .transform((e2) =>
-              RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!
-          .group(1)!,
-      true,
-    );
-  });
+      document.querySelector("#the_corrector")?.transform(_parseCorrection);
 
   response.grammarInfo = document
       .querySelector("div.grammar-breakdown")
-      ?.transform((e) => GrammarInfo(
-            e.querySelector("h6")!.transform(
-                (e2) => e2.text.split(" could be an inflection").first),
-            e.querySelector("h6 > a")!.transform((e2) => e2.text.trim()),
-            e.querySelectorAll("ul > li").map((e2) => e2.text.trim()).toList(),
-          ));
+      ?.transform(_parseGrammarInfo);
 
   response.hasNextPage = document.querySelector("a.more") != null;
 
@@ -101,4 +66,59 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
   }
 
   return response;
+}
+
+Conversion _parseConversion(Element e) => e.text
+    .trim()
+    .split(" is ")
+    .transform((data) => (original: removeTags(data[0]), converted: data[1]));
+
+List<String> _parseNoMatchesFor(Element e) => e.text
+    .trim()
+    .replaceFirst(RegExp(r"\.$"), "")
+    .split(RegExp(", | or |matching "))
+    .sublist(2);
+
+Correction _parseCorrection(Element e) {
+  final effective =
+      e.querySelector("p > strong > span")?.transform((e2) => e2.text.trim()) ??
+          "";
+
+  final original = removeTypeTags(
+      e.querySelector("span.meant > a")?.transform((e2) => e2.text.trim()) ??
+          "");
+
+  if (original.isNotEmpty) {
+    return Correction(effective, original, false);
+  }
+
+  final noMatchesOriginal = e
+      .querySelector("p")!
+      .transform(
+          (e2) => RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!
+      .group(1)!;
+
+  return Correction(
+    effective,
+    noMatchesOriginal,
+    true,
+  );
+}
+
+GrammarInfo _parseGrammarInfo(Element e) {
+  final word = e
+      .querySelector("h6")!
+      .transform((e2) => e2.text.split(" could be an inflection").first);
+
+  final possibleInflectionOf =
+      e.querySelector("h6 > a")!.transform((e2) => e2.text.trim());
+
+  final formInfos =
+      e.querySelectorAll("ul > li").map((e2) => e2.text.trim()).toList();
+
+  return GrammarInfo(
+    word,
+    possibleInflectionOf,
+    formInfos,
+  );
 }
