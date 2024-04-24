@@ -33,13 +33,16 @@ Furigana _parseWordFurigana(Element element) {
     return _parseRubyFurigana(element);
   }
 
-  final furiganaParts = element.collectAll(
-      "div.concept_light-representation > span.furigana > span",
-      (e) => e.text.trim());
+  final furiganaParts = element
+      .querySelectorAll(
+          "div.concept_light-representation > span.furigana > span")
+      .map((e) => e.text.trim())
+      .toList();
 
   if (furiganaParts.length == 1) {
-    final text = element.collect(
-        "div.concept_light-representation > span.text", (e) => e.text.trim())!;
+    final text = element
+        .querySelector("div.concept_light-representation > span.text")!
+        .transform((e) => e.text.trim());
     return [FuriganaPart(text, furiganaParts.first)];
   }
 
@@ -74,12 +77,14 @@ Furigana _parseWordFurigana(Element element) {
 }
 
 Furigana _parseRubyFurigana(Element element) {
-  final furiganaParts = element.collectAll(
-    "div.concept_light-representation > span.furigana > *",
-    (e) => e.localName == "ruby"
-        ? e.querySelector("rt")!.text.trim()
-        : e.text.trim(),
-  );
+  final furiganaParts = element
+      .querySelectorAll("div.concept_light-representation > span.furigana > *")
+      .map(
+        (e) => e.localName == "ruby"
+            ? e.querySelector("rt")!.text.trim()
+            : e.text.trim(),
+      )
+      .toList();
 
   final textParts = element
       .querySelector("div.concept_light-representation > span.text")!

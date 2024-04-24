@@ -4,9 +4,9 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/is_kanji.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/remove_tags.dart";
+import "package:jsdict/packages/transform.dart";
 
 part "furigana.dart";
-part "helper.dart";
 part "kanji.dart";
 part "name.dart";
 part "search.dart";

@@ -1,10 +1,10 @@
 part of "parser.dart";
 
 Name _parseNameEntry(Element element) {
-  final japaneseText = element.collect(
-      "div.concept_light-readings",
-      (e) =>
-          e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "))!;
+  final japaneseText = element
+      .querySelector("div.concept_light-readings")!
+      .transform((e) =>
+          e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "));
 
   final japanese = japaneseText.split("【").last.replaceFirst(RegExp(r"】$"), "");
 
@@ -12,20 +12,26 @@ Name _parseNameEntry(Element element) {
       japaneseText.contains("【") ? japaneseText.split("【").first.trim() : null;
 
   final english = element
-      .collectAll("span.meaning-meaning", (e) => e.text.trim())
+      .querySelectorAll("span.meaning-meaning")
+      .map((e) => e.text.trim())
       .last
-      .replaceFirst(lifespanPattern, "");
+      .replaceFirst(_lifespanPattern, "");
 
-  final type =
-      element.collect("div.meaning-tags", (e) => _parseNameType(e.text.trim()));
+  final type = element
+      .querySelector("div.meaning-tags")
+      ?.transform((e) => e.text.trim())
+      .transform(_parseNameType);
 
-  final wikipediaWord = element.collect("span.meaning-abstract > a",
-      (e) => Uri.decodeFull(e.attributes["href"]!).split("/word/").last);
+  final wikipediaWord = element
+      .querySelector("span.meaning-abstract > a")
+      ?.transform((e) => e.attributes["href"])
+      ?.transform(Uri.decodeFull)
+      .transform((e) => e.split("/word/").last);
 
   return Name(japanese, reading, english, type, wikipediaWord);
 }
 
-final lifespanPattern = RegExp(r" \(\d+(?:\.\d+){,2}-(?:\d+(?:\.\d+){,2})?\)");
+final _lifespanPattern = RegExp(r" \(\d+(?:\.\d+){,2}-(?:\d+(?:\.\d+){,2})?\)");
 
 String? _parseNameType(String input) {
   if (input.contains("Unclassified")) {

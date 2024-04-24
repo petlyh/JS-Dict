@@ -2,10 +2,10 @@ part of "parser.dart";
 
 SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
   final response = SearchResponse<T>();
-  final body = document.body!;
 
-  response.conversion =
-      body.collect("#number_conversion, #year_conversion", (e) {
+  response.conversion = document
+      .querySelector("#number_conversion, #year_conversion")
+      ?.transform((e) {
     final data = e.text.trim().split(" is ");
     assert(data.length == 2);
     final original = removeTags(data[0]);
@@ -13,16 +13,16 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
     return (original: original, converted: converted);
   });
 
-  response.zenEntries = body.collectAll(
-    "#zen_bar span.japanese_word__text_wrapper > a",
-    (e) => e.attributes["data-word"]!,
-  );
+  response.zenEntries = document
+      .querySelectorAll("#zen_bar span.japanese_word__text_wrapper > a")
+      .map((e) => e.attributes["data-word"]!)
+      .toList();
 
   if (response.zenEntries.length == 1) {
     response.zenEntries.clear();
   }
 
-  response.noMatchesFor = body.collect("#no-matches", (e) {
+  response.noMatchesFor = document.querySelector("#no-matches")?.transform((e) {
         final noMatchesText = e.text.trim().replaceFirst(RegExp(r"\.$"), "");
         return noMatchesText.split(RegExp(", | or |matching ")).sublist(2);
       }) ??
@@ -32,11 +32,15 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
     return response;
   }
 
-  response.correction = body.collect("#the_corrector", (e) {
-    final effective =
-        e.collect("p > strong > span", (e2) => e2.text.trim()) ?? "";
+  response.correction =
+      document.querySelector("#the_corrector")?.transform((e) {
+    final effective = e
+            .querySelector("p > strong > span")
+            ?.transform((e2) => e2.text.trim()) ??
+        "";
     final original = removeTypeTags(
-        e.collect("span.meant > a", (e2) => e2.text.trim()) ?? "");
+        e.querySelector("span.meant > a")?.transform((e2) => e2.text.trim()) ??
+            "");
 
     if (original.isNotEmpty) {
       return Correction(effective, original, false);
@@ -45,46 +49,55 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
     return Correction(
       effective,
       e
-          .collect(
-              "p",
-              (e2) =>
-                  RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!
+          .querySelector("p")!
+          .transform((e2) =>
+              RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!
           .group(1)!,
       true,
     );
   });
 
-  response.grammarInfo = body.collect(
-      "div.grammar-breakdown",
-      (e) => GrammarInfo(
-            e.collect(
-                "h6", (e2) => e2.text.split(" could be an inflection").first)!,
-            e.collect("h6 > a", (e2) => e2.text.trim())!,
-            e.collectAll("ul > li", (e2) => e2.text.trim()),
+  response.grammarInfo = document
+      .querySelector("div.grammar-breakdown")
+      ?.transform((e) => GrammarInfo(
+            e.querySelector("h6")!.transform(
+                (e2) => e2.text.split(" could be an inflection").first),
+            e.querySelector("h6 > a")!.transform((e2) => e2.text.trim()),
+            e.querySelectorAll("ul > li").map((e2) => e2.text.trim()).toList(),
           ));
 
   response.hasNextPage = document.querySelector("a.more") != null;
 
   switch (T) {
     case const (Kanji):
-      response.addResults(
-          body.collectAll<Kanji>("div.kanji.details", _parseKanjiDetailsEntry));
+      response.addResults(document
+          .querySelectorAll("div.kanji.details")
+          .map(_parseKanjiDetailsEntry)
+          .toList());
       if (response.results.isNotEmpty) break;
-      response.addResults(body.collectAll<Kanji>(
-          "div.kanji_light_block > div.entry.kanji_light", _parseKanjiEntry));
+      response.addResults(document
+          .querySelectorAll("div.kanji_light_block > div.entry.kanji_light")
+          .map(_parseKanjiEntry)
+          .toList());
       break;
     case const (Word):
-      response.addResults(body.collectAll<Word>(
-          "div.concepts > .concept_light, div.exact_block > .concept_light",
-          _parseWordEntry));
+      response.addResults(document
+          .querySelectorAll(
+              "div.concepts > .concept_light, div.exact_block > .concept_light")
+          .map(_parseWordEntry)
+          .toList());
       break;
     case const (Sentence):
-      response.addResults(body.collectAll<Sentence>(
-          "div.sentences_block > ul > li.entry.sentence", _parseSentenceEntry));
+      response.addResults(document
+          .querySelectorAll("div.sentences_block > ul > li.entry.sentence")
+          .map(_parseSentenceEntry)
+          .toList());
       break;
     case const (Name):
-      response.addResults(body.collectAll<Name>(
-          "div.names_block > div.names > div.concept_light", _parseNameEntry));
+      response.addResults(document
+          .querySelectorAll("div.names_block > div.names > div.concept_light")
+          .map(_parseNameEntry)
+          .toList());
   }
 
   return response;

@@ -1,31 +1,34 @@
 part of "parser.dart";
 
 Sentence parseSentenceDetails(Document document) {
-  final sentence =
-      document.body!.collect("li.entry.sentence", _parseSentenceEntry);
+  final sentence = document
+      .querySelector("li.entry.sentence")
+      ?.transform(_parseSentenceEntry);
 
   if (sentence == null) {
     throw Exception("Sentence not found");
   }
 
-  final kanji = document.body!.collectAll(
-      "div.kanji_light_block > div.entry.kanji_light", _parseKanjiEntry);
+  final kanji = document
+      .querySelectorAll("div.kanji_light_block > div.entry.kanji_light")
+      .map(_parseKanjiEntry)
+      .toList();
 
-  if (kanji.isNotEmpty) {
-    return sentence.withKanji(kanji);
-  }
-
-  return sentence;
+  return kanji.isNotEmpty ? sentence.withKanji(kanji) : sentence;
 }
 
 Sentence _parseSentenceEntry(Element element) {
-  final english = element.collect("span.english", (e) => e.text.trim())!;
+  final english =
+      element.querySelector("span.english")!.transform((e) => e.text.trim());
+
   final japanese = _parseSentenceFurigana(element);
 
-  final copyright = element.collect("span.inline_copyright a",
+  final copyright = element.querySelector("span.inline_copyright a")?.transform(
       (e) => SentenceCopyright(e.text.trim(), e.attributes["href"]!));
-  final id = element.collect("a.light-details_link",
-          (e) => e.attributes["href"]!.split("/").last) ??
+
+  final id = element
+          .querySelector("a.light-details_link")
+          ?.transform((e) => e.attributes["href"]!.split("/").last) ??
       "";
 
   return Sentence.copyright(id, japanese, english, copyright);
