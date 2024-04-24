@@ -8,7 +8,7 @@ import "package:html/parser.dart";
 import "package:jsdict/models/models.dart";
 
 import "exceptions.dart";
-import "parser.dart";
+import "parser/parser.dart";
 
 export "exceptions.dart";
 
@@ -60,23 +60,15 @@ class JishoClient {
       RegExp(r"(?<=^|\s)\w+"), (match) => match.group(0)!.toLowerCase());
 
   Future<SearchResponse<T>> search<T extends SearchType>(String query,
-      {int page = 1}) {
-    return _getHtml(_searchPath<T>(query, page: page))
-        .then((document) => Parser.search<T>(document));
-  }
+          {int page = 1}) =>
+      _getHtml(_searchPath<T>(query, page: page)).then(parseSearch<T>);
 
-  Future<Kanji> kanjiDetails(String kanji) {
-    return _getHtml(_searchPath<Kanji>(kanji))
-        .then((document) => Parser.kanjiDetails(document));
-  }
+  Future<Kanji> kanjiDetails(String kanji) =>
+      _getHtml(_searchPath<Kanji>(kanji)).then(parseKanjiDetails);
 
-  Future<Word> wordDetails(String word) {
-    final path = "/word/${Uri.encodeComponent(word)}";
-    return _getHtml(path).then((document) => Parser.wordDetails(document));
-  }
+  Future<Word> wordDetails(String word) =>
+      _getHtml("/word/${Uri.encodeComponent(word)}").then(parseWordDetails);
 
-  Future<Sentence> sentenceDetails(String sentenceId) {
-    final path = "/sentences/$sentenceId";
-    return _getHtml(path).then((document) => Parser.sentenceDetails(document));
-  }
+  Future<Sentence> sentenceDetails(String sentenceId) =>
+      _getHtml("/sentences/$sentenceId").then(parseSentenceDetails);
 }

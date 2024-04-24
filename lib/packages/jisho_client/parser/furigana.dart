@@ -1,13 +1,6 @@
-import "package:collection/collection.dart";
-import "package:html/dom.dart";
-import "package:jsdict/packages/is_kanji.dart";
-import "package:jsdict/packages/jisho_client/parsing_helper.dart";
-import "package:jsdict/models/models.dart";
+part of "parser.dart";
 
-bool hasEmpty(List<String> list) =>
-    list.firstWhereOrNull((part) => part.isEmpty) != null;
-
-Furigana parseSentenceFurigana(Element element) {
+Furigana _parseSentenceFurigana(Element element) {
   final nodes =
       element.querySelector("ul.japanese_sentence, ul.japanese")!.nodes;
 
@@ -29,13 +22,15 @@ Furigana parseSentenceFurigana(Element element) {
   }).toList();
 }
 
-List<String> limitTextPartsSize(List<String> list, int size) {
-  return list.sublist(0, size - 1) + [list.sublist(size - 1).join("")];
-}
+List<String> _limitTextPartsSize(List<String> list, int size) =>
+    list.sublist(0, size - 1) + [list.sublist(size - 1).join("")];
 
-Furigana parseWordFurigana(Element element) {
+bool _hasEmpty(List<String> list) =>
+    list.firstWhereOrNull((part) => part.isEmpty) != null;
+
+Furigana _parseWordFurigana(Element element) {
   if (element.querySelector("span.furigana > ruby") != null) {
-    return parseRubyFurigana(element);
+    return _parseRubyFurigana(element);
   }
 
   final furiganaParts = element.collectAll(
@@ -61,7 +56,7 @@ Furigana parseWordFurigana(Element element) {
       .toList();
 
   if (textParts.length > furiganaParts.length) {
-    textParts = limitTextPartsSize(textParts, furiganaParts.length);
+    textParts = _limitTextPartsSize(textParts, furiganaParts.length);
   }
 
   assert(furiganaParts.length == textParts.length);
@@ -69,7 +64,7 @@ Furigana parseWordFurigana(Element element) {
   final text = textParts.join("");
 
   // kanji compounds that don't specify ruby locations
-  if (isKanji(text) && hasEmpty(furiganaParts)) {
+  if (isKanji(text) && _hasEmpty(furiganaParts)) {
     return [FuriganaPart(text, furiganaParts.join(""))];
   }
 
@@ -78,7 +73,7 @@ Furigana parseWordFurigana(Element element) {
       .toList();
 }
 
-Furigana parseRubyFurigana(Element element) {
+Furigana _parseRubyFurigana(Element element) {
   final furiganaParts = element.collectAll(
     "div.concept_light-representation > span.furigana > *",
     (e) => e.localName == "ruby"
