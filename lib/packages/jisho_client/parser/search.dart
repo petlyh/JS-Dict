@@ -68,25 +68,20 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
   return response;
 }
 
-Conversion _parseConversion(Element e) => e.text
-    .trim()
+Conversion _parseConversion(Element e) => e.trimmedText
     .split(" is ")
     .transform((data) => (original: removeTags(data[0]), converted: data[1]));
 
-List<String> _parseNoMatchesFor(Element e) => e.text
-    .trim()
+List<String> _parseNoMatchesFor(Element e) => e.trimmedText
     .replaceFirst(RegExp(r"\.$"), "")
     .split(RegExp(", | or |matching "))
     .sublist(2);
 
 Correction _parseCorrection(Element e) {
-  final effective =
-      e.querySelector("p > strong > span")?.transform((e2) => e2.text.trim()) ??
-          "";
+  final effective = e.querySelector("p > strong > span")?.trimmedText ?? "";
 
-  final original = removeTypeTags(
-      e.querySelector("span.meant > a")?.transform((e2) => e2.text.trim()) ??
-          "");
+  final original =
+      removeTypeTags(e.querySelector("span.meant > a")?.trimmedText ?? "");
 
   if (original.isNotEmpty) {
     return Correction(effective, original, false);
@@ -94,8 +89,8 @@ Correction _parseCorrection(Element e) {
 
   final noMatchesOriginal = e
       .querySelector("p")!
-      .transform(
-          (e2) => RegExp(r"No matches for (.+?)\.").firstMatch(e2.text.trim()))!
+      .trimmedText
+      .transform(RegExp(r"No matches for (.+?)\.").firstMatch)!
       .group(1)!;
 
   return Correction(
@@ -110,11 +105,9 @@ GrammarInfo _parseGrammarInfo(Element e) {
       .querySelector("h6")!
       .transform((e2) => e2.text.split(" could be an inflection").first);
 
-  final possibleInflectionOf =
-      e.querySelector("h6 > a")!.transform((e2) => e2.text.trim());
+  final possibleInflectionOf = e.querySelector("h6 > a")!.trimmedText;
 
-  final formInfos =
-      e.querySelectorAll("ul > li").map((e2) => e2.text.trim()).toList();
+  final formInfos = e.querySelectorAll("ul > li").allTrimmedText;
 
   return GrammarInfo(
     word,

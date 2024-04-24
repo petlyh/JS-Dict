@@ -13,26 +13,24 @@ Kanji parseKanjiDetails(Document document) {
 }
 
 Kanji _parseKanjiEntry(Element element) {
-  final literal = element
-      .querySelector("div.literal_block > span > a")
-      ?.transform((e) => e.text.trim());
+  final literal =
+      element.querySelector("div.literal_block > span > a")?.trimmedText;
 
   final kanji = Kanji(literal!);
 
   kanji.meanings = element
       .querySelectorAll("div.meanings > span")
-      .map((e) => e.text.trim().replaceAll(",", ""))
+      .allTrimmedText
+      .map((e) => e.replaceAll(",", ""))
       .toList();
 
   kanji.kunReadings = element
       .querySelectorAll("div.kun > span.japanese_gothic > a")
-      .map((e) => e.text.trim())
-      .toList();
+      .allTrimmedText;
 
   kanji.onReadings = element
       .querySelectorAll("div.on > span.japanese_gothic > a")
-      .map((e) => e.text.trim())
-      .toList();
+      .allTrimmedText;
 
   kanji.strokeCount = element
       .querySelector(".strokes")!
@@ -40,7 +38,8 @@ Kanji _parseKanjiEntry(Element element) {
 
   kanji.jlptLevel = element
           .querySelector("div.info")
-          ?.transform((e) => JLPTLevel.findInText(e.text)) ??
+          ?.trimmedText
+          .transform(JLPTLevel.findInText) ??
       JLPTLevel.none;
 
   kanji.type = element.querySelector("div.info")?.transform(_getKanjiType);
@@ -49,23 +48,23 @@ Kanji _parseKanjiEntry(Element element) {
 }
 
 Kanji _parseKanjiDetailsEntry(Element element) {
-  final character =
-      element.querySelector("h1.character")!.transform((e) => e.text.trim());
+  final character = element.querySelector("h1.character")!.trimmedText;
 
   final kanji = Kanji(character);
 
   kanji.meanings = element
       .querySelector(".kanji-details__main-meanings")!
-      .transform((e) => e.text.trim().split(", "));
+      .trimmedText
+      .split(", ");
 
   kanji.strokeCount = element
       .querySelector(".kanji-details__stroke_count > strong")!
-      .transform((e) => e.text.trim())
+      .trimmedText
       .transform(int.parse);
 
   kanji.jlptLevel = element
           .querySelector("div.jlpt > strong")
-          ?.transform((e) => e.text.trim())
+          ?.trimmedText
           .transform(JLPTLevel.fromString) ??
       JLPTLevel.none;
 
@@ -74,29 +73,24 @@ Kanji _parseKanjiDetailsEntry(Element element) {
   kanji.kunReadings = element
       .querySelectorAll(
           "div.kanji-details__main-readings > dl.kun_yomi > dd > a")
-      .map((e) => e.text.trim())
-      .toList();
+      .allTrimmedText;
 
   kanji.onReadings = element
       .querySelectorAll(".kanji-details__main-readings > dl.on_yomi > dd > a")
-      .map((e) => e.text.trim())
-      .toList();
+      .allTrimmedText;
 
   final details = KanjiDetails();
 
-  details.parts = element
-      .querySelectorAll("div.radicals > dl > dd > a")
-      .map((e) => e.text.trim())
-      .toList();
+  details.parts =
+      element.querySelectorAll("div.radicals > dl > dd > a").allTrimmedText;
 
-  details.variants = element
-      .querySelectorAll("dl.variants > dd > a")
-      .map((e) => e.text.trim())
-      .toList();
+  details.variants =
+      element.querySelectorAll("dl.variants > dd > a").allTrimmedText;
 
   details.frequency = element
       .querySelector("div.frequency > strong")
-      ?.transform((e) => int.parse(e.text.trim()));
+      ?.trimmedText
+      .transform(int.parse);
 
   details.radical =
       element.querySelector("div.radicals > dl > dd > span")?.transform((e) {
@@ -106,7 +100,7 @@ Kanji _parseKanjiDetailsEntry(Element element) {
         .text!
         .trim();
     final meanings =
-        e.querySelector("span.radical_meaning")!.text.trim().split(", ");
+        e.querySelector("span.radical_meaning")!.trimmedText.split(", ");
     return Radical(character, meanings);
   });
 
@@ -142,7 +136,7 @@ List<Compound> _findCompounds(Element element, String type) =>
         .firstWhereOrNull((e) =>
             e.querySelector("h2")!.text.contains("$type reading compounds"))
         ?.transform(((column) => column.querySelectorAll("ul > li").map((e) {
-              final lines = e.text.trim().split("\n");
+              final lines = e.trimmedText.split("\n");
               assert(lines.length == 3);
 
               final compound = lines[0].trim();

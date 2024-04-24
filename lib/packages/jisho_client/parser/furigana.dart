@@ -15,8 +15,7 @@ Furigana _parseSentenceFurigana(Element element) {
       if (furiganaElement == null) {
         return FuriganaPart.textOnly(text);
       } else {
-        final furiganaText = furiganaElement.text.trim();
-        return FuriganaPart(text, furiganaText);
+        return FuriganaPart(text, furiganaElement.trimmedText);
       }
     }
   }).toList();
@@ -36,13 +35,12 @@ Furigana _parseWordFurigana(Element element) {
   final furiganaParts = element
       .querySelectorAll(
           "div.concept_light-representation > span.furigana > span")
-      .map((e) => e.text.trim())
-      .toList();
+      .allTrimmedText;
 
   if (furiganaParts.length == 1) {
     final text = element
         .querySelector("div.concept_light-representation > span.text")!
-        .transform((e) => e.text.trim());
+        .trimmedText;
     return [FuriganaPart(text, furiganaParts.first)];
   }
 
@@ -81,8 +79,8 @@ Furigana _parseRubyFurigana(Element element) {
       .querySelectorAll("div.concept_light-representation > span.furigana > *")
       .map(
         (e) => e.localName == "ruby"
-            ? e.querySelector("rt")!.text.trim()
-            : e.text.trim(),
+            ? e.querySelector("rt")!.trimmedText
+            : e.trimmedText,
       )
       .toList();
 

@@ -39,14 +39,16 @@ Word _parseWordEntry(Element element) {
   word.jlptLevel = element
           .querySelectorAll("span.concept_light-tag")
           .firstWhereOrNull((e) => e.text.contains("JLPT"))
-          ?.transform((e) => e.text.trim().split(" ")[1])
+          ?.trimmedText
+          .transform((e) => e.split(" ")[1])
           .transform(JLPTLevel.fromString) ??
       JLPTLevel.none;
 
   word.wanikaniLevels = element
       .querySelectorAll("span.concept_light-tag")
       .where((e) => e.text.contains("Wanikani"))
-      .map((e) => int.parse(e.children.first.text.trim().split(" ")[2]))
+      .map((e) => e.children.first.trimmedText.split(" ")[2])
+      .map(int.parse)
       .toList();
 
   final definitionElements = element.querySelectorAll("div.meaning-wrapper");
@@ -61,7 +63,7 @@ Word _parseWordEntry(Element element) {
     final notesElement = definitionElement
         .querySelector("div.meaning-representation_notes > span");
     if (notesElement != null) {
-      word.notes = Note.parseAll(notesElement.text.trim());
+      word.notes = Note.parseAll(notesElement.trimmedText);
       continue;
     }
 
@@ -80,17 +82,16 @@ Word _parseWordEntry(Element element) {
 
     definition.meanings = definitionElement
         .querySelector("span.meaning-meaning")!
-        .transform((e) => e.text.trim().split("; "));
+        .trimmedText
+        .transform((e) => e.split("; "));
 
     definition.tags = definitionElement
         .querySelectorAll("span.tag-tag, span.tag-info, span.tag-source")
-        .map((e) => e.text.trim())
-        .toList();
+        .allTrimmedText;
 
     definition.seeAlso = definitionElement
         .querySelectorAll("span.tag-see_also > a")
-        .map((e) => e.text.trim())
-        .toList()
+        .allTrimmedText
         .deduplicate();
 
     // don't add wikipedia definition since it's handled separately
@@ -108,7 +109,7 @@ Word _parseWordEntry(Element element) {
         .querySelector("div.sentence")
         ?.transform((e) => Sentence.example(
               _parseSentenceFurigana(e),
-              e.querySelector("span.english")!.text.trim(),
+              e.querySelector("span.english")!.trimmedText,
             ));
 
     word.definitions.add(definition);
@@ -156,7 +157,7 @@ Word _parseWordEntry(Element element) {
 
 List<OtherForm> _parseOtherForms(Element element) =>
     element.querySelectorAll("span.break-unit").map((e) {
-      final split = e.text.trim().replaceFirst("】", "").split(" 【");
+      final split = e.trimmedText.replaceFirst("】", "").split(" 【");
       final form = split.first;
       final reading = split.length == 2 ? split.last : "";
       return OtherForm(form, reading);

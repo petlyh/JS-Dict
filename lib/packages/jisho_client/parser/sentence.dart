@@ -18,13 +18,12 @@ Sentence parseSentenceDetails(Document document) {
 }
 
 Sentence _parseSentenceEntry(Element element) {
-  final english =
-      element.querySelector("span.english")!.transform((e) => e.text.trim());
+  final english = element.querySelector("span.english")!.trimmedText;
 
   final japanese = _parseSentenceFurigana(element);
 
   final copyright = element.querySelector("span.inline_copyright a")?.transform(
-      (e) => SentenceCopyright(e.text.trim(), e.attributes["href"]!));
+      (e) => SentenceCopyright(e.trimmedText, e.attributes["href"]!));
 
   final id = element
           .querySelector("a.light-details_link")

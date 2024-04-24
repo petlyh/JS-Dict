@@ -3,8 +3,8 @@ part of "parser.dart";
 Name _parseNameEntry(Element element) {
   final japaneseText = element
       .querySelector("div.concept_light-readings")!
-      .transform((e) =>
-          e.text.trim().replaceAll("\n", "").replaceAll(RegExp(r" +"), " "));
+      .trimmedText
+      .transform((e) => e.replaceAll("\n", "").replaceAll(RegExp(r" +"), " "));
 
   final japanese = japaneseText.split("【").last.replaceFirst(RegExp(r"】$"), "");
 
@@ -13,13 +13,13 @@ Name _parseNameEntry(Element element) {
 
   final english = element
       .querySelectorAll("span.meaning-meaning")
-      .map((e) => e.text.trim())
+      .allTrimmedText
       .last
       .replaceFirst(_lifespanPattern, "");
 
   final type = element
       .querySelector("div.meaning-tags")
-      ?.transform((e) => e.text.trim())
+      ?.trimmedText
       .transform(_parseNameType);
 
   final wikipediaWord = element

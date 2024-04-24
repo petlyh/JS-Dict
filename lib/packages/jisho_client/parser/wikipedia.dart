@@ -5,9 +5,7 @@ WikipediaInfo? _parseWikipediaInfo(Element element) {
     return null;
   }
 
-  final title = element
-      .querySelector("span.meaning-meaning")!
-      .transform((e) => e.text.trim());
+  final title = element.querySelector("span.meaning-meaning")!.trimmedText;
 
   final text = element
       .querySelector("span.meaning-abstract")
