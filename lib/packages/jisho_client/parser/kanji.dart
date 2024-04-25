@@ -85,27 +85,31 @@ Kanji _parseKanjiDetailsEntry(Element element) {
 }
 
 KanjiDetails _parseKanjiDetails(Element element) {
-  final details = KanjiDetails();
-
-  details.parts =
+  final parts =
       element.querySelectorAll("div.radicals > dl > dd > a").allTrimmedText;
 
-  details.variants =
+  final variants =
       element.querySelectorAll("dl.variants > dd > a").allTrimmedText;
 
-  details.frequency = element
+  final frequency = element
       .querySelector("div.frequency > strong")
       ?.trimmedText
       .transform(int.parse);
 
-  details.radical = element
+  final radical = element
       .querySelector("div.radicals > dl > dd > span")
       ?.transform(_parseRadical);
 
-  details.onCompounds = _findCompounds(element, "On");
-  details.kunCompounds = _findCompounds(element, "Kun");
+  final onCompounds = _findCompounds(element, "On");
+  final kunCompounds = _findCompounds(element, "Kun");
 
-  return details;
+  return KanjiDetails(
+      parts: parts,
+      variants: variants,
+      radical: radical,
+      frequency: frequency,
+      onCompounds: onCompounds,
+      kunCompounds: kunCompounds);
 }
 
 Radical _parseRadical(Element e) {

@@ -23,15 +23,23 @@ class Kanji implements SearchType {
 }
 
 class KanjiDetails {
-  List<String> parts = [];
-  List<String> variants = [];
+  final List<String> parts;
+  final List<String> variants;
 
-  Radical? radical;
+  final Radical? radical;
 
-  int? frequency;
+  final int? frequency;
 
-  List<Compound> onCompounds = [];
-  List<Compound> kunCompounds = [];
+  final List<Compound> onCompounds;
+  final List<Compound> kunCompounds;
+
+  const KanjiDetails(
+      {required this.parts,
+      required this.variants,
+      required this.radical,
+      required this.frequency,
+      required this.onCompounds,
+      required this.kunCompounds});
 }
 
 class Radical {
