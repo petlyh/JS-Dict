@@ -2,11 +2,12 @@ import "package:flutter_test/flutter_test.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
 
-Future<void> Function() _furiganaTest(String wordId, String text, String reading) {
+Future<void> Function() _furiganaTest(
+    String wordId, String text, String reading) {
   return () async {
     final wordDetails = await JishoClient().wordDetails(wordId);
-    expect(wordDetails.word.getText(), text);
-    expect(wordDetails.word.getReading(), reading);
+    expect(wordDetails.word.text, text);
+    expect(wordDetails.word.reading, reading);
   };
 }
 

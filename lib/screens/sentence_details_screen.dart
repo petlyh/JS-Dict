@@ -72,7 +72,7 @@ class _SentenceDetails extends StatelessWidget {
                 ? KanjiItemList(sentence.kanji!)
                 : LoaderWidget(
                     onLoad: () =>
-                        getClient().search<Kanji>(sentence.japanese.getText()),
+                        getClient().search<Kanji>(sentence.japanese.text),
                     handler: (response) => KanjiItemList(response.results)),
           ],
         ),

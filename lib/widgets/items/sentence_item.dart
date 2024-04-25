@@ -20,7 +20,7 @@ class SentenceItem extends StatelessWidget {
         onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
         onLongPress: () => showActionDialog(context, [
               ActionTile.url(sentence.url),
-              ActionTile.text("Japanese", sentence.japanese.getText()),
+              ActionTile.text("Japanese", sentence.japanese.text),
               ActionTile.text("English", sentence.english),
             ]),
         child: ListTile(

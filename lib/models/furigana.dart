@@ -13,17 +13,14 @@ class FuriganaPart {
 Furigana furiganaFromText(String text) => [FuriganaPart.textOnly(text)];
 
 extension FuriganaMethods on Furigana {
-  String getText() {
-    return map((part) => part.text.trim()).join().trim();
-  }
+  String get text => map((part) => part.text.trim()).join().trim();
 
-  String getReading() {
-    return map((part) => part.furigana.isNotEmpty ? part.furigana : part.text)
-        .join()
-        .trim();
-  }
+  String get reading =>
+      map((part) => part.furigana.isNotEmpty ? part.furigana : part.text)
+          .join()
+          .trim();
 
-  bool get hasFurigana => getText() != getReading();
+  bool get hasFurigana => where((part) => part.furigana.isNotEmpty).isNotEmpty;
 
   List<RubyTextData> get rubyData => map((part) => RubyTextData(part.text,
       ruby: part.furigana.isNotEmpty ? part.furigana : null)).toList();

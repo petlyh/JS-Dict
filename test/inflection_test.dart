@@ -337,54 +337,54 @@ void main() {
     final Verb kuru = Kuru();
     expect(kuru.name, equals("Kuru verb - special class"));
 
-    expect(kuru.nonPastFurigana(true).getReading(), equals("くる"));
-    expect(kuru.nonPastPoliteFurigana(true).getReading(), equals("きます"));
-    expect(kuru.pastFurigana(true).getReading(), equals("きた"));
-    expect(kuru.pastPoliteFurigana(true).getReading(), equals("きました"));
-    expect(kuru.teFormFurigana(true).getReading(), equals("きて"));
-    expect(kuru.potentialFurigana(true).getReading(), equals("こられる"));
-    expect(kuru.passiveFurigana(true).getReading(), equals("こられる"));
-    expect(kuru.causativeFurigana(true).getReading(), equals("こさせる"));
-    expect(kuru.causativePassiveFurigana(true).getReading(), equals("こさせられる"));
-    expect(kuru.imperativeFurigana(true).getReading(), equals("こい"));
+    expect(kuru.nonPastFurigana(true).reading, equals("くる"));
+    expect(kuru.nonPastPoliteFurigana(true).reading, equals("きます"));
+    expect(kuru.pastFurigana(true).reading, equals("きた"));
+    expect(kuru.pastPoliteFurigana(true).reading, equals("きました"));
+    expect(kuru.teFormFurigana(true).reading, equals("きて"));
+    expect(kuru.potentialFurigana(true).reading, equals("こられる"));
+    expect(kuru.passiveFurigana(true).reading, equals("こられる"));
+    expect(kuru.causativeFurigana(true).reading, equals("こさせる"));
+    expect(kuru.causativePassiveFurigana(true).reading, equals("こさせられる"));
+    expect(kuru.imperativeFurigana(true).reading, equals("こい"));
 
-    expect(kuru.nonPastFurigana(false).getReading(), equals("こない"));
-    expect(kuru.nonPastPoliteFurigana(false).getReading(), equals("きません"));
-    expect(kuru.pastFurigana(false).getReading(), equals("こなかった"));
-    expect(kuru.pastPoliteFurigana(false).getReading(), equals("きませんでした"));
-    expect(kuru.teFormFurigana(false).getReading(), equals("こなくて"));
-    expect(kuru.potentialFurigana(false).getReading(), equals("こられない"));
-    expect(kuru.passiveFurigana(false).getReading(), equals("こられない"));
-    expect(kuru.causativeFurigana(false).getReading(), equals("こさせない"));
-    expect(kuru.causativePassiveFurigana(false).getReading(), equals("こさせられない"));
-    expect(kuru.imperativeFurigana(false).getReading(), equals("くるな"));
+    expect(kuru.nonPastFurigana(false).reading, equals("こない"));
+    expect(kuru.nonPastPoliteFurigana(false).reading, equals("きません"));
+    expect(kuru.pastFurigana(false).reading, equals("こなかった"));
+    expect(kuru.pastPoliteFurigana(false).reading, equals("きませんでした"));
+    expect(kuru.teFormFurigana(false).reading, equals("こなくて"));
+    expect(kuru.potentialFurigana(false).reading, equals("こられない"));
+    expect(kuru.passiveFurigana(false).reading, equals("こられない"));
+    expect(kuru.causativeFurigana(false).reading, equals("こさせない"));
+    expect(kuru.causativePassiveFurigana(false).reading, equals("こさせられない"));
+    expect(kuru.imperativeFurigana(false).reading, equals("くるな"));
   });
 
   test("Suru special class", () {
     final Verb suru = SuruSpecial();
     expect(suru.name, "Suru verb - included");
 
-    expect(suru.nonPastFurigana(true).getReading(), equals("する"));
-    expect(suru.nonPastPoliteFurigana(true).getReading(), equals("します"));
-    expect(suru.pastFurigana(true).getReading(), equals("した"));
-    expect(suru.pastPoliteFurigana(true).getReading(), equals("しました"));
-    expect(suru.teFormFurigana(true).getReading(), equals("して"));
-    expect(suru.potentialFurigana(true).getReading(), equals("できる"));
-    expect(suru.passiveFurigana(true).getReading(), equals("される"));
-    expect(suru.causativeFurigana(true).getReading(), equals("させる"));
-    expect(suru.causativePassiveFurigana(true).getReading(), equals("させられる"));
-    expect(suru.imperativeFurigana(true).getReading(), equals("しろ"));
+    expect(suru.nonPastFurigana(true).reading, equals("する"));
+    expect(suru.nonPastPoliteFurigana(true).reading, equals("します"));
+    expect(suru.pastFurigana(true).reading, equals("した"));
+    expect(suru.pastPoliteFurigana(true).reading, equals("しました"));
+    expect(suru.teFormFurigana(true).reading, equals("して"));
+    expect(suru.potentialFurigana(true).reading, equals("できる"));
+    expect(suru.passiveFurigana(true).reading, equals("される"));
+    expect(suru.causativeFurigana(true).reading, equals("させる"));
+    expect(suru.causativePassiveFurigana(true).reading, equals("させられる"));
+    expect(suru.imperativeFurigana(true).reading, equals("しろ"));
 
-    expect(suru.nonPastFurigana(false).getReading(), equals("しない"));
-    expect(suru.nonPastPoliteFurigana(false).getReading(), equals("しません"));
-    expect(suru.pastFurigana(false).getReading(), equals("しなかった"));
-    expect(suru.pastPoliteFurigana(false).getReading(), equals("しませんでした"));
-    expect(suru.teFormFurigana(false).getReading(), equals("しなくて"));
-    expect(suru.potentialFurigana(false).getReading(), equals("できない"));
-    expect(suru.passiveFurigana(false).getReading(), equals("されない"));
-    expect(suru.causativeFurigana(false).getReading(), equals("させない"));
-    expect(suru.causativePassiveFurigana(false).getReading(), equals("させられない"));
-    expect(suru.imperativeFurigana(false).getReading(), equals("するな"));
+    expect(suru.nonPastFurigana(false).reading, equals("しない"));
+    expect(suru.nonPastPoliteFurigana(false).reading, equals("しません"));
+    expect(suru.pastFurigana(false).reading, equals("しなかった"));
+    expect(suru.pastPoliteFurigana(false).reading, equals("しませんでした"));
+    expect(suru.teFormFurigana(false).reading, equals("しなくて"));
+    expect(suru.potentialFurigana(false).reading, equals("できない"));
+    expect(suru.passiveFurigana(false).reading, equals("されない"));
+    expect(suru.causativeFurigana(false).reading, equals("させない"));
+    expect(suru.causativePassiveFurigana(false).reading, equals("させられない"));
+    expect(suru.imperativeFurigana(false).reading, equals("するな"));
   });
 
   test("Suru verb", () {

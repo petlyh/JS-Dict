@@ -90,8 +90,7 @@ class _FuriganaCell extends StatelessWidget {
       padding: _cellPadding,
       child: furigana.hasFurigana
           ? RubyText(furigana.rubyData, wrapAlign: TextAlign.start)
-          : Text(furigana.getText(),
-              style: jpTextStyle, textAlign: TextAlign.start),
+          : Text(furigana.text, style: jpTextStyle, textAlign: TextAlign.start),
     );
   }
 }

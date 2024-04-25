@@ -18,7 +18,7 @@ class Word implements SearchType {
 
   String inflectionId = "";
   InflectionType? get inflectionType => inflectionId.isNotEmpty
-      ? Inflection.getType(word.getText(), inflectionId)
+      ? Inflection.getType(word.text, inflectionId)
       : null;
 
   List<Collocation> collocations = [];
@@ -26,10 +26,10 @@ class Word implements SearchType {
   bool hasWikipedia = false;
 
   /// whether there is any point in loading details
-  bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.getText());
+  bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.text);
 
   String get url =>
-      "https://jisho.org/word/${Uri.encodeComponent(id ?? word.getText())}";
+      "https://jisho.org/word/${Uri.encodeComponent(id ?? word.text)}";
 
   WordDetails? details;
 

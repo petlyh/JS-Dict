@@ -1,4 +1,4 @@
-import "package:flutter_test/flutter_test.dart";
+import "package:test/test.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
 
@@ -37,8 +37,8 @@ void main() {
   test("word details", () async {
     final word = await client.wordDetails("見る");
 
-    expect(word.word.getText(), "見る");
-    expect(word.word.getReading(), "みる");
+    expect(word.word.text, "見る");
+    expect(word.word.reading, "みる");
     expect(word.commonWord, true);
     expect(word.wanikaniLevels, [22, 4]);
     expect(word.jlptLevel, JLPTLevel.n5);

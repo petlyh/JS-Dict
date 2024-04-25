@@ -59,31 +59,27 @@ abstract class FuriganaVerb extends Verb {
   // Subclasses must override all furigana methods to prevent a stack overflow
 
   @override
-  String nonPast(bool affermative) => nonPastFurigana(affermative).getText();
+  String nonPast(bool affermative) => nonPastFurigana(affermative).text;
   @override
-  String past(bool affermative) => pastFurigana(affermative).getText();
+  String past(bool affermative) => pastFurigana(affermative).text;
   @override
   String nonPastPolite(bool affermative) =>
-      nonPastPoliteFurigana(affermative).getText();
+      nonPastPoliteFurigana(affermative).text;
   @override
-  String pastPolite(bool affermative) =>
-      pastPoliteFurigana(affermative).getText();
+  String pastPolite(bool affermative) => pastPoliteFurigana(affermative).text;
   @override
-  String teForm(bool affermative) => teFormFurigana(affermative).getText();
+  String teForm(bool affermative) => teFormFurigana(affermative).text;
   @override
-  String potential(bool affermative) =>
-      potentialFurigana(affermative).getText();
+  String potential(bool affermative) => potentialFurigana(affermative).text;
   @override
-  String passive(bool affermative) => passiveFurigana(affermative).getText();
+  String passive(bool affermative) => passiveFurigana(affermative).text;
   @override
-  String causative(bool affermative) =>
-      causativeFurigana(affermative).getText();
+  String causative(bool affermative) => causativeFurigana(affermative).text;
   @override
   String causativePassive(bool affermative) =>
-      causativePassiveFurigana(affermative).getText();
+      causativePassiveFurigana(affermative).text;
   @override
-  String imperative(bool affermative) =>
-      imperativeFurigana(affermative).getText();
+  String imperative(bool affermative) => imperativeFurigana(affermative).text;
 }
 
 class IAdjective extends InflectionType {
@@ -299,34 +295,34 @@ class SuruVerb extends Verb {
 
   @override
   String nonPast(bool affermative) =>
-      stem + suru.nonPastFurigana(affermative).getReading();
+      stem + suru.nonPastFurigana(affermative).reading;
   @override
   String past(bool affermative) =>
-      stem + suru.pastFurigana(affermative).getReading();
+      stem + suru.pastFurigana(affermative).reading;
   @override
   String nonPastPolite(bool affermative) =>
-      stem + suru.nonPastPoliteFurigana(affermative).getReading();
+      stem + suru.nonPastPoliteFurigana(affermative).reading;
   @override
   String pastPolite(bool affermative) =>
-      stem + suru.pastPoliteFurigana(affermative).getReading();
+      stem + suru.pastPoliteFurigana(affermative).reading;
   @override
   String teForm(bool affermative) =>
-      stem + suru.teFormFurigana(affermative).getReading();
+      stem + suru.teFormFurigana(affermative).reading;
   @override
   String potential(bool affermative) =>
-      stem + suru.potentialFurigana(affermative).getReading();
+      stem + suru.potentialFurigana(affermative).reading;
   @override
   String passive(bool affermative) =>
-      stem + suru.passiveFurigana(affermative).getReading();
+      stem + suru.passiveFurigana(affermative).reading;
   @override
   String causative(bool affermative) =>
-      stem + suru.causativeFurigana(affermative).getReading();
+      stem + suru.causativeFurigana(affermative).reading;
   @override
   String causativePassive(bool affermative) =>
-      stem + suru.causativePassiveFurigana(affermative).getReading();
+      stem + suru.causativePassiveFurigana(affermative).reading;
   @override
   String imperative(bool affermative) =>
-      stem + suru.imperativeFurigana(affermative).getReading();
+      stem + suru.imperativeFurigana(affermative).reading;
 
   SuruVerb(String input) : stem = _withoutSuffix(input, "する");
 }
