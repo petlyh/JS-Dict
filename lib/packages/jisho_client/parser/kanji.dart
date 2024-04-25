@@ -135,7 +135,7 @@ KanjiType? _getKanjiType(Element element) {
   }
 
   if (text.contains("Jinmeiyō")) {
-    return Jinmeiyou();
+    return const Jinmeiyou();
   }
 
   return null;

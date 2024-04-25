@@ -62,6 +62,8 @@ sealed class KanjiType {
 }
 
 class Jinmeiyou extends KanjiType {
+  const Jinmeiyou();
+
   @override
   String toString() {
     return "Jinmeiyō";
