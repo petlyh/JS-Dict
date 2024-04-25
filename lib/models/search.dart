@@ -3,22 +3,32 @@ part of "models.dart";
 sealed class SearchType {}
 
 class SearchResponse<T extends SearchType> {
-  Correction? correction;
-  List<String> noMatchesFor = [];
-  GrammarInfo? grammarInfo;
-  Conversion? conversion;
+  final List<T> results;
+  final bool hasNextPage;
 
-  List<String> zenEntries = [];
+  final List<String> zenEntries;
 
-  bool hasNextPage = false;
+  final Correction? correction;
+  final List<String> noMatchesFor;
+  final GrammarInfo? grammarInfo;
+  final Conversion? conversion;
 
-  List<T> results = [];
+  const SearchResponse(
+      {required this.results,
+      this.hasNextPage = false,
+      this.zenEntries = const [],
+      this.correction,
+      this.noMatchesFor = const [],
+      this.grammarInfo,
+      this.conversion});
 
-  void addResults(List<dynamic> list) {
-    if (list is List<T>) {
-      results.addAll(list);
-    }
-  }
+  const SearchResponse.noMatches(this.noMatchesFor,
+      {this.zenEntries = const [],
+      this.correction,
+      this.grammarInfo,
+      this.conversion})
+      : results = const [],
+        hasNextPage = false;
 }
 
 class Correction {

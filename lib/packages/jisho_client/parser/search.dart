@@ -1,37 +1,34 @@
 part of "parser.dart";
 
 SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
-  final response = SearchResponse<T>();
-
-  response.conversion = document
+  final conversion = document
       .querySelector("#number_conversion, #year_conversion")
       ?.transform(_parseConversion);
 
-  response.zenEntries = document
+  final zenEntries = document
       .querySelectorAll("#zen_bar span.japanese_word__text_wrapper > a")
       .map((e) => e.attributes["data-word"]!)
       .toList();
 
-  if (response.zenEntries.length == 1) {
-    response.zenEntries.clear();
-  }
+  final limitedZenEntries = zenEntries.length > 1 ? zenEntries : <String>[];
 
-  response.noMatchesFor =
+  final noMatchesFor =
       document.querySelector("#no-matches")?.transform(_parseNoMatchesFor) ??
           [];
 
-  if (response.noMatchesFor.isNotEmpty) {
-    return response;
+  if (noMatchesFor.isNotEmpty) {
+    return SearchResponse.noMatches(noMatchesFor,
+        conversion: conversion, zenEntries: limitedZenEntries);
   }
 
-  response.correction =
+  final correction =
       document.querySelector("#the_corrector")?.transform(_parseCorrection);
 
-  response.grammarInfo = document
+  final grammarInfo = document
       .querySelector("div.grammar-breakdown")
       ?.transform(_parseGrammarInfo);
 
-  response.hasNextPage = document.querySelector("a.more") != null;
+  final hasNextPage = document.querySelector("a.more") != null;
 
   List<U> collectResults<U extends SearchType>(
     String selector,
@@ -63,9 +60,14 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
     _ => <T>[],
   } as List<T>;
 
-  response.results = results;
-
-  return response;
+  return SearchResponse(
+      results: results,
+      hasNextPage: hasNextPage,
+      zenEntries: limitedZenEntries,
+      correction: correction,
+      noMatchesFor: noMatchesFor,
+      grammarInfo: grammarInfo,
+      conversion: conversion);
 }
 
 Conversion _parseConversion(Element e) => e.trimmedText
