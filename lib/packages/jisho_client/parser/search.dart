@@ -33,37 +33,37 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
 
   response.hasNextPage = document.querySelector("a.more") != null;
 
-  switch (T) {
-    case const (Kanji):
-      response.addResults(document
-          .querySelectorAll("div.kanji.details")
-          .map(_parseKanjiDetailsEntry)
-          .toList());
-      if (response.results.isNotEmpty) break;
-      response.addResults(document
-          .querySelectorAll("div.kanji_light_block > div.entry.kanji_light")
-          .map(_parseKanjiEntry)
-          .toList());
-      break;
-    case const (Word):
-      response.addResults(document
-          .querySelectorAll(
-              "div.concepts > .concept_light, div.exact_block > .concept_light")
-          .map(_parseWordEntry)
-          .toList());
-      break;
-    case const (Sentence):
-      response.addResults(document
-          .querySelectorAll("div.sentences_block > ul > li.entry.sentence")
-          .map(_parseSentenceEntry)
-          .toList());
-      break;
-    case const (Name):
-      response.addResults(document
-          .querySelectorAll("div.names_block > div.names > div.concept_light")
-          .map(_parseNameEntry)
-          .toList());
-  }
+  List<U> collectResults<U extends SearchType>(
+    String selector,
+    U Function(Element) handler,
+  ) =>
+      document.querySelectorAll(selector).map(handler).toList();
+
+  final results = switch (T) {
+    const (Kanji) => collectResults(
+          ".kanji.details",
+          _parseKanjiDetailsEntry,
+        ) +
+        collectResults(
+          ".kanji_light_block > .entry.kanji_light",
+          _parseKanjiEntry,
+        ),
+    const (Word) => collectResults(
+        ".concepts > .concept_light, .exact_block > .concept_light",
+        _parseWordEntry,
+      ),
+    const (Sentence) => collectResults(
+        ".sentences_block > ul > li.entry.sentence",
+        _parseSentenceEntry,
+      ),
+    const (Name) => collectResults(
+        ".names_block > .names > .concept_light",
+        _parseNameEntry,
+      ),
+    _ => <T>[],
+  } as List<T>;
+
+  response.results = results;
 
   return response;
 }
