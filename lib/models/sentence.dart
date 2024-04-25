@@ -14,12 +14,15 @@ class Sentence implements SearchType {
   const Sentence(this.id, this.japanese, this.english)
       : copyright = null,
         kanji = null;
+
   const Sentence.copyright(this.id, this.japanese, this.english, this.copyright)
       : kanji = null;
+
   const Sentence.example(this.japanese, this.english)
       : copyright = null,
         id = null,
         kanji = null;
+
   const Sentence.all(
       this.id, this.japanese, this.english, this.copyright, this.kanji);
 
