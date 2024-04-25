@@ -79,6 +79,12 @@ Kanji _parseKanjiDetailsEntry(Element element) {
       .querySelectorAll(".kanji-details__main-readings > dl.on_yomi > dd > a")
       .allTrimmedText;
 
+  kanji.details = _parseKanjiDetails(element);
+
+  return kanji;
+}
+
+KanjiDetails _parseKanjiDetails(Element element) {
   final details = KanjiDetails();
 
   details.parts =
@@ -92,23 +98,24 @@ Kanji _parseKanjiDetailsEntry(Element element) {
       ?.trimmedText
       .transform(int.parse);
 
-  details.radical =
-      element.querySelector("div.radicals > dl > dd > span")?.transform((e) {
-    final character = e.nodes
-        .firstWhere((node) =>
-            node.nodeType == Node.TEXT_NODE && node.text!.trim().isNotEmpty)
-        .text!
-        .trim();
-    final meanings =
-        e.querySelector("span.radical_meaning")!.trimmedText.split(", ");
-    return Radical(character, meanings);
-  });
+  details.radical = element
+      .querySelector("div.radicals > dl > dd > span")
+      ?.transform(_parseRadical);
 
   details.onCompounds = _findCompounds(element, "On");
   details.kunCompounds = _findCompounds(element, "Kun");
 
-  kanji.details = details;
-  return kanji;
+  return details;
+}
+
+Radical _parseRadical(Element e) {
+  final character =
+      e.nodes.allTrimmedText.firstWhere((text) => text.isNotEmpty);
+
+  final meanings =
+      e.querySelector("span.radical_meaning")!.trimmedText.split(", ");
+
+  return Radical(character, meanings);
 }
 
 KanjiType? _getKanjiType(Element element) {
@@ -135,15 +142,17 @@ List<Compound> _findCompounds(Element element, String type) =>
         .querySelectorAll("div.row.compounds > div.columns")
         .firstWhereOrNull((e) =>
             e.querySelector("h2")!.text.contains("$type reading compounds"))
-        ?.transform(((column) => column.querySelectorAll("ul > li").map((e) {
-              final lines = e.trimmedText.split("\n");
-              assert(lines.length == 3);
-
-              final compound = lines[0].trim();
-              final reading =
-                  lines[1].trim().replaceAll("【", "").replaceAll("】", "");
-              final meanings = lines[2].trim().split(", ");
-
-              return Compound(compound, reading, meanings);
-            }).toList())) ??
+        ?.transform(_parseCompounds) ??
     [];
+
+List<Compound> _parseCompounds(Element column) =>
+    column.querySelectorAll("ul > li").map((e) {
+      final lines = e.trimmedText.split("\n");
+      assert(lines.length == 3);
+
+      final compound = lines[0].trim();
+      final reading = lines[1].trim().replaceAll("【", "").replaceAll("】", "");
+      final meanings = lines[2].trim().split(", ");
+
+      return Compound(compound, reading, meanings);
+    }).toList();
