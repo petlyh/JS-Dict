@@ -2,24 +2,33 @@ part of "models.dart";
 
 class Kanji implements SearchType {
   final String kanji;
+  final int strokeCount;
+
+  final KanjiType? type;
+  final JLPTLevel jlptLevel;
+
+  final List<String> meanings;
+  final List<String> kunReadings;
+  final List<String> onReadings;
+
+  final KanjiDetails? details;
 
   String get code => kanji.codeUnitAt(0).toRadixString(16).padLeft(5, "0");
 
-  List<String> meanings = [];
-  List<String> kunReadings = [];
-  List<String> onReadings = [];
+  String get url => createUrl(kanji);
 
-  KanjiType? type;
-
-  int strokeCount = -1;
-  JLPTLevel jlptLevel = JLPTLevel.none;
-
-  String get url =>
+  static String createUrl(String kanji) =>
       "https://jisho.org/search/${Uri.encodeComponent("$kanji #kanji")}";
 
-  KanjiDetails? details;
-
-  Kanji(this.kanji);
+  const Kanji(
+      {required this.kanji,
+      required this.strokeCount,
+      this.type,
+      this.jlptLevel = JLPTLevel.none,
+      this.meanings = const [],
+      this.kunReadings = const [],
+      this.onReadings = const [],
+      this.details});
 }
 
 class KanjiDetails {

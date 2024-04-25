@@ -13,75 +13,86 @@ Kanji parseKanjiDetails(Document document) {
 }
 
 Kanji _parseKanjiEntry(Element element) {
-  final literal =
-      element.querySelector("div.literal_block > span > a")?.trimmedText;
+  final kanji =
+      element.querySelector("div.literal_block > span > a")!.trimmedText;
 
-  final kanji = Kanji(literal!);
-
-  kanji.meanings = element
-      .querySelectorAll("div.meanings > span")
-      .allTrimmedText
-      .map((e) => e.replaceAll(",", ""))
-      .toList();
-
-  kanji.kunReadings = element
-      .querySelectorAll("div.kun > span.japanese_gothic > a")
-      .allTrimmedText;
-
-  kanji.onReadings = element
-      .querySelectorAll("div.on > span.japanese_gothic > a")
-      .allTrimmedText;
-
-  kanji.strokeCount = element
+  final strokeCount = element
       .querySelector(".strokes")!
-      .transform((e) => int.parse(e.text.split(" ").first))!;
+      .transform((e) => int.parse(e.text.split(" ").first));
 
-  kanji.jlptLevel = element
+  final type = element.querySelector("div.info")?.transform(_getKanjiType);
+
+  final jlptLevel = element
           .querySelector("div.info")
           ?.trimmedText
           .transform(JLPTLevel.findInText) ??
       JLPTLevel.none;
 
-  kanji.type = element.querySelector("div.info")?.transform(_getKanjiType);
+  final meanings = element
+      .querySelectorAll("div.meanings > span")
+      .allTrimmedText
+      .map((e) => e.replaceAll(",", ""))
+      .toList();
 
-  return kanji;
+  final kunReadings = element
+      .querySelectorAll("div.kun > span.japanese_gothic > a")
+      .allTrimmedText;
+
+  final onReadings = element
+      .querySelectorAll("div.on > span.japanese_gothic > a")
+      .allTrimmedText;
+
+  return Kanji(
+      kanji: kanji,
+      strokeCount: strokeCount,
+      type: type,
+      jlptLevel: jlptLevel,
+      meanings: meanings,
+      kunReadings: kunReadings,
+      onReadings: onReadings);
 }
 
 Kanji _parseKanjiDetailsEntry(Element element) {
-  final character = element.querySelector("h1.character")!.trimmedText;
+  final kanji = element.querySelector("h1.character")!.trimmedText;
 
-  final kanji = Kanji(character);
-
-  kanji.meanings = element
+  final meanings = element
       .querySelector(".kanji-details__main-meanings")!
       .trimmedText
       .split(", ");
 
-  kanji.strokeCount = element
+  final strokeCount = element
       .querySelector(".kanji-details__stroke_count > strong")!
       .trimmedText
       .transform(int.parse);
 
-  kanji.jlptLevel = element
+  final jlptLevel = element
           .querySelector("div.jlpt > strong")
           ?.trimmedText
           .transform(JLPTLevel.fromString) ??
       JLPTLevel.none;
 
-  kanji.type = element.querySelector("div.grade")?.transform(_getKanjiType);
+  final type = element.querySelector("div.grade")?.transform(_getKanjiType);
 
-  kanji.kunReadings = element
+  final kunReadings = element
       .querySelectorAll(
           "div.kanji-details__main-readings > dl.kun_yomi > dd > a")
       .allTrimmedText;
 
-  kanji.onReadings = element
+  final onReadings = element
       .querySelectorAll(".kanji-details__main-readings > dl.on_yomi > dd > a")
       .allTrimmedText;
 
-  kanji.details = _parseKanjiDetails(element);
+  final details = _parseKanjiDetails(element);
 
-  return kanji;
+  return Kanji(
+      kanji: kanji,
+      strokeCount: strokeCount,
+      type: type,
+      jlptLevel: jlptLevel,
+      meanings: meanings,
+      kunReadings: kunReadings,
+      onReadings: onReadings,
+      details: details);
 }
 
 KanjiDetails _parseKanjiDetails(Element element) {
