@@ -33,6 +33,25 @@ void main() {
     expect(word.otherForms.first.form, "観る");
   });
 
+  test("word with only wikipedia definition", () async {
+    final word = await client.wordDetails("518699edd5dda7b2c605d29b");
+    expect(word.definitions, hasLength(1));
+
+    final definition = word.definitions[0];
+    expect(definition.types, equals(["Word"]));
+    expect(definition.meanings, equals(["Love Actually"]));
+  });
+
+  test("word example sentence", () async {
+    final word = await client.wordDetails("助ける");
+    final sentence = word.definitions.first.exampleSentence;
+
+    expect(sentence, isNotNull);
+    expect(sentence?.japanese.text, equals("彼は池で溺れそうになっている子どもを助けた。"));
+    expect(
+        sentence?.english, equals("He saved a child from drowning in a pond."));
+  });
+
   test("notes", () async {
     final response = await client.wordDetails("何方");
     final note = response.notes.first;
