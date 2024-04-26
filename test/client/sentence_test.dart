@@ -6,8 +6,8 @@ void main() {
   final client = JishoClient();
 
   test("sentence search", () async {
-    final response = await client.search<Sentence>("夢見る");
-    expect(response.results, hasLength(11));
+    final response = await client.search<Sentence>("わたしは国の富が");
+    expect(response.results, hasLength(1));
 
     final sentence = response.results.first;
 
