@@ -2,38 +2,66 @@ part of "models.dart";
 
 class Word implements SearchType {
   final Furigana word;
-  List<Definition> definitions = [];
-  List<OtherForm> otherForms = [];
 
-  bool commonWord = false;
-  List<int> wanikaniLevels = [];
-  JLPTLevel jlptLevel = JLPTLevel.none;
+  final List<Definition> definitions;
+  final List<OtherForm> otherForms;
 
-  String? audioUrl;
+  final bool commonWord;
+  final List<int> wanikaniLevels;
+  final JLPTLevel jlptLevel;
 
-  List<Note> notes = [];
+  final String? audioUrl;
+
+  final List<Note> notes;
+  final List<Collocation> collocations;
 
   // Form of word used to get details page
-  String? id;
+  final String? id;
 
-  String inflectionId = "";
+  final String inflectionId;
+  final bool hasWikipedia;
+
+  final WordDetails? details;
+
+  const Word(
+      {required this.word,
+      required this.definitions,
+      this.otherForms = const [],
+      this.commonWord = false,
+      this.wanikaniLevels = const [],
+      this.jlptLevel = JLPTLevel.none,
+      this.audioUrl,
+      this.notes = const [],
+      this.collocations = const [],
+      this.id,
+      this.inflectionId = "",
+      this.hasWikipedia = false,
+      this.details});
+
+  Word withDetails(WordDetails details) => Word(
+      details: details,
+      word: word,
+      definitions: definitions,
+      otherForms: otherForms,
+      commonWord: commonWord,
+      wanikaniLevels: wanikaniLevels,
+      jlptLevel: jlptLevel,
+      audioUrl: audioUrl,
+      notes: notes,
+      collocations: collocations,
+      id: id,
+      inflectionId: inflectionId,
+      hasWikipedia: hasWikipedia);
+
   InflectionType? get inflectionType => inflectionId.isNotEmpty
       ? Inflection.getType(word.text, inflectionId)
       : null;
-
-  List<Collocation> collocations = [];
-
-  bool hasWikipedia = false;
 
   /// whether there is any point in loading details
   bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.text);
 
   String get url =>
       "https://jisho.org/word/${Uri.encodeComponent(id ?? word.text)}";
-
-  WordDetails? details;
-
-  Word(this.word);
 }
 
 class WordDetails {
@@ -44,12 +72,19 @@ class WordDetails {
 }
 
 class Definition {
-  List<String> meanings = [];
-  List<String> types = [];
-  List<String> tags = [];
-  List<String> seeAlso = [];
+  final List<String> meanings;
+  final List<String> types;
+  final List<String> tags;
+  final List<String> seeAlso;
 
-  Sentence? exampleSentence;
+  final Sentence? exampleSentence;
+
+  const Definition(
+      {required this.meanings,
+      this.types = const [],
+      this.tags = const [],
+      this.seeAlso = const [],
+      this.exampleSentence});
 
   @override
   String toString() {

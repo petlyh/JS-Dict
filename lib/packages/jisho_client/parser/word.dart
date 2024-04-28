@@ -18,25 +18,22 @@ Word parseWordDetails(Document document) {
       .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"))
       ?.transform((w) => _parseWikipediaInfo(w.nextElementSibling!));
 
-  word.details = WordDetails(
+  return word.withDetails(WordDetails(
     kanji: kanji,
     wikipedia: wikipedia,
-  );
-
-  return word;
+  ));
 }
 
 Word _parseWordEntry(Element element) {
-  final furigana = _parseWordFurigana(element);
-  final word = Word(furigana);
+  final word = _parseWordFurigana(element);
 
-  word.commonWord = element.querySelector("span.concept_light-common") != null;
+  final commonWord = element.querySelector("span.concept_light-common") != null;
 
-  word.audioUrl = element
+  final audioUrl = element
       .querySelector("audio > source")
       ?.transform((e) => "https:${e.attributes["src"]!}");
 
-  word.jlptLevel = element
+  final jlptLevel = element
           .querySelectorAll("span.concept_light-tag")
           .firstWhereOrNull((e) => e.text.contains("JLPT"))
           ?.trimmedText
@@ -44,88 +41,57 @@ Word _parseWordEntry(Element element) {
           .transform(JLPTLevel.fromString) ??
       JLPTLevel.none;
 
-  word.wanikaniLevels = element
+  final wanikaniLevels = element
       .querySelectorAll("span.concept_light-tag")
       .where((e) => e.text.contains("Wanikani"))
       .map((e) => e.children.first.trimmedText.split(" ")[2])
       .map(int.parse)
       .toList();
 
+  final notes = element
+          .querySelector("div.meaning-representation_notes > span")
+          ?.transform((e) => e.trimmedText)
+          .transform(Note.parseAll) ??
+      [];
+
   final definitionElements = element.querySelectorAll("div.meaning-wrapper");
 
-  for (final definitionElement in definitionElements) {
-    final previousElement = definitionElement.previousElementSibling;
-    if (previousElement?.text == "Other forms") {
-      word.otherForms = _parseOtherForms(definitionElement);
-      continue;
-    }
+  final otherForms = definitionElements
+          .firstWhereOrNull(
+              (e) => e.previousElementSibling?.text == "Other forms")
+          ?.transform(_parseOtherForms) ??
+      [];
 
-    final notesElement = definitionElement
-        .querySelector("div.meaning-representation_notes > span");
-    if (notesElement != null) {
-      word.notes = Note.parseAll(notesElement.trimmedText);
-      continue;
-    }
+  final sourceDefinitions = definitionElements
+      .where((e) =>
+          e.previousElementSibling?.text != "Other forms" &&
+          e.previousElementSibling?.text != "Wikipedia definition" &&
+          e.querySelector(".meaning-representation_notes") == null)
+      .fold(<Definition>[], _parseDefinition).toList();
 
-    final definition = Definition();
+  final wikipediaElement = element
+      .querySelectorAll("div.meaning-tags")
+      .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"))
+      ?.nextElementSibling;
 
-    if (previousElement != null &&
-        previousElement.classes.contains("meaning-tags")) {
-      final tagsText = definitionElement.previousElementSibling!.text;
-      definition.types =
-          tagsText.split(", ").map((e) => e.trim()).toList().deduplicate();
-    }
+  final hasWikipedia =
+      wikipediaElement?.getElementsByTagName("a").isNotEmpty ?? false;
 
-    if (definition.types.isEmpty && word.definitions.isNotEmpty) {
-      definition.types = word.definitions.last.types;
-    }
+  final definitions = sourceDefinitions.isEmpty && wikipediaElement != null
+      ? _parseWikipediaDefinition(wikipediaElement)
+      : sourceDefinitions;
 
-    definition.meanings = definitionElement
-        .querySelector("span.meaning-meaning")!
-        .trimmedText
-        .transform((e) => e.split("; "));
-
-    definition.tags = definitionElement
-        .querySelectorAll("span.tag-tag, span.tag-info, span.tag-source")
-        .allTrimmedText;
-
-    definition.seeAlso = definitionElement
-        .querySelectorAll("span.tag-see_also > a")
-        .allTrimmedText
-        .deduplicate();
-
-    // don't add wikipedia definition since it's handled separately
-    if (definition.types.contains("Wikipedia definition")) {
-      // except if there are no other definitions
-      if (word.definitions.isEmpty) {
-        definition.types = ["Word"];
-        word.definitions.add(definition);
-      }
-
-      continue;
-    }
-
-    definition.exampleSentence = definitionElement
-        .querySelector("div.sentence")
-        ?.transform((e) => Sentence.example(
-              _parseSentenceFurigana(e),
-              e.querySelector("span.english")!.trimmedText,
-            ));
-
-    word.definitions.add(definition);
-  }
-
-  word.id = element
+  final id = element
       .querySelector("a.light-details_link")
       ?.transform((e) => e.attributes["href"]!.split("/").last)
       .transform(Uri.decodeComponent);
 
-  word.inflectionId = element
+  final inflectionId = element
           .querySelector("a.show_inflection_table")
           ?.transform((e) => e.attributes["data-pos"]!) ??
       "";
 
-  word.collocations = element
+  final collocations = element
           .querySelectorAll(".concept_light-status_link")
           .firstWhereOrNull((e) => e.text.contains("collocation"))
           ?.transform(
@@ -140,19 +106,70 @@ Word _parseWordEntry(Element element) {
           ) ??
       [];
 
-  final wikipediaTagElement = element
-      .querySelectorAll("div.meaning-tags")
-      .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"));
+  return Word(
+      word: word,
+      definitions: definitions,
+      otherForms: otherForms,
+      commonWord: commonWord,
+      wanikaniLevels: wanikaniLevels,
+      jlptLevel: jlptLevel,
+      audioUrl: audioUrl,
+      notes: notes,
+      collocations: collocations,
+      id: id,
+      inflectionId: inflectionId,
+      hasWikipedia: hasWikipedia);
+}
 
-  if (wikipediaTagElement != null) {
-    final wikipediaElement = wikipediaTagElement.nextElementSibling!;
+List<Definition> _parseWikipediaDefinition(Element e) => [
+      Definition(
+          meanings: [e.querySelector(".meaning-meaning")!.text],
+          types: ["Word"])
+    ];
 
-    if (wikipediaElement.getElementsByTagName("a").isNotEmpty) {
-      word.hasWikipedia = true;
-    }
-  }
+List<Definition> _parseDefinition(List<Definition> previous, Element element) {
+  final previousElement = element.previousElementSibling;
 
-  return word;
+  final thisTypes = previousElement?.classes.contains("meaning-tags") ?? false
+      ? previousElement!.text
+          .split(", ")
+          .map((e) => e.trim())
+          .toList()
+          .deduplicate<String>()
+      : const <String>[];
+
+  final types = thisTypes.isEmpty && previous.isNotEmpty
+      ? previous.last.types
+      : thisTypes;
+
+  final meanings = element
+      .querySelector("span.meaning-meaning")!
+      .trimmedText
+      .transform((e) => e.split("; "));
+
+  final tags = element
+      .querySelectorAll("span.tag-tag, span.tag-info, span.tag-source")
+      .allTrimmedText;
+
+  final seeAlso = element
+      .querySelectorAll("span.tag-see_also > a")
+      .allTrimmedText
+      .deduplicate<String>();
+
+  final exampleSentence =
+      element.querySelector("div.sentence")?.transform((e) => Sentence.example(
+            _parseSentenceFurigana(e),
+            e.querySelector("span.english")!.trimmedText,
+          ));
+
+  final definition = Definition(
+      meanings: meanings,
+      types: types,
+      tags: tags,
+      seeAlso: seeAlso,
+      exampleSentence: exampleSentence);
+
+  return previous + [definition];
 }
 
 List<OtherForm> _parseOtherForms(Element element) =>
