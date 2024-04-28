@@ -37,15 +37,15 @@ class JishoClient {
   }
 
   String _searchPath<T extends SearchType>(String query, {int page = -1}) {
-    String path = "/search/${Uri.encodeComponent(_lowercaseQuery(query))}";
+    final path = "/search/${Uri.encodeComponent(_lowercaseQuery(query))}";
 
     // don't add type tag for page 1 of words
     if (T == Word && page < 2) {
       return path;
     }
 
-    path += Uri.encodeComponent(" #${_typeTags[T]}");
-    return page > 1 ? "$path?page=$page" : path;
+    final taggedPath = path + Uri.encodeComponent(" #${_typeTags[T]}");
+    return page > 1 ? "$taggedPath?page=$page" : taggedPath;
   }
 
   final Map<Type, String> _typeTags = {
