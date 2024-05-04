@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/remove_tags.dart";
@@ -44,7 +45,7 @@ class ShareIntentHandler {
     }
 
     final textFile =
-        files.where((file) => file.mimeType == "text/plain").firstOrNull;
+        files.firstWhereOrNull((file) => file.mimeType == "text/plain");
 
     if (textFile == null) {
       return;
