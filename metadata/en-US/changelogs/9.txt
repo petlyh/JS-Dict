@@ -1,0 +1,1 @@
+Fixed flickering suggestions when using certain keyboards
