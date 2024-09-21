@@ -25,7 +25,7 @@ Kanji _parseKanjiEntry(Element element) {
   final jlptLevel = element
           .querySelector("div.info")
           ?.trimmedText
-          .transform(JLPTLevel.findInText) ??
+          .transform(JLPTLevel.fromText) ??
       JLPTLevel.none;
 
   final meanings = element
