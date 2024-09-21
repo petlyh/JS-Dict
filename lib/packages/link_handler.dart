@@ -12,7 +12,7 @@ import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/error_indicator.dart";
-import "package:uni_links/uni_links.dart";
+import "package:app_links/app_links.dart";
 
 /// Handles app/universal links by opening the corresponding screen.
 /// Search links are handled by returning to the top-level search screen
@@ -30,10 +30,7 @@ class LinkHandler {
   /// [context] must be the [BuildContext] for the widget wherein this constructor is called.
   /// [tabController] must be the controller for the tab bar on the search screen.
   LinkHandler(this.context, this.tabController) {
-    // Initial link handling.
-    getInitialUri().then(_handleUrl, onError: _showError);
-    // Incoming links handling.
-    _stream = uriLinkStream.listen(_handleUrl, onError: _showError);
+    _stream = AppLinks().uriLinkStream.listen(_handleUrl, onError: _showError);
   }
 
   /// Cancels the subscription stream that handles incoming links.

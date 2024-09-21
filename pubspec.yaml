@@ -18,7 +18,7 @@ dependencies:
       url: https://github.com/petlyh/RubyText
       ref: 492b148c9fddfbbc03658063efc76f51d1e851c1
   url_launcher: ^6.1.10
-  get_it: ^7.3.0
+  get_it: ^8.0.0
   collection: ^1.17.0
   expansion_tile_card: ^3.0.0
   infinite_scroll_pagination: ^4.0.0
@@ -27,18 +27,18 @@ dependencies:
   dynamic_color: ^1.6.5
   shared_preferences: ^2.1.2
   audioplayers: ^6.0.0
-  package_info_plus: ^6.0.0
+  package_info_plus: ^8.0.2
   xml: ^6.3.0
   flutter_svg: ^2.0.9
-  uni_links: ^0.5.1
-  share_plus: ^8.0.2
+  share_plus: ^10.0.2
   receive_sharing_intent: ^1.6.8
+  app_links: ^6.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   flutter_launcher_icons: ^0.13.1
   test: ^1.24.9
 

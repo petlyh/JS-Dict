@@ -26,10 +26,12 @@ class ShareIntentHandler {
   /// [tabController] must be the controller for the tab bar on the search screen.
   ShareIntentHandler(this.context, this.tabController) {
     // Initial share intent handling.
-    ReceiveSharingIntent.getInitialMedia()
+    ReceiveSharingIntent.instance
+        .getInitialMedia()
         .then(_handleShare, onError: _showError);
     // Incoming share intent handling.
-    _stream = ReceiveSharingIntent.getMediaStream()
+    _stream = ReceiveSharingIntent.instance
+        .getMediaStream()
         .listen(_handleShare, onError: _showError);
   }
 
