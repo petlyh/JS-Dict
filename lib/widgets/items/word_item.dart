@@ -19,7 +19,7 @@ class WordItem extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodyMedium!;
 
     return ItemCard(
-      onTap: pushScreen(context, WordDetailsScreen(word)),
+      onTap: pushScreen(context, WordDetailsScreen.preload(word)),
       onLongPress: () => showActionDialog(context, [
         ActionTile.url(word.url),
         ActionTile.text("Word", word.word.text),

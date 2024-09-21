@@ -51,7 +51,7 @@ class LinkHandler {
     final data = url.pathSegments.last;
 
     final widget = switch (type) {
-      "word" => WordDetailsScreen.search(data),
+      "word" => WordDetailsScreen(data),
       "sentences" => SentenceDetailsScreen.id(data),
       "search" => () {
           final rawQuery = removeTags(data).trim();

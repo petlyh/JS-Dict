@@ -18,31 +18,42 @@ import "definition_tile.dart";
 import "inflection_table.dart";
 
 class WordDetailsScreen extends StatelessWidget {
-  WordDetailsScreen(Word this.word, {super.key}) : searchWord = null;
-  WordDetailsScreen.search(String this.searchWord, {super.key}) : word = null;
+  WordDetailsScreen(String this.wordInput, {super.key})
+      : preloadedWord = null,
+        isSearch = false;
+  WordDetailsScreen.preload(Word this.preloadedWord, {super.key})
+      : wordInput = null,
+        isSearch = false;
+  WordDetailsScreen.search(String this.wordInput, {super.key})
+      : preloadedWord = null,
+        isSearch = true;
 
-  final Word? word;
-  final String? searchWord;
+  final Word? preloadedWord;
+  final String? wordInput;
+  final bool isSearch;
 
   final idValue = ValueNotifier<String?>(null);
-  String? get id => word?.id ?? idValue.value;
+  String? get id => preloadedWord?.id ?? idValue.value;
 
   final audioUrlValue = ValueNotifier<String?>(null);
-  String? get audioUrl => word?.audioUrl ?? audioUrlValue.value;
+  String? get audioUrl => preloadedWord?.audioUrl ?? audioUrlValue.value;
 
-  Future<Word> _searchFuture() =>
-      getClient().search<Word>(searchWord!).then((response) {
-        if (response.results.isEmpty) {
-          throw Exception("Word not found");
-        }
+  Future<Word> _searchFuture() async {
+    final word = isSearch
+        ? await getClient()
+            .search<Word>(wordInput!)
+            .then((r) => r.results.firstOrNull)
+        : await getClient().wordDetails(wordInput!);
 
-        final word = response.results.first;
+    if (word == null) {
+      throw Exception("Word not found: $wordInput");
+    }
 
-        idValue.value = word.id;
-        audioUrlValue.value = word.audioUrl;
+    idValue.value = word.id;
+    audioUrlValue.value = word.audioUrl;
 
-        return word;
-      });
+    return word;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +86,8 @@ class WordDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: word != null
-          ? _WordContentWidget(word!)
+      body: preloadedWord != null
+          ? _WordContentWidget(preloadedWord!)
           : LoaderWidget(
               onLoad: _searchFuture,
               handler: _WordContentWidget.new,
