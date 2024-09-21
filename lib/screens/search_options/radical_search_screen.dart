@@ -100,7 +100,7 @@ class _RadicalSelection extends StatelessWidget {
   Widget build(BuildContext context) {
     final strokeIndicatorColor = Theme.of(context).highlightColor;
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final selectedColor = Theme.of(context).colorScheme.surfaceVariant;
+    final selectedColor = Theme.of(context).colorScheme.surfaceContainerHighest;
     final disabledColor = Theme.of(context).focusColor;
 
     return SingleChildScrollView(
@@ -158,7 +158,8 @@ class _KanjiSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final backgroundColor = Theme.of(context).colorScheme.surfaceVariant;
+    final backgroundColor =
+        Theme.of(context).colorScheme.surfaceContainerHighest;
 
     return matchingKanji.isEmpty
         ? const Center(child: Text("Select radicals"))

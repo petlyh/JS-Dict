@@ -88,6 +88,10 @@ class ErrorInfoDialog extends StatelessWidget {
         "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n${stackTrace.toString()}```";
 
     Clipboard.setData(ClipboardData(text: copyText)).then((_) {
+      if (!context.mounted) {
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Copied error info")),
       );

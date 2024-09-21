@@ -15,7 +15,7 @@ class SearchOptionsScreen extends StatelessWidget {
     final searchController = queryProvider.searchController;
 
     return PopScope(
-      onPopInvoked: (_) => queryProvider.updateQueryIfChanged(),
+      onPopInvokedWithResult: (_, __) => queryProvider.updateQueryIfChanged(),
       child: Scaffold(
         floatingActionButton: floatingActionButton,
         appBar: AppBar(
