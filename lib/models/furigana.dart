@@ -29,9 +29,6 @@ extension FuriganaMethods on Furigana {
           .trim();
 
   bool get hasFurigana => where((part) => part.furigana.isNotEmpty).isNotEmpty;
-
-  List<RubyTextData> get rubyData => map((part) => RubyTextData(part.text,
-      ruby: part.furigana.isNotEmpty ? part.furigana : null)).toList();
 }
 
 extension FuriganaStringExtension on String {

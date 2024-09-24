@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/furigana_ruby.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";

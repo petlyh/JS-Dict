@@ -1,6 +1,6 @@
-import "package:flutter_test/flutter_test.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
+import "package:test/test.dart";
 
 Future<void> Function() _furiganaTest(
     String wordId, String text, String reading) {

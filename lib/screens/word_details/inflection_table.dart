@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/packages/furigana_ruby.dart";
 import "package:jsdict/packages/inflection.dart";
 import "package:jsdict/models/models.dart";
 import "package:ruby_text/ruby_text.dart";
