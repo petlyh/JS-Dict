@@ -22,15 +22,14 @@ void main() {
   });
 
   test("sentence details", () async {
-    final sentence = await client.sentenceDetails("63fd1c0a12a537194e00007a");
+    final sentence = await client.sentenceDetails("65dbf69a12a53778d6000087");
 
-    expect(sentence.japanese.text,
-        equals("体に良いのは知っているが、ウナギは生理的に苦手だ。気持ちが悪くて、見るのも嫌だ。"));
+    expect(sentence.japanese.text, equals("ここ数年は芸術鑑賞が趣味で、暇を見つけては美術館に足を運んでいる。"));
 
     expect(
         sentence.english,
         equals(
-            "I know they are good to eat, but I instinctively dislike eels. They are gross and I don’t even like to look at them."));
+            "For the past few years, I have pursued my appreciation of art by visiting art museums whenever I find spare time."));
 
     expect(sentence.copyright, isNotNull);
     expect(sentence.copyright?.name, equals("Jreibun"));
@@ -40,6 +39,6 @@ void main() {
             "http://www.tufs.ac.jp/ts/personal/SUZUKI_Tomomi/jreibun/index-jreibun.html"));
 
     expect(sentence.kanji, isNotNull);
-    expect(sentence.kanji, hasLength(13));
+    expect(sentence.kanji, hasLength(14));
   });
 }
