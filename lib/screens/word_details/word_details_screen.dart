@@ -153,11 +153,11 @@ class _WordContentWidget extends StatelessWidget {
                   ))
                 ],
               ),
-              if (word.inflectionType != null)
+              if (word.inflectionData != null)
                 ExpansionTileCard(
                   shadowColor: shadowColor,
                   title: const Text("Inflections"),
-                  children: [InflectionTable(word.inflectionType!)],
+                  children: [InflectionTable(word.inflectionData!)],
                 ),
               if (word.collocations.isNotEmpty)
                 ExpansionTileCard(

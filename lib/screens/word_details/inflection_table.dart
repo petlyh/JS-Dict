@@ -1,104 +1,58 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
-import "package:jsdict/packages/inflection/inflection.dart";
+import "package:jsdict/packages/inflection.dart";
 import "package:jsdict/models/models.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class InflectionTable extends StatelessWidget {
-  const InflectionTable(this.inflectionType, {super.key});
+  const InflectionTable(this.data, {super.key});
 
-  final InflectionType inflectionType;
+  final InflectionData data;
 
-  static const _headerRow = [
-    TableRow(children: [
-      _HeaderCell(""),
-      _HeaderCell("Affermative"),
-      _HeaderCell("Negative"),
-    ])
-  ];
+  Widget _headerCell([String? text]) => _cell(
+      Text(text ?? "", style: const TextStyle(fontWeight: FontWeight.w500)));
+
+  Widget _furiganaCell(Furigana furigana) => _cell(
+        furigana.hasFurigana
+            ? RubyText(furigana.rubyData, wrapAlign: TextAlign.start)
+            : Text(furigana.text,
+                style: jpTextStyle, textAlign: TextAlign.start),
+      );
+
+  Widget _cell(Widget child) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        child: child,
+      );
 
   @override
   Widget build(BuildContext context) {
-    final rows = _headerRow + _getRows();
-    final borderColor = Theme.of(context).dividerColor;
-
     return SelectionArea(
-        child: Table(
-      border: TableBorder(
-        horizontalInside: BorderSide(width: 0.4, color: borderColor),
+      child: Table(
+        border: TableBorder(
+          horizontalInside: BorderSide(
+            width: 0.4,
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
+        columnWidths: const {
+          0: IntrinsicColumnWidth(),
+          1: FlexColumnWidth(),
+          2: FlexColumnWidth(),
+        },
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: [
+          TableRow(children: [
+            _headerCell(),
+            _headerCell("Affermative"),
+            _headerCell("Negative"),
+          ]),
+          ...data.toMap().entries.map((entry) => TableRow(children: [
+                _headerCell(entry.key),
+                _furiganaCell(entry.value.affermative),
+                _furiganaCell(entry.value.negative),
+              ])),
+        ],
       ),
-      columnWidths: const {
-        0: IntrinsicColumnWidth(),
-        1: FlexColumnWidth(),
-        2: FlexColumnWidth(),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: rows,
-    ));
-  }
-
-  List<TableRow> _getRows() {
-    if (inflectionType is Verb) {
-      final verb = (inflectionType as Verb);
-
-      return [
-        _row("Non-past", verb.nonPastFurigana),
-        _row("Non-past, polite", verb.nonPastPoliteFurigana),
-        _row("Past", verb.pastFurigana),
-        _row("Past, polite", verb.pastPoliteFurigana),
-        _row("Te-form", verb.teFormFurigana),
-        _row("Potential", verb.potentialFurigana),
-        _row("Passive", verb.passiveFurigana),
-        _row("Causative", verb.causativeFurigana),
-        _row("Causative Passive", verb.causativePassiveFurigana),
-        _row("Imperative", verb.imperativeFurigana),
-      ];
-    }
-
-    return [
-      _row("Non-past", inflectionType.nonPastFurigana),
-      _row("Past", inflectionType.pastFurigana),
-    ];
-  }
-}
-
-const EdgeInsetsGeometry _cellPadding =
-    EdgeInsets.symmetric(vertical: 8, horizontal: 10);
-
-class _HeaderCell extends StatelessWidget {
-  const _HeaderCell(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: _cellPadding,
-      child: Text(text, style: const TextStyle(fontWeight: FontWeight.w500)),
     );
   }
-}
-
-class _FuriganaCell extends StatelessWidget {
-  const _FuriganaCell(this.furigana);
-
-  final Furigana furigana;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: _cellPadding,
-      child: furigana.hasFurigana
-          ? RubyText(furigana.rubyData, wrapAlign: TextAlign.start)
-          : Text(furigana.text, style: jpTextStyle, textAlign: TextAlign.start),
-    );
-  }
-}
-
-TableRow _row(String name, Furigana Function(bool) function) {
-  return TableRow(children: [
-    _HeaderCell(name),
-    _FuriganaCell(function(true)),
-    _FuriganaCell(function(false)),
-  ]);
 }

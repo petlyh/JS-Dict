@@ -1,416 +1,326 @@
 import "package:jsdict/models/models.dart";
-import "package:jsdict/packages/inflection/inflection.dart";
+import "package:jsdict/packages/inflection.dart";
 import "package:test/test.dart";
 
 void main() {
-  test("Inflection.getType", () {
-    final kanashii = Inflection.getType("悲しい", "adj-i");
-    expect(kanashii, isA<IAdjective>());
-
-    final arifureru = Inflection.getType("あり触れる", "v1");
-    expect(arifureru, isA<IchidanVerb>());
-
-    final noboru = Inflection.getType("上る", "v5r");
-    expect(noboru, isA<GodanVerb>());
-
-    final iku = Inflection.getType("行く", "v5k-s");
-    expect(iku, isA<GodanVerb>());
-
-    final kuru = Inflection.getType("来る", "vk");
-    expect(kuru, isA<Kuru>());
-
-    final suru = Inflection.getType("為る", "vs-i");
-    expect(suru, isA<SuruSpecial>());
-
-    final koisuru = Inflection.getType("恋する", "vs-i");
-    expect(koisuru, isA<SuruVerb>());
+  test("Code to name", () {
+    _testCodeName("見る", "v1", "Ichidan verb");
+    _testCodeName("呼ぶ", "v5b", "Godan verb with 'bu' ending");
+    _testCodeName("騒ぐ", "v5g", "Godan verb with 'gu' ending");
+    _testCodeName("聞く", "v5k", "Godan verb with 'ku' ending");
+    _testCodeName("行く", "v5k-s", "Godan verb - Iku/Yuku special class");
+    _testCodeName("望む", "v5m", "Godan verb with 'mu' ending");
+    _testCodeName("死ぬ", "v5n", "Godan verb with 'nu' ending");
+    _testCodeName("乗る", "v5r", "Godan verb with 'ru' ending");
+    _testCodeName("返す", "v5s", "Godan verb with 'su' ending");
+    _testCodeName("育つ", "v5t", "Godan verb with 'tsu' ending");
+    _testCodeName("違う", "v5u", "Godan verb with 'u' ending");
+    _testCodeName("屯する", "vs-i", "Suru verb - included");
+    _testCodeName("来る", "vk", "Kuru verb - special class");
   });
 
-  test("I-adjective", () {
-    final InflectionType samui = IAdjective("寒い");
-    expect(samui.name, equals("I-adjective"));
+  test(
+      "I-adjective",
+      () => _testStringData("寒い", "adj-i", {
+            "Non-past": ("寒い", "寒くない"),
+            "Past": ("寒かった", "寒くなかった"),
+          }));
 
-    expect(samui.nonPast(true), equals("寒い"));
-    expect(samui.past(true), equals("寒かった"));
-    expect(samui.nonPast(false), equals("寒くない"));
-    expect(samui.past(false), equals("寒くなかった"));
-  });
+  test(
+      "Ichidan verb",
+      () => _testStringData("上げる", "v1", {
+            "Non-past": ("上げる", "上げない"),
+            "Non-past, polite": ("上げます", "上げません"),
+            "Past": ("上げた", "上げなかった"),
+            "Past, polite": ("上げました", "上げませんでした"),
+            "Te-form": ("上げて", "上げなくて"),
+            "Potential": ("上げられる", "上げられない"),
+            "Passive": ("上げられる", "上げられない"),
+            "Causative": ("上げさせる", "上げさせない"),
+            "Causative, Passive": ("上げさせられる", "上げさせられない"),
+            "Imperative": ("上げろ", "上げるな"),
+          }));
 
-  test("Ichidan verb", () {
-    final Verb ageru = IchidanVerb("上げる");
-    expect(ageru.name, equals("Ichidan verb"));
+  test(
+      "Godan verb with u ending",
+      () => _testStringData("歌う", "v5u", {
+            "Non-past": ("歌う", "歌わない"),
+            "Non-past, polite": ("歌います", "歌いません"),
+            "Past": ("歌った", "歌わなかった"),
+            "Past, polite": ("歌いました", "歌いませんでした"),
+            "Te-form": ("歌って", "歌わなくて"),
+            "Potential": ("歌える", "歌えない"),
+            "Passive": ("歌われる", "歌われない"),
+            "Causative": ("歌わせる", "歌わせない"),
+            "Causative, Passive": ("歌わせられる", "歌わせられない"),
+            "Imperative": ("歌え", "歌うな"),
+          }));
 
-    expect(ageru.nonPast(true), equals("上げる"));
-    expect(ageru.nonPastPolite(true), equals("上げます"));
-    expect(ageru.past(true), equals("上げた"));
-    expect(ageru.pastPolite(true), equals("上げました"));
-    expect(ageru.teForm(true), equals("上げて"));
-    expect(ageru.potential(true), equals("上げられる"));
-    expect(ageru.passive(true), equals("上げられる"));
-    expect(ageru.causative(true), equals("上げさせる"));
-    expect(ageru.causativePassive(true), equals("上げさせられる"));
-    expect(ageru.imperative(true), equals("上げろ"));
+  test(
+      "Godan verb with mu ending",
+      () => _testStringData("占む", "v5m", {
+            "Non-past": ("占む", "占まない"),
+            "Non-past, polite": ("占みます", "占みません"),
+            "Past": ("占んだ", "占まなかった"),
+            "Past, polite": ("占みました", "占みませんでした"),
+            "Te-form": ("占んで", "占まなくて"),
+            "Potential": ("占める", "占めない"),
+            "Passive": ("占まれる", "占まれない"),
+            "Causative": ("占ませる", "占ませない"),
+            "Causative, Passive": ("占ませられる", "占ませられない"),
+            "Imperative": ("占め", "占むな"),
+          }));
 
-    expect(ageru.nonPast(false), equals("上げない"));
-    expect(ageru.nonPastPolite(false), equals("上げません"));
-    expect(ageru.past(false), equals("上げなかった"));
-    expect(ageru.pastPolite(false), equals("上げませんでした"));
-    expect(ageru.teForm(false), equals("上げなくて"));
-    expect(ageru.potential(false), equals("上げられない"));
-    expect(ageru.passive(false), equals("上げられない"));
-    expect(ageru.causative(false), equals("上げさせない"));
-    expect(ageru.causativePassive(false), equals("上げさせられない"));
-    expect(ageru.imperative(false), equals("上げるな"));
-  });
+  test(
+      "Godan verb with su ending",
+      () => _testStringData("渡す", "v5s", {
+            "Non-past": ("渡す", "渡さない"),
+            "Non-past, polite": ("渡します", "渡しません"),
+            "Past": ("渡した", "渡さなかった"),
+            "Past, polite": ("渡しました", "渡しませんでした"),
+            "Te-form": ("渡して", "渡さなくて"),
+            "Potential": ("渡せる", "渡せない"),
+            "Passive": ("渡される", "渡されない"),
+            "Causative": ("渡させる", "渡させない"),
+            "Causative, Passive": ("渡させられる", "渡させられない"),
+            "Imperative": ("渡せ", "渡すな"),
+          }));
 
-  test("Godan verb with u ending", () {
-    final Verb utau = GodanVerb("歌う", "u");
-    expect(utau.name, equals("Godan verb with u ending"));
+  test(
+      "Godan verb with tsu ending",
+      () => _testStringData("待つ", "v5t", {
+            "Non-past": ("待つ", "待たない"),
+            "Non-past, polite": ("待ちます", "待ちません"),
+            "Past": ("待った", "待たなかった"),
+            "Past, polite": ("待ちました", "待ちませんでした"),
+            "Te-form": ("待って", "待たなくて"),
+            "Potential": ("待てる", "待てない"),
+            "Passive": ("待たれる", "待たれない"),
+            "Causative": ("待たせる", "待たせない"),
+            "Causative, Passive": ("待たせられる", "待たせられない"),
+            "Imperative": ("待て", "待つな"),
+          }));
 
-    expect(utau.nonPast(true), equals("歌う"));
-    expect(utau.nonPastPolite(true), equals("歌います"));
-    expect(utau.past(true), equals("歌った"));
-    expect(utau.pastPolite(true), equals("歌いました"));
-    expect(utau.teForm(true), equals("歌って"));
-    expect(utau.potential(true), equals("歌える"));
-    expect(utau.passive(true), equals("歌われる"));
-    expect(utau.causative(true), equals("歌わせる"));
-    expect(utau.causativePassive(true), equals("歌わせられる"));
-    expect(utau.imperative(true), equals("歌え"));
+  test(
+      "Godan verb with nu ending",
+      () => _testStringData("死ぬ", "v5n", {
+            "Non-past": ("死ぬ", "死なない"),
+            "Non-past, polite": ("死にます", "死にません"),
+            "Past": ("死んだ", "死ななかった"),
+            "Past, polite": ("死にました", "死にませんでした"),
+            "Te-form": ("死んで", "死ななくて"),
+            "Potential": ("死ねる", "死ねない"),
+            "Passive": ("死なれる", "死なれない"),
+            "Causative": ("死なせる", "死なせない"),
+            "Causative, Passive": ("死なせられる", "死なせられない"),
+            "Imperative": ("死ね", "死ぬな"),
+          }));
 
-    expect(utau.nonPast(false), equals("歌わない"));
-    expect(utau.nonPastPolite(false), equals("歌いません"));
-    expect(utau.past(false), equals("歌わなかった"));
-    expect(utau.pastPolite(false), equals("歌いませんでした"));
-    expect(utau.teForm(false), equals("歌わなくて"));
-    expect(utau.potential(false), equals("歌えない"));
-    expect(utau.passive(false), equals("歌われない"));
-    expect(utau.causative(false), equals("歌わせない"));
-    expect(utau.causativePassive(false), equals("歌わせられない"));
-    expect(utau.imperative(false), equals("歌うな"));
-  });
+  test(
+      "Godan verb with ru ending",
+      () => _testStringData("巡る", "v5r", {
+            "Non-past": ("巡る", "巡らない"),
+            "Non-past, polite": ("巡ります", "巡りません"),
+            "Past": ("巡った", "巡らなかった"),
+            "Past, polite": ("巡りました", "巡りませんでした"),
+            "Te-form": ("巡って", "巡らなくて"),
+            "Potential": ("巡れる", "巡れない"),
+            "Passive": ("巡られる", "巡られない"),
+            "Causative": ("巡らせる", "巡らせない"),
+            "Causative, Passive": ("巡らせられる", "巡らせられない"),
+            "Imperative": ("巡れ", "巡るな"),
+          }));
 
-  test("Godan verb with mu ending", () {
-    final Verb shimu = GodanVerb("占む", "m");
-    expect(shimu.name, equals("Godan verb with mu ending"));
+  test(
+      "Godan verb with bu ending",
+      () => _testStringData("遊ぶ", "v5b", {
+            "Non-past": ("遊ぶ", "遊ばない"),
+            "Non-past, polite": ("遊びます", "遊びません"),
+            "Past": ("遊んだ", "遊ばなかった"),
+            "Past, polite": ("遊びました", "遊びませんでした"),
+            "Te-form": ("遊んで", "遊ばなくて"),
+            "Potential": ("遊べる", "遊べない"),
+            "Passive": ("遊ばれる", "遊ばれない"),
+            "Causative": ("遊ばせる", "遊ばせない"),
+            "Causative, Passive": ("遊ばせられる", "遊ばせられない"),
+            "Imperative": ("遊べ", "遊ぶな"),
+          }));
 
-    expect(shimu.nonPast(true), equals("占む"));
-    expect(shimu.nonPastPolite(true), equals("占みます"));
-    expect(shimu.past(true), equals("占んだ"));
-    expect(shimu.pastPolite(true), equals("占みました"));
-    expect(shimu.teForm(true), equals("占んで"));
-    expect(shimu.potential(true), equals("占める"));
-    expect(shimu.passive(true), equals("占まれる"));
-    expect(shimu.causative(true), equals("占ませる"));
-    expect(shimu.causativePassive(true), equals("占ませられる"));
-    expect(shimu.imperative(true), equals("占め"));
+  test(
+      "Godan verb with ku ending",
+      () => _testStringData("焼く", "v5k", {
+            "Non-past": ("焼く", "焼かない"),
+            "Non-past, polite": ("焼きます", "焼きません"),
+            "Past": ("焼いた", "焼かなかった"),
+            "Past, polite": ("焼きました", "焼きませんでした"),
+            "Te-form": ("焼いて", "焼かなくて"),
+            "Potential": ("焼ける", "焼けない"),
+            "Passive": ("焼かれる", "焼かれない"),
+            "Causative": ("焼かせる", "焼かせない"),
+            "Causative, Passive": ("焼かせられる", "焼かせられない"),
+            "Imperative": ("焼け", "焼くな"),
+          }));
 
-    expect(shimu.nonPast(false), equals("占まない"));
-    expect(shimu.nonPastPolite(false), equals("占みません"));
-    expect(shimu.past(false), equals("占まなかった"));
-    expect(shimu.pastPolite(false), equals("占みませんでした"));
-    expect(shimu.teForm(false), equals("占まなくて"));
-    expect(shimu.potential(false), equals("占めない"));
-    expect(shimu.passive(false), equals("占まれない"));
-    expect(shimu.causative(false), equals("占ませない"));
-    expect(shimu.causativePassive(false), equals("占ませられない"));
-    expect(shimu.imperative(false), equals("占むな"));
-  });
+  test(
+      "Godan verb with gu ending",
+      () => _testStringData("泳ぐ", "v5g", {
+            "Non-past": ("泳ぐ", "泳がない"),
+            "Non-past, polite": ("泳ぎます", "泳ぎません"),
+            "Past": ("泳いだ", "泳がなかった"),
+            "Past, polite": ("泳ぎました", "泳ぎませんでした"),
+            "Te-form": ("泳いで", "泳がなくて"),
+            "Potential": ("泳げる", "泳げない"),
+            "Passive": ("泳がれる", "泳がれない"),
+            "Causative": ("泳がせる", "泳がせない"),
+            "Causative, Passive": ("泳がせられる", "泳がせられない"),
+            "Imperative": ("泳げ", "泳ぐな"),
+          }));
 
-  test("Godan verb with su ending", () {
-    final Verb watasu = GodanVerb("渡す", "s");
-    expect(watasu.name, equals("Godan verb with su ending"));
+  test(
+      "Godan verb - Iku/Yuku special class",
+      () => _testStringData("行く", "v5k-s", {
+            "Non-past": ("行く", "行かない"),
+            "Non-past, polite": ("行きます", "行きません"),
+            "Past": ("行った", "行かなかった"),
+            "Past, polite": ("行きました", "行きませんでした"),
+            "Te-form": ("行って", "行かなくて"),
+            "Potential": ("行ける", "行けない"),
+            "Passive": ("行かれる", "行かれない"),
+            "Causative": ("行かせる", "行かせない"),
+            "Causative, Passive": ("行かせられる", "行かせられない"),
+            "Imperative": ("行け", "行くな"),
+          }));
 
-    expect(watasu.nonPast(true), equals("渡す"));
-    expect(watasu.nonPastPolite(true), equals("渡します"));
-    expect(watasu.past(true), equals("渡した"));
-    expect(watasu.pastPolite(true), equals("渡しました"));
-    expect(watasu.teForm(true), equals("渡して"));
-    expect(watasu.potential(true), equals("渡せる"));
-    expect(watasu.passive(true), equals("渡される"));
-    expect(watasu.causative(true), equals("渡させる"));
-    expect(watasu.causativePassive(true), equals("渡させられる"));
-    expect(watasu.imperative(true), equals("渡せ"));
+  test(
+      "Kuru verb",
+      () => _testFuriganaData("来る", "vk", {
+            "Non-past": ([("来", "く"), "る"], [("来", "こ"), "ない"]),
+            "Non-past, polite": ([("来", "き"), "ます"], [("来", "き"), "ません"]),
+            "Past": ([("来", "き"), "た"], [("来", "こ"), "なかった"]),
+            "Past, polite": ([("来", "き"), "ました"], [("来", "き"), "ませんでした"]),
+            "Te-form": ([("来", "き"), "て"], [("来", "こ"), "なくて"]),
+            "Potential": ([("来", "こ"), "られる"], [("来", "こ"), "られない"]),
+            "Passive": ([("来", "こ"), "られる"], [("来", "こ"), "られない"]),
+            "Causative": ([("来", "こ"), "させる"], [("来", "こ"), "させない"]),
+            "Causative, Passive": (
+              [("来", "こ"), "させられる"],
+              [("来", "こ"), "させられない"],
+            ),
+            "Imperative": ([("来", "こ"), "い"], [("来", "く"), "るな"]),
+          }));
 
-    expect(watasu.nonPast(false), equals("渡さない"));
-    expect(watasu.nonPastPolite(false), equals("渡しません"));
-    expect(watasu.past(false), equals("渡さなかった"));
-    expect(watasu.pastPolite(false), equals("渡しませんでした"));
-    expect(watasu.teForm(false), equals("渡さなくて"));
-    expect(watasu.potential(false), equals("渡せない"));
-    expect(watasu.passive(false), equals("渡されない"));
-    expect(watasu.causative(false), equals("渡させない"));
-    expect(watasu.causativePassive(false), equals("渡させられない"));
-    expect(watasu.imperative(false), equals("渡すな"));
-  });
+  test(
+      "Suru special class",
+      () => _testFuriganaData("為る", "vs-i", {
+            "Non-past": ([("為", "す"), "る"], [("為", "し"), "ない"]),
+            "Past": ([("為", "し"), "た"], [("為", "し"), "なかった"]),
+            "Non-past, polite": ([("為", "し"), "ます"], [("為", "し"), "ません"]),
+            "Past, polite": ([("為", "し"), "ました"], [("為", "し"), "ませんでした"]),
+            "Te-form": ([("為", "し"), "て"], [("為", "し"), "なくて"]),
+            "Potential": (["できる"], ["できない"]),
+            "Passive": ([("為", "さ"), "れる"], [("為", "さ"), "れない"]),
+            "Causative": ([("為", "さ"), "せる"], [("為", "さ"), "せない"]),
+            "Causative, Passive": ([("為", "さ"), "せられる"], [("為", "さ"), "せられない"]),
+            "Imperative": ([("為", "し"), "ろ"], [("為", "す"), "るな"]),
+          }));
 
-  test("Godan verb with tsu ending", () {
-    final Verb matsu = GodanVerb("待つ", "t");
-    expect(matsu.name, equals("Godan verb with tsu ending"));
+  test(
+      "Suru verb",
+      () => _testStringData("恋する", "vs-i", {
+            "Non-past": ("恋する", "恋しない"),
+            "Past": ("恋した", "恋しなかった"),
+            "Non-past, polite": ("恋します", "恋しません"),
+            "Past, polite": ("恋しました", "恋しませんでした"),
+            "Te-form": ("恋して", "恋しなくて"),
+            "Potential": ("恋できる", "恋できない"),
+            "Passive": ("恋される", "恋されない"),
+            "Causative": ("恋させる", "恋させない"),
+            "Causative, Passive": ("恋させられる", "恋させられない"),
+            "Imperative": ("恋しろ", "恋するな"),
+          }));
+}
 
-    expect(matsu.nonPast(true), equals("待つ"));
-    expect(matsu.nonPastPolite(true), equals("待ちます"));
-    expect(matsu.past(true), equals("待った"));
-    expect(matsu.pastPolite(true), equals("待ちました"));
-    expect(matsu.teForm(true), equals("待って"));
-    expect(matsu.potential(true), equals("待てる"));
-    expect(matsu.passive(true), equals("待たれる"));
-    expect(matsu.causative(true), equals("待たせる"));
-    expect(matsu.causativePassive(true), equals("待たせられる"));
-    expect(matsu.imperative(true), equals("待て"));
+void _testCodeName(String word, String code, String expectedName) =>
+    expect(InflectionData(word, code).name, equals(expectedName));
 
-    expect(matsu.nonPast(false), equals("待たない"));
-    expect(matsu.nonPastPolite(false), equals("待ちません"));
-    expect(matsu.past(false), equals("待たなかった"));
-    expect(matsu.pastPolite(false), equals("待ちませんでした"));
-    expect(matsu.teForm(false), equals("待たなくて"));
-    expect(matsu.potential(false), equals("待てない"));
-    expect(matsu.passive(false), equals("待たれない"));
-    expect(matsu.causative(false), equals("待たせない"));
-    expect(matsu.causativePassive(false), equals("待たせられない"));
-    expect(matsu.imperative(false), equals("待つな"));
-  });
+void _testStringData(
+  String word,
+  String code,
+  Map<String, (String, String)> expected,
+) =>
+    _testData(
+        word,
+        code,
+        expected.map((key, value) => MapEntry(key, (
+              affermative: value.$1.furigana,
+              negative: value.$2.furigana,
+            ))));
 
-  test("Godan verb with nu ending", () {
-    final Verb shinu = GodanVerb("死ぬ", "n");
-    expect(shinu.name, equals("Godan verb with nu ending"));
+Furigana _furigana(Iterable<dynamic> input) => input
+    .map((e) => e is (String, String)
+        ? FuriganaPart(e.$1, e.$2)
+        : FuriganaPart.textOnly(e.toString()))
+    .toList();
 
-    expect(shinu.nonPast(true), equals("死ぬ"));
-    expect(shinu.nonPastPolite(true), equals("死にます"));
-    expect(shinu.past(true), equals("死んだ"));
-    expect(shinu.pastPolite(true), equals("死にました"));
-    expect(shinu.teForm(true), equals("死んで"));
-    expect(shinu.potential(true), equals("死ねる"));
-    expect(shinu.passive(true), equals("死なれる"));
-    expect(shinu.causative(true), equals("死なせる"));
-    expect(shinu.causativePassive(true), equals("死なせられる"));
-    expect(shinu.imperative(true), equals("死ね"));
+void _testFuriganaData(
+  String word,
+  String code,
+  Map<String, (Iterable<dynamic>, Iterable<dynamic>)> expected,
+) =>
+    _testData(
+        word,
+        code,
+        expected.map(
+          (key, value) => MapEntry(key, (
+            affermative: _furigana(value.$1),
+            negative: _furigana(value.$2),
+          )),
+        ));
 
-    expect(shinu.nonPast(false), equals("死なない"));
-    expect(shinu.nonPastPolite(false), equals("死にません"));
-    expect(shinu.past(false), equals("死ななかった"));
-    expect(shinu.pastPolite(false), equals("死にませんでした"));
-    expect(shinu.teForm(false), equals("死ななくて"));
-    expect(shinu.potential(false), equals("死ねない"));
-    expect(shinu.passive(false), equals("死なれない"));
-    expect(shinu.causative(false), equals("死なせない"));
-    expect(shinu.causativePassive(false), equals("死なせられない"));
-    expect(shinu.imperative(false), equals("死ぬな"));
-  });
+void _testData(
+  String word,
+  String code,
+  Map<String, InflectionEntry> expected,
+) {
+  final actual = InflectionData(word, code).toMap();
 
-  test("Godan verb with ru ending", () {
-    final Verb meguru = GodanVerb("巡る", "r");
-    expect(meguru.name, equals("Godan verb with ru ending"));
+  expect(actual, hasLength(expected.length));
 
-    expect(meguru.nonPast(true), equals("巡る"));
-    expect(meguru.nonPastPolite(true), equals("巡ります"));
-    expect(meguru.past(true), equals("巡った"));
-    expect(meguru.pastPolite(true), equals("巡りました"));
-    expect(meguru.teForm(true), equals("巡って"));
-    expect(meguru.potential(true), equals("巡れる"));
-    expect(meguru.passive(true), equals("巡られる"));
-    expect(meguru.causative(true), equals("巡らせる"));
-    expect(meguru.causativePassive(true), equals("巡らせられる"));
-    expect(meguru.imperative(true), equals("巡れ"));
+  for (final entry in expected.entries) {
+    expect(
+        actual, containsPair(entry.key, _InflectionEntryMatcher(entry.value)),
+        reason: entry.key);
+  }
+}
 
-    expect(meguru.nonPast(false), equals("巡らない"));
-    expect(meguru.nonPastPolite(false), equals("巡りません"));
-    expect(meguru.past(false), equals("巡らなかった"));
-    expect(meguru.pastPolite(false), equals("巡りませんでした"));
-    expect(meguru.teForm(false), equals("巡らなくて"));
-    expect(meguru.potential(false), equals("巡れない"));
-    expect(meguru.passive(false), equals("巡られない"));
-    expect(meguru.causative(false), equals("巡らせない"));
-    expect(meguru.causativePassive(false), equals("巡らせられない"));
-    expect(meguru.imperative(false), equals("巡るな"));
-  });
+class _InflectionEntryMatcher extends Matcher {
+  final InflectionEntry expected;
 
-  test("Godan verb with bu ending", () {
-    final Verb asobu = GodanVerb("遊ぶ", "b");
-    expect(asobu.name, equals("Godan verb with bu ending"));
+  const _InflectionEntryMatcher(this.expected);
 
-    expect(asobu.nonPast(true), equals("遊ぶ"));
-    expect(asobu.nonPastPolite(true), equals("遊びます"));
-    expect(asobu.past(true), equals("遊んだ"));
-    expect(asobu.pastPolite(true), equals("遊びました"));
-    expect(asobu.teForm(true), equals("遊んで"));
-    expect(asobu.potential(true), equals("遊べる"));
-    expect(asobu.passive(true), equals("遊ばれる"));
-    expect(asobu.causative(true), equals("遊ばせる"));
-    expect(asobu.causativePassive(true), equals("遊ばせられる"));
-    expect(asobu.imperative(true), equals("遊べ"));
+  @override
+  bool matches(item, Map<dynamic, dynamic> matchState) {
+    if (item is! InflectionEntry) {
+      return false;
+    }
 
-    expect(asobu.nonPast(false), equals("遊ばない"));
-    expect(asobu.nonPastPolite(false), equals("遊びません"));
-    expect(asobu.past(false), equals("遊ばなかった"));
-    expect(asobu.pastPolite(false), equals("遊びませんでした"));
-    expect(asobu.teForm(false), equals("遊ばなくて"));
-    expect(asobu.potential(false), equals("遊べない"));
-    expect(asobu.passive(false), equals("遊ばれない"));
-    expect(asobu.causative(false), equals("遊ばせない"));
-    expect(asobu.causativePassive(false), equals("遊ばせられない"));
-    expect(asobu.imperative(false), equals("遊ぶな"));
-  });
+    orderedEquals(expected.affermative).matches(item.affermative, matchState);
+    orderedEquals(expected.negative).matches(item.negative, matchState);
 
-  test("Godan verb with ku ending", () {
-    final Verb yaku = GodanVerb("焼く", "k");
-    expect(yaku.name, equals("Godan verb with ku ending"));
+    if (matchState.isNotEmpty) {
+      matchState["actual"] = item.toString();
+      return false;
+    }
 
-    expect(yaku.nonPast(true), equals("焼く"));
-    expect(yaku.nonPastPolite(true), equals("焼きます"));
-    expect(yaku.past(true), equals("焼いた"));
-    expect(yaku.pastPolite(true), equals("焼きました"));
-    expect(yaku.teForm(true), equals("焼いて"));
-    expect(yaku.potential(true), equals("焼ける"));
-    expect(yaku.passive(true), equals("焼かれる"));
-    expect(yaku.causative(true), equals("焼かせる"));
-    expect(yaku.causativePassive(true), equals("焼かせられる"));
-    expect(yaku.imperative(true), equals("焼け"));
+    return true;
+  }
 
-    expect(yaku.nonPast(false), equals("焼かない"));
-    expect(yaku.nonPastPolite(false), equals("焼きません"));
-    expect(yaku.past(false), equals("焼かなかった"));
-    expect(yaku.pastPolite(false), equals("焼きませんでした"));
-    expect(yaku.teForm(false), equals("焼かなくて"));
-    expect(yaku.potential(false), equals("焼けない"));
-    expect(yaku.passive(false), equals("焼かれない"));
-    expect(yaku.causative(false), equals("焼かせない"));
-    expect(yaku.causativePassive(false), equals("焼かせられない"));
-    expect(yaku.imperative(false), equals("焼くな"));
-  });
+  @override
+  Description describe(Description description) =>
+      description.add(expected.toString());
 
-  test("Godan verb with gu ending", () {
-    final Verb oyogu = GodanVerb("泳ぐ", "g");
-    expect(oyogu.name, equals("Godan verb with gu ending"));
-
-    expect(oyogu.nonPast(true), equals("泳ぐ"));
-    expect(oyogu.nonPastPolite(true), equals("泳ぎます"));
-    expect(oyogu.past(true), equals("泳いだ"));
-    expect(oyogu.pastPolite(true), equals("泳ぎました"));
-    expect(oyogu.teForm(true), equals("泳いで"));
-    expect(oyogu.potential(true), equals("泳げる"));
-    expect(oyogu.passive(true), equals("泳がれる"));
-    expect(oyogu.causative(true), equals("泳がせる"));
-    expect(oyogu.causativePassive(true), equals("泳がせられる"));
-    expect(oyogu.imperative(true), equals("泳げ"));
-
-    expect(oyogu.nonPast(false), equals("泳がない"));
-    expect(oyogu.nonPastPolite(false), equals("泳ぎません"));
-    expect(oyogu.past(false), equals("泳がなかった"));
-    expect(oyogu.pastPolite(false), equals("泳ぎませんでした"));
-    expect(oyogu.teForm(false), equals("泳がなくて"));
-    expect(oyogu.potential(false), equals("泳げない"));
-    expect(oyogu.passive(false), equals("泳がれない"));
-    expect(oyogu.causative(false), equals("泳がせない"));
-    expect(oyogu.causativePassive(false), equals("泳がせられない"));
-    expect(oyogu.imperative(false), equals("泳ぐな"));
-  });
-
-  test("Godan verb - Iku/Yuku special class", () {
-    final Verb iku = GodanVerb("行く", "k-s");
-    expect(iku.name, equals("Godan verb - Iku/Yuku special class"));
-
-    expect(iku.nonPast(true), equals("行く"));
-    expect(iku.nonPastPolite(true), equals("行きます"));
-    expect(iku.past(true), equals("行った"));
-    expect(iku.pastPolite(true), equals("行きました"));
-    expect(iku.teForm(true), equals("行って"));
-    expect(iku.potential(true), equals("行ける"));
-    expect(iku.passive(true), equals("行かれる"));
-    expect(iku.causative(true), equals("行かせる"));
-    expect(iku.causativePassive(true), equals("行かせられる"));
-    expect(iku.imperative(true), equals("行け"));
-
-    expect(iku.nonPast(false), equals("行かない"));
-    expect(iku.nonPastPolite(false), equals("行きません"));
-    expect(iku.past(false), equals("行かなかった"));
-    expect(iku.pastPolite(false), equals("行きませんでした"));
-    expect(iku.teForm(false), equals("行かなくて"));
-    expect(iku.potential(false), equals("行けない"));
-    expect(iku.passive(false), equals("行かれない"));
-    expect(iku.causative(false), equals("行かせない"));
-    expect(iku.causativePassive(false), equals("行かせられない"));
-    expect(iku.imperative(false), equals("行くな"));
-  });
-
-  test("Kuru verb", () {
-    final Verb kuru = Kuru();
-    expect(kuru.name, equals("Kuru verb - special class"));
-
-    expect(kuru.nonPastFurigana(true).reading, equals("くる"));
-    expect(kuru.nonPastPoliteFurigana(true).reading, equals("きます"));
-    expect(kuru.pastFurigana(true).reading, equals("きた"));
-    expect(kuru.pastPoliteFurigana(true).reading, equals("きました"));
-    expect(kuru.teFormFurigana(true).reading, equals("きて"));
-    expect(kuru.potentialFurigana(true).reading, equals("こられる"));
-    expect(kuru.passiveFurigana(true).reading, equals("こられる"));
-    expect(kuru.causativeFurigana(true).reading, equals("こさせる"));
-    expect(kuru.causativePassiveFurigana(true).reading, equals("こさせられる"));
-    expect(kuru.imperativeFurigana(true).reading, equals("こい"));
-
-    expect(kuru.nonPastFurigana(false).reading, equals("こない"));
-    expect(kuru.nonPastPoliteFurigana(false).reading, equals("きません"));
-    expect(kuru.pastFurigana(false).reading, equals("こなかった"));
-    expect(kuru.pastPoliteFurigana(false).reading, equals("きませんでした"));
-    expect(kuru.teFormFurigana(false).reading, equals("こなくて"));
-    expect(kuru.potentialFurigana(false).reading, equals("こられない"));
-    expect(kuru.passiveFurigana(false).reading, equals("こられない"));
-    expect(kuru.causativeFurigana(false).reading, equals("こさせない"));
-    expect(kuru.causativePassiveFurigana(false).reading, equals("こさせられない"));
-    expect(kuru.imperativeFurigana(false).reading, equals("くるな"));
-  });
-
-  test("Suru special class", () {
-    final Verb suru = SuruSpecial();
-    expect(suru.name, "Suru verb - included");
-
-    expect(suru.nonPastFurigana(true).reading, equals("する"));
-    expect(suru.nonPastPoliteFurigana(true).reading, equals("します"));
-    expect(suru.pastFurigana(true).reading, equals("した"));
-    expect(suru.pastPoliteFurigana(true).reading, equals("しました"));
-    expect(suru.teFormFurigana(true).reading, equals("して"));
-    expect(suru.potentialFurigana(true).reading, equals("できる"));
-    expect(suru.passiveFurigana(true).reading, equals("される"));
-    expect(suru.causativeFurigana(true).reading, equals("させる"));
-    expect(suru.causativePassiveFurigana(true).reading, equals("させられる"));
-    expect(suru.imperativeFurigana(true).reading, equals("しろ"));
-
-    expect(suru.nonPastFurigana(false).reading, equals("しない"));
-    expect(suru.nonPastPoliteFurigana(false).reading, equals("しません"));
-    expect(suru.pastFurigana(false).reading, equals("しなかった"));
-    expect(suru.pastPoliteFurigana(false).reading, equals("しませんでした"));
-    expect(suru.teFormFurigana(false).reading, equals("しなくて"));
-    expect(suru.potentialFurigana(false).reading, equals("できない"));
-    expect(suru.passiveFurigana(false).reading, equals("されない"));
-    expect(suru.causativeFurigana(false).reading, equals("させない"));
-    expect(suru.causativePassiveFurigana(false).reading, equals("させられない"));
-    expect(suru.imperativeFurigana(false).reading, equals("するな"));
-  });
-
-  test("Suru verb", () {
-    final Verb koisuru = SuruVerb("恋する");
-    expect(koisuru.name, "Suru verb - included");
-
-    expect(koisuru.nonPast(true), equals("恋する"));
-    expect(koisuru.nonPastPolite(true), equals("恋します"));
-    expect(koisuru.past(true), equals("恋した"));
-    expect(koisuru.pastPolite(true), equals("恋しました"));
-    expect(koisuru.teForm(true), equals("恋して"));
-    expect(koisuru.potential(true), equals("恋できる"));
-    expect(koisuru.passive(true), equals("恋される"));
-    expect(koisuru.causative(true), equals("恋させる"));
-    expect(koisuru.causativePassive(true), equals("恋させられる"));
-    expect(koisuru.imperative(true), equals("恋しろ"));
-
-    expect(koisuru.nonPast(false), equals("恋しない"));
-    expect(koisuru.nonPastPolite(false), equals("恋しません"));
-    expect(koisuru.past(false), equals("恋しなかった"));
-    expect(koisuru.pastPolite(false), equals("恋しませんでした"));
-    expect(koisuru.teForm(false), equals("恋しなくて"));
-    expect(koisuru.potential(false), equals("恋できない"));
-    expect(koisuru.passive(false), equals("恋されない"));
-    expect(koisuru.causative(false), equals("恋させない"));
-    expect(koisuru.causativePassive(false), equals("恋させられない"));
-    expect(koisuru.imperative(false), equals("恋するな"));
-  });
+  @override
+  Description describeMismatch(_, Description mismatchDescription,
+          Map<dynamic, dynamic> matchState, bool __) =>
+      mismatchDescription.add(matchState["actual"] as String);
 }

@@ -8,9 +8,17 @@ class FuriganaPart {
 
   const FuriganaPart(this.text, this.furigana);
   const FuriganaPart.textOnly(this.text) : furigana = "";
-}
 
-Furigana furiganaFromText(String text) => [FuriganaPart.textOnly(text)];
+  @override
+  bool operator ==(Object other) =>
+      other is FuriganaPart && text == other.text && furigana == other.furigana;
+
+  @override
+  int get hashCode => Object.hash(text, furigana);
+
+  @override
+  String toString() => text + (furigana.isNotEmpty ? "($furigana)" : "");
+}
 
 extension FuriganaMethods on Furigana {
   String get text => map((part) => part.text.trim()).join().trim();
@@ -24,4 +32,8 @@ extension FuriganaMethods on Furigana {
 
   List<RubyTextData> get rubyData => map((part) => RubyTextData(part.text,
       ruby: part.furigana.isNotEmpty ? part.furigana : null)).toList();
+}
+
+extension FuriganaStringExtension on String {
+  Furigana get furigana => [FuriganaPart.textOnly(this)];
 }

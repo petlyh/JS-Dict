@@ -53,9 +53,8 @@ class Word implements SearchType {
       inflectionId: inflectionId,
       hasWikipedia: hasWikipedia);
 
-  InflectionType? get inflectionType => inflectionId.isNotEmpty
-      ? Inflection.getType(word.text, inflectionId)
-      : null;
+  InflectionData? get inflectionData =>
+      inflectionId.isNotEmpty ? InflectionData(word.text, inflectionId) : null;
 
   /// whether there is any point in loading details
   bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.text);
