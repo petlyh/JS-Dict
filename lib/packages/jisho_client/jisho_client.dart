@@ -1,14 +1,12 @@
-library jisho_dart;
-
 import "dart:io";
 
 import "package:html/dom.dart";
-import "package:http/http.dart" as http;
 import "package:html/parser.dart";
+import "package:http/http.dart" as http;
 import "package:jsdict/models/models.dart";
 
-import "exceptions.dart";
-import "parser/parser.dart";
+import "package:jsdict/packages/jisho_client/exceptions.dart";
+import "package:jsdict/packages/jisho_client/parser/parser.dart";
 
 export "exceptions.dart";
 
@@ -30,7 +28,8 @@ class JishoClient {
       }
 
       throw HttpException(
-          "Unsuccessful response status: ${response.statusCode}");
+        "Unsuccessful response status: ${response.statusCode}",
+      );
     }
 
     return parse(response.body);
@@ -52,15 +51,19 @@ class JishoClient {
     Kanji: "kanji",
     Word: "words",
     Sentence: "sentences",
-    Name: "names"
+    Name: "names",
   };
 
   // returns query with everything lowercased except for tags
   String _lowercaseQuery(String query) => query.replaceAllMapped(
-      RegExp(r"(?<=^|\s)\w+"), (match) => match.group(0)!.toLowerCase());
+        RegExp(r"(?<=^|\s)\w+"),
+        (match) => match.group(0)!.toLowerCase(),
+      );
 
-  Future<SearchResponse<T>> search<T extends SearchType>(String query,
-          {int page = 1}) =>
+  Future<SearchResponse<T>> search<T extends SearchType>(
+    String query, {
+    int page = 1,
+  }) =>
       _getHtml(_searchPath<T>(query, page: page)).then(parseSearch<T>);
 
   Future<Kanji> kanjiDetails(String kanji) =>

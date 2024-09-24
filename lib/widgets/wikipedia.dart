@@ -14,8 +14,9 @@ class WikipediaWidget extends StatelessWidget {
           child: Text(id),
           onPressed: () {
             launchUrl(
-                Uri.parse(page.url.replaceFirst(RegExp(r"[\?&]oldid=\d+"), "")),
-                mode: LaunchMode.externalApplication);
+              Uri.parse(page.url.replaceFirst(RegExp(r"[\?&]oldid=\d+"), "")),
+              mode: LaunchMode.externalApplication,
+            );
           },
         ),
       );
@@ -41,10 +42,16 @@ class WikipediaWidget extends StatelessWidget {
                 children: [
                   if (wikipedia.wikipediaEnglish != null)
                     link(
-                        wikipedia.wikipediaEnglish!, "Wikipedia English", "EN"),
+                      wikipedia.wikipediaEnglish!,
+                      "Wikipedia English",
+                      "EN",
+                    ),
                   if (wikipedia.wikipediaJapanese != null)
-                    link(wikipedia.wikipediaJapanese!, "Wikipedia Japanese",
-                        "JP"),
+                    link(
+                      wikipedia.wikipediaJapanese!,
+                      "Wikipedia Japanese",
+                      "JP",
+                    ),
                   if (wikipedia.dbpedia != null)
                     link(wikipedia.dbpedia!, "DBpedia", "DB"),
                 ],

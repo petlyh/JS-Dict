@@ -64,19 +64,19 @@ class _SearchScreenState extends State<SearchScreen>
           focusNode: _searchFocusNode,
           controller: searchController,
           onSubmitted: (_) => queryProvider.updateQuery(),
-          autofocus: false,
           decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.search),
-              border: InputBorder.none,
-              hintText: "Search...",
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _searchFocusNode.requestFocus();
-                  searchController.clear();
-                },
-                tooltip: "Clear",
-              )),
+            prefixIcon: const Icon(Icons.search),
+            border: InputBorder.none,
+            hintText: "Search...",
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _searchFocusNode.requestFocus();
+                searchController.clear();
+              },
+              tooltip: "Clear",
+            ),
+          ),
         ),
         actions: [
           IconButton(
@@ -91,25 +91,29 @@ class _SearchScreenState extends State<SearchScreen>
           ),
         ],
         bottom: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabAlignment: TabAlignment.center,
-            tabs: const [
-              Tab(text: "Words"),
-              Tab(text: "Kanji"),
-              Tab(text: "Names"),
-              Tab(text: "Sentences"),
-            ]),
+          controller: _tabController,
+          isScrollable: true,
+          tabAlignment: TabAlignment.center,
+          tabs: const [
+            Tab(text: "Words"),
+            Tab(text: "Kanji"),
+            Tab(text: "Names"),
+            Tab(text: "Sentences"),
+          ],
+        ),
       ),
       body: Consumer<QueryProvider>(
         builder: (_, provider, __) => provider.query.isEmpty
             ? SearchScreen.placeholder
-            : TabBarView(controller: _tabController, children: [
-                ResultPage<Word>(provider.query, key: UniqueKey()),
-                ResultPage<Kanji>(provider.query, key: UniqueKey()),
-                ResultPage<Name>(provider.query, key: UniqueKey()),
-                ResultPage<Sentence>(provider.query, key: UniqueKey()),
-              ]),
+            : TabBarView(
+                controller: _tabController,
+                children: [
+                  ResultPage<Word>(provider.query, key: UniqueKey()),
+                  ResultPage<Kanji>(provider.query, key: UniqueKey()),
+                  ResultPage<Name>(provider.query, key: UniqueKey()),
+                  ResultPage<Sentence>(provider.query, key: UniqueKey()),
+                ],
+              ),
       ),
     );
   }

@@ -24,7 +24,12 @@ class Sentence implements SearchType {
         kanji = null;
 
   const Sentence.all(
-      this.id, this.japanese, this.english, this.copyright, this.kanji);
+    this.id,
+    this.japanese,
+    this.english,
+    this.copyright,
+    this.kanji,
+  );
 
   Sentence withKanji(List<Kanji> kanji) =>
       Sentence.all(id, japanese, english, copyright, kanji);

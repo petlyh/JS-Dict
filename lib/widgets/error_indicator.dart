@@ -55,11 +55,15 @@ class ErrorIndicator extends StatelessWidget {
   }
 }
 
-void showErrorInfoDialog(BuildContext context, Object error,
-        {StackTrace? stackTrace}) =>
+void showErrorInfoDialog(
+  BuildContext context,
+  Object error, {
+  StackTrace? stackTrace,
+}) =>
     showDialog(
-        context: context,
-        builder: (context) => ErrorInfoDialog(error, stackTrace: stackTrace));
+      context: context,
+      builder: (context) => ErrorInfoDialog(error, stackTrace: stackTrace),
+    );
 
 class ErrorInfoDialog extends StatelessWidget {
   const ErrorInfoDialog(this.error, {super.key, this.stackTrace});
@@ -76,7 +80,9 @@ class ErrorInfoDialog extends StatelessWidget {
         style: style,
         children: [
           TextSpan(
-              text: title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            text: title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           TextSpan(text: info),
         ],
       ),
@@ -85,7 +91,7 @@ class ErrorInfoDialog extends StatelessWidget {
 
   void _copyError(BuildContext context) {
     final copyText =
-        "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n${stackTrace.toString()}```";
+        "Type: $_errorType  \nMessage: $_errorMessage  \nStack trace:\n```\n$stackTrace```";
 
     Clipboard.setData(ClipboardData(text: copyText)).then((_) {
       if (!context.mounted) {

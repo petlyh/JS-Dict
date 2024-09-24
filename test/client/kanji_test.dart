@@ -13,7 +13,7 @@ void main() {
     expect(kanji.kunReadings, ["ゆめ", "ゆめ.みる", "くら.い"]);
     expect(kanji.onReadings, ["ム", "ボウ"]);
     expect(kanji.type, isA<Jouyou>());
-    expect((kanji.type as Jouyou).grade, 5);
+    expect((kanji.type! as Jouyou).grade, 5);
 
     expect(kanji.strokeCount, 13);
     expect(kanji.jlptLevel, JLPTLevel.n3);

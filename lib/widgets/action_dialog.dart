@@ -21,7 +21,6 @@ class ActionDialog extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: actions,
       ),
     );
@@ -48,7 +47,9 @@ class ActionTile extends StatelessWidget {
       launchUrl(Uri.parse(data), mode: LaunchMode.externalApplication);
 
   void Function() pop(
-          BuildContext context, void Function(BuildContext context) callback) =>
+    BuildContext context,
+    void Function(BuildContext context) callback,
+  ) =>
       () {
         Navigator.of(context).pop();
         callback(context);
@@ -67,17 +68,20 @@ class ActionTile extends StatelessWidget {
         children: [
           if (isURL)
             IconButton(
-                tooltip: "Open in Browser",
-                onPressed: pop(context, onOpenBrowser),
-                icon: const Icon(Icons.open_in_browser)),
+              tooltip: "Open in Browser",
+              onPressed: pop(context, onOpenBrowser),
+              icon: const Icon(Icons.open_in_browser),
+            ),
           IconButton(
-              tooltip: "Copy",
-              onPressed: pop(context, onCopy),
-              icon: const Icon(Icons.copy)),
+            tooltip: "Copy",
+            onPressed: pop(context, onCopy),
+            icon: const Icon(Icons.copy),
+          ),
           IconButton(
-              tooltip: "Share",
-              onPressed: pop(context, onShare),
-              icon: const Icon(Icons.share)),
+            tooltip: "Share",
+            onPressed: pop(context, onShare),
+            icon: const Icon(Icons.share),
+          ),
         ],
       ),
     );

@@ -7,14 +7,16 @@ extension XmlBuilderExtension on XmlBuilder {
   void style(String styleData) => attribute("style", styleData);
   void opacity(double value) => attribute("opacity", value.toStringAsFixed(2));
 
-  void line(String styleData, int x1, int y1, int x2, int y2) =>
-      element("line", nest: () {
-        style(styleData);
-        attribute("x1", x1);
-        attribute("y1", y1);
-        attribute("x2", x2);
-        attribute("y2", y2);
-      });
+  void line(String styleData, int x1, int y1, int x2, int y2) => element(
+        "line",
+        nest: () {
+          style(styleData);
+          attribute("x1", x1);
+          attribute("y1", y1);
+          attribute("x2", x2);
+          attribute("y2", y2);
+        },
+      );
 }
 
 extension XmlElementExtension on XmlElement {

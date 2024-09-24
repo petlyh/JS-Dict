@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:app_links/app_links.dart";
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
@@ -12,7 +13,6 @@ import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/error_indicator.dart";
-import "package:app_links/app_links.dart";
 
 /// Handles app/universal links by opening the corresponding screen.
 /// Search links are handled by returning to the top-level search screen

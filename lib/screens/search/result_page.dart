@@ -152,69 +152,81 @@ class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
         SearchMetaInfo(
           listenable: grammarInfo,
           builder: (context, value) => SelectableText.rich(
-              textAlign: TextAlign.center,
-              TextSpan(
-                style: TextStyle(color: textColor, height: 1.5).jp(),
-                children: [
-                  TextSpan(text: value.word),
-                  const TextSpan(text: " could be an inflection of "),
-                  LinkSpan(context,
-                      text: value.possibleInflectionOf,
-                      onTap: pushScreen(
-                          context,
-                          WordDetailsScreen.search(
-                              value.possibleInflectionOf))),
-                ],
-              )),
+            textAlign: TextAlign.center,
+            TextSpan(
+              style: TextStyle(color: textColor, height: 1.5).jp(),
+              children: [
+                TextSpan(text: value.word),
+                const TextSpan(text: " could be an inflection of "),
+                LinkSpan(
+                  context,
+                  text: value.possibleInflectionOf,
+                  onTap: pushScreen(
+                    context,
+                    WordDetailsScreen.search(
+                      value.possibleInflectionOf,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         SearchMetaInfo(
           listenable: correction,
           builder: (_, value) => SelectableText.rich(
-              textAlign: TextAlign.center,
-              TextSpan(
-                style: TextStyle(color: textColor, height: 1.5).jp(),
-                children: [
-                  const TextSpan(text: "Searched for "),
-                  TextSpan(
-                      text: value.effective,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
-                  const TextSpan(text: "\n"),
-                  if (!value.noMatchesForOriginal) ...[
-                    const TextSpan(text: "Try searching for "),
-                    LinkSpan(context, text: value.original, bold: true,
-                        onTap: () {
+            textAlign: TextAlign.center,
+            TextSpan(
+              style: TextStyle(color: textColor, height: 1.5).jp(),
+              children: [
+                const TextSpan(text: "Searched for "),
+                TextSpan(
+                  text: value.effective,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                const TextSpan(text: "\n"),
+                if (!value.noMatchesForOriginal) ...[
+                  const TextSpan(text: "Try searching for "),
+                  LinkSpan(
+                    context,
+                    text: value.original,
+                    bold: true,
+                    onTap: () {
                       queryProvider.searchController.text = value.original;
                       queryProvider.updateQuery();
-                    }),
-                  ] else
-                    TextSpan(text: "No matches for ${value.original}"),
-                ],
-              )),
+                    },
+                  ),
+                ] else
+                  TextSpan(text: "No matches for ${value.original}"),
+              ],
+            ),
+          ),
         ),
         SliverPadding(
           padding: const EdgeInsets.all(8.0),
           sliver: PagedSliverList<int, T>(
             pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate<T>(
-                itemBuilder: (context, item, index) => _createItem(item),
-                firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                      (pagingController.error.$1 as Object),
-                      stackTrace: (pagingController.error.$2 as StackTrace),
-                      onRetry: pagingController.refresh,
-                    ),
-                noItemsFoundIndicatorBuilder: (context) {
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    margin: const EdgeInsets.all(16),
-                    child: Text(
-                      noMatchesFor.isNotEmpty
-                          ? "No matches for:\n${noMatchesFor.join("\n")}"
-                          : "No matches found",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(height: 1.75),
-                    ),
-                  );
-                }),
+              itemBuilder: (context, item, index) => _createItem(item),
+              firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+                (pagingController.error as (Object, StackTrace)).$1,
+                stackTrace: (pagingController.error as (Object, StackTrace)).$2,
+                onRetry: pagingController.refresh,
+              ),
+              noItemsFoundIndicatorBuilder: (context) {
+                return Container(
+                  alignment: Alignment.topCenter,
+                  margin: const EdgeInsets.all(16),
+                  child: Text(
+                    noMatchesFor.isNotEmpty
+                        ? "No matches for:\n${noMatchesFor.join("\n")}"
+                        : "No matches found",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(height: 1.75),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

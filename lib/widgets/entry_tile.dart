@@ -1,13 +1,16 @@
 import "package:flutter/material.dart";
 
 /// Custom ListTile
-/// 
+///
 /// Adds a trailing right-arrow if [onTap] is not null.
 /// Rounds the bottom corners if [isLast] is true.
 class EntryTile extends ListTile {
   static const _roundedBottomBorder = RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)));
+    borderRadius: BorderRadius.only(
+      bottomLeft: Radius.circular(8),
+      bottomRight: Radius.circular(8),
+    ),
+  );
 
   const EntryTile({
     super.key,
@@ -45,7 +48,8 @@ class EntryTile extends ListTile {
     super.titleAlignment,
     bool isLast = false,
   }) : super(
-            trailing:
-                onTap != null ? const Icon(Icons.keyboard_arrow_right) : null,
-            shape: isLast ? _roundedBottomBorder : null);
+          trailing:
+              onTap != null ? const Icon(Icons.keyboard_arrow_right) : null,
+          shape: isLast ? _roundedBottomBorder : null,
+        );
 }

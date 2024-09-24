@@ -14,20 +14,22 @@ class NameItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-        onTap: pushScreen(context, NameDetailsScreen(name)),
-        onLongPress: () => showActionDialog(context, [
-              if (name.wikipediaWord != null)
-                ActionTile.url(
-                    "https://jisho.org/word/${Uri.encodeComponent(name.wikipediaWord!)}"),
-              ActionTile.text("Name", name.japanese),
-              if (name.reading != null)
-                ActionTile.text("Reading", name.reading!),
-              ActionTile.text("English", name.english),
-            ]),
-        child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-            title: JpText(name.toString()),
-            subtitle: Text(name.english)));
+      onTap: pushScreen(context, NameDetailsScreen(name)),
+      onLongPress: () => showActionDialog(context, [
+        if (name.wikipediaWord != null)
+          ActionTile.url(
+            "https://jisho.org/word/${Uri.encodeComponent(name.wikipediaWord!)}",
+          ),
+        ActionTile.text("Name", name.japanese),
+        if (name.reading != null) ActionTile.text("Reading", name.reading!),
+        ActionTile.text("English", name.english),
+      ]),
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+        title: JpText(name.toString()),
+        subtitle: Text(name.english),
+      ),
+    );
   }
 }

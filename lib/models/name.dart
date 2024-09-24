@@ -15,5 +15,10 @@ class Name implements SearchType {
   String toString() => reading != null ? "$japanese【$reading】" : japanese;
 
   const Name(
-      this.japanese, this.reading, this.english, this.type, this.wikipediaWord);
+    this.japanese,
+    this.reading,
+    this.english,
+    this.type,
+    this.wikipediaWord,
+  );
 }

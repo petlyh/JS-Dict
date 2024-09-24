@@ -4,7 +4,7 @@ Name _parseNameEntry(Element element) {
   final japaneseText = element
       .querySelector("div.concept_light-readings")!
       .trimmedText
-      .transform((e) => e.replaceAll("\n", "").replaceAll(RegExp(r" +"), " "));
+      .transform((e) => e.replaceAll("\n", "").replaceAll(RegExp(" +"), " "));
 
   final japanese = japaneseText.split("【").last.replaceFirst(RegExp(r"】$"), "");
 

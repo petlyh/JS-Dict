@@ -1,13 +1,15 @@
 import "package:flutter/material.dart";
+import "package:jsdict/packages/tags.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search_options/search_options_screen.dart";
-import "package:jsdict/packages/tags.dart";
 import "package:jsdict/widgets/info_chips.dart";
 
 class TagSelectionScreen extends SearchOptionsScreen {
   const TagSelectionScreen({super.key})
       : super(
-            body: const _TagSelection(), floatingActionButton: const _TagFAB());
+          body: const _TagSelection(),
+          floatingActionButton: const _TagFAB(),
+        );
 }
 
 class _TagFAB extends StatelessWidget {
@@ -33,15 +35,21 @@ class _TagSelection extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: wordTags.entries
-            .map((entry) => ListTile(
-                  title: Text(entry.key),
-                  subtitle: Wrap(
-                    children: entry.value.entries
-                        .map((tagEntry) => InfoChip(tagEntry.key,
-                            onTap: () => queryProvider.addTag(tagEntry.value)))
-                        .toList(),
-                  ),
-                ))
+            .map(
+              (entry) => ListTile(
+                title: Text(entry.key),
+                subtitle: Wrap(
+                  children: entry.value.entries
+                      .map(
+                        (tagEntry) => InfoChip(
+                          tagEntry.key,
+                          onTap: () => queryProvider.addTag(tagEntry.value),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            )
             .toList(),
       ),
     );

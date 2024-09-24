@@ -10,11 +10,15 @@ class LinkPopupButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton(
       itemBuilder: (context) => data
-          .map((entry) => PopupMenuItem(
-                child: Text(entry.$1),
-                onTap: () => launchUrl(Uri.parse(entry.$2),
-                    mode: LaunchMode.externalApplication),
-              ))
+          .map(
+            (entry) => PopupMenuItem(
+              child: Text(entry.$1),
+              onTap: () => launchUrl(
+                Uri.parse(entry.$2),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+          )
           .toList(),
     );
   }

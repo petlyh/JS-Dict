@@ -1,13 +1,14 @@
 import "package:flutter/material.dart";
 
-import "error_indicator.dart";
+import "package:jsdict/widgets/error_indicator.dart";
 
 class LoaderWidget<T> extends StatefulWidget {
-  const LoaderWidget(
-      {super.key,
-      required this.onLoad,
-      required this.handler,
-      this.placeholder = const Text("")});
+  const LoaderWidget({
+    super.key,
+    required this.onLoad,
+    required this.handler,
+    this.placeholder = const Text(""),
+  });
 
   final Future<T> Function() onLoad;
   final Widget Function(T data) handler;
@@ -35,33 +36,35 @@ class _LoaderWidgetState<T> extends State<LoaderWidget<T>> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Container(
-                  margin: const EdgeInsets.all(20.0),
-                  child: const CircularProgressIndicator()),
-            );
-          }
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              child: const CircularProgressIndicator(),
+            ),
+          );
+        }
 
-          if (snapshot.connectionState == ConnectionState.none) {
-            return widget.placeholder;
-          }
+        if (snapshot.connectionState == ConnectionState.none) {
+          return widget.placeholder;
+        }
 
-          if (snapshot.hasError) {
-            return ErrorIndicator(
-              snapshot.error!,
-              stackTrace: snapshot.stackTrace,
-              onRetry: _retry,
-            );
-          }
+        if (snapshot.hasError) {
+          return ErrorIndicator(
+            snapshot.error!,
+            stackTrace: snapshot.stackTrace,
+            onRetry: _retry,
+          );
+        }
 
-          if (snapshot.hasData && snapshot.data != null) {
-            return widget.handler(snapshot.data as T);
-          }
+        if (snapshot.hasData && snapshot.data != null) {
+          return widget.handler(snapshot.data as T);
+        }
 
-          throw AssertionError();
-        });
+        throw AssertionError();
+      },
+    );
   }
 }

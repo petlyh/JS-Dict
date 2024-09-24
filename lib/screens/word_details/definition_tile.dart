@@ -9,8 +9,12 @@ import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/link_span.dart";
 
 class DefinitionTile extends StatelessWidget {
-  const DefinitionTile(this.definition,
-      {super.key, this.textColor, this.isLast = false});
+  const DefinitionTile(
+    this.definition, {
+    super.key,
+    this.textColor,
+    this.isLast = false,
+  });
 
   final Definition definition;
   final Color? textColor;
@@ -23,7 +27,9 @@ class DefinitionTile extends StatelessWidget {
       isLast: isLast,
       onTap: definition.exampleSentence != null
           ? pushScreen(
-              context, SentenceDetailsScreen(definition.exampleSentence!))
+              context,
+              SentenceDetailsScreen(definition.exampleSentence!),
+            )
           : null,
       title: Text(definition.meanings.join("; ")),
       subtitle: Column(
@@ -39,21 +45,28 @@ class DefinitionTile extends StatelessWidget {
   }
 
   Widget seeAlsoText(BuildContext context, List<String> words) {
-    return SelectableText.rich(TextSpan(children: [
-      TextSpan(text: "See also ", style: TextStyle(color: textColor)),
-      ...words
-          .map((word) => LinkSpan(
-                context,
-                // remove reading
-                text: word.split(" ").first,
-                onTap: pushScreen(
+    return SelectableText.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: "See also ", style: TextStyle(color: textColor)),
+          ...words
+              .map(
+                (word) => LinkSpan(
                   context,
-                  WordDetailsScreen.search(word),
+                  // remove reading
+                  text: word.split(" ").first,
+                  onTap: pushScreen(
+                    context,
+                    WordDetailsScreen.search(word),
+                  ),
                 ),
-              ))
-          .toList()
-          .intersperce(
-              TextSpan(text: ", ", style: TextStyle(color: textColor))),
-    ]));
+              )
+              .toList()
+              .intersperce(
+                TextSpan(text: ", ", style: TextStyle(color: textColor)),
+              ),
+        ],
+      ),
+    );
   }
 }

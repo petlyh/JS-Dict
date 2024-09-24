@@ -48,8 +48,8 @@ class _RadicalSearchState extends State<_RadicalSearch> {
   }
 
   void _update(List<String> newSelectedRadicals) {
-    final newMatchingKanji = RadicalSearch.kanjiByRadicals(selectedRadicals);
-    final newValidRadicals = RadicalSearch.validRadicals(newMatchingKanji);
+    final newMatchingKanji = kanjiByRadicals(selectedRadicals);
+    final newValidRadicals = findValidRadicals(newMatchingKanji);
 
     setState(() {
       selectedRadicals = newSelectedRadicals;
@@ -65,7 +65,6 @@ class _RadicalSearchState extends State<_RadicalSearch> {
     return Column(
       children: [
         Expanded(
-          flex: 1,
           child: _KanjiSelection(
             matchingKanji,
             onSelect: (kanji) {
@@ -79,7 +78,11 @@ class _RadicalSearchState extends State<_RadicalSearch> {
         Expanded(
           flex: 3,
           child: _RadicalSelection(
-              selectedRadicals, validRadicals, selectRadical, deselectRadical),
+            selectedRadicals,
+            validRadicals,
+            selectRadical,
+            deselectRadical,
+          ),
         ),
       ],
     );
@@ -87,8 +90,12 @@ class _RadicalSearchState extends State<_RadicalSearch> {
 }
 
 class _RadicalSelection extends StatelessWidget {
-  const _RadicalSelection(this.selectedRadicals, this.validRadicals,
-      this.onSelect, this.onDeselect);
+  const _RadicalSelection(
+    this.selectedRadicals,
+    this.validRadicals,
+    this.onSelect,
+    this.onDeselect,
+  );
 
   final List<String> selectedRadicals;
   final List<String> validRadicals;
@@ -106,8 +113,10 @@ class _RadicalSelection extends StatelessWidget {
     return SingleChildScrollView(
       child: Center(
         child: Wrap(
-          children: List<Widget>.from(RadicalSearch.radicalsByStrokes.keys
-              .map((strokeCount) => [
+          children: List<Widget>.from(
+            radicalsByStrokeCount.keys
+                .map(
+                  (strokeCount) => [
                     _CustomButton(
                       strokeCount.toString(),
                       backgroundColor: strokeIndicatorColor,
@@ -118,8 +127,7 @@ class _RadicalSelection extends StatelessWidget {
                       ),
                       padding: 3,
                     ),
-                    ...RadicalSearch.radicalsByStrokes[strokeCount]!
-                        .map((radical) {
+                    ...radicalsByStrokeCount[strokeCount]!.map((radical) {
                       final isSelected = selectedRadicals.contains(radical);
                       final isValid = validRadicals.isEmpty ||
                           validRadicals.contains(radical);
@@ -128,17 +136,20 @@ class _RadicalSelection extends StatelessWidget {
                         radical,
                         onPressed: isSelected
                             ? () => onDeselect(radical)
-                            : !isValid
-                                ? null
-                                : () => onSelect(radical),
+                            : isValid
+                                ? () => onSelect(radical)
+                                : null,
                         backgroundColor: isSelected ? selectedColor : null,
                         textStyle: TextStyle(
-                            fontSize: 20,
-                            color: isValid ? textColor : disabledColor),
+                          fontSize: 20,
+                          color: isValid ? textColor : disabledColor,
+                        ),
                       );
                     }),
-                  ])
-              .flattened),
+                  ],
+                )
+                .flattened,
+          ),
         ),
       ),
     );
@@ -146,8 +157,11 @@ class _RadicalSelection extends StatelessWidget {
 }
 
 class _KanjiSelection extends StatelessWidget {
-  const _KanjiSelection(this.matchingKanji,
-      {required this.onSelect, required this.onReset});
+  const _KanjiSelection(
+    this.matchingKanji, {
+    required this.onSelect,
+    required this.onReset,
+  });
 
   final List<String> matchingKanji;
   final Function(String) onSelect;
@@ -176,16 +190,16 @@ class _KanjiSelection extends StatelessWidget {
                       iconColor: textColor,
                       onPressed: onReset,
                     ),
-                    ...matchingKanji
-                        .take(displayLimit)
-                        .map((kanji) => _CustomButton(
-                              kanji,
-                              onPressed: () => onSelect(kanji),
-                              backgroundColor: backgroundColor,
-                              textStyle:
-                                  TextStyle(fontSize: 20, color: textColor),
-                              padding: 1.5,
-                            )),
+                    ...matchingKanji.take(displayLimit).map(
+                          (kanji) => _CustomButton(
+                            kanji,
+                            onPressed: () => onSelect(kanji),
+                            backgroundColor: backgroundColor,
+                            textStyle:
+                                TextStyle(fontSize: 20, color: textColor),
+                            padding: 1.5,
+                          ),
+                        ),
                   ],
                 ),
               ),
@@ -195,9 +209,13 @@ class _KanjiSelection extends StatelessWidget {
 }
 
 class _CustomButton extends StatelessWidget {
-  const _CustomButton(this.text,
-      {this.onPressed, this.textStyle, this.backgroundColor, this.padding = 0})
-      : iconData = null,
+  const _CustomButton(
+    this.text, {
+    this.onPressed,
+    this.textStyle,
+    this.backgroundColor,
+    this.padding = 0,
+  })  : iconData = null,
         iconColor = null,
         iconSize = 0;
 
@@ -213,7 +231,6 @@ class _CustomButton extends StatelessWidget {
 
   final Function()? onPressed;
   final Color? backgroundColor;
-  final double size = 32;
   final double padding;
 
   final String text;
@@ -223,7 +240,8 @@ class _CustomButton extends StatelessWidget {
   final double iconSize;
   final Color? iconColor;
 
-  double get _size => size - (padding * 2);
+  static const _size = 32;
+  double get size => _size - (padding * 2);
 
   @override
   Widget build(BuildContext context) {
@@ -236,8 +254,8 @@ class _CustomButton extends StatelessWidget {
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          fixedSize: Size(_size, _size),
-          minimumSize: const Size(0, 0),
+          fixedSize: Size(size, size),
+          minimumSize: Size.zero,
         ),
         child: iconData != null
             ? Icon(iconData, size: iconSize, color: iconColor)

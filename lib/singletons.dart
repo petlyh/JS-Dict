@@ -7,7 +7,8 @@ Future<void> registerSingletons() {
   WidgetsFlutterBinding.ensureInitialized();
   GetIt.I.registerLazySingleton<JishoClient>(() => JishoClient());
   GetIt.I.registerSingletonAsync<SharedPreferences>(
-      () => SharedPreferences.getInstance());
+    () => SharedPreferences.getInstance(),
+  );
   return GetIt.I.allReady();
 }
 

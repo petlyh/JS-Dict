@@ -8,7 +8,7 @@ Furigana _parseSentenceFurigana(Element element) {
     if (node.nodeType == Node.TEXT_NODE) {
       return FuriganaPart.textOnly(node.text!.trim());
     } else {
-      final element = (node as Element);
+      final element = node as Element;
       final text =
           element.querySelector("span.unlinked")!.firstChild!.text!.trim();
       final furiganaElement = element.querySelector("span.furigana");
@@ -22,7 +22,7 @@ Furigana _parseSentenceFurigana(Element element) {
 }
 
 List<String> _limitTextPartsSize(List<String> list, int size) =>
-    list.sublist(0, size - 1) + [list.sublist(size - 1).join("")];
+    list.sublist(0, size - 1) + [list.sublist(size - 1).join()];
 
 bool _hasEmpty(List<String> list) =>
     list.firstWhereOrNull((part) => part.isEmpty) != null;
@@ -34,7 +34,8 @@ Furigana _parseWordFurigana(Element element) {
 
   final furiganaParts = element
       .querySelectorAll(
-          "div.concept_light-representation > span.furigana > span")
+        "div.concept_light-representation > span.furigana > span",
+      )
       .allTrimmedText;
 
   if (furiganaParts.length == 1) {
@@ -62,11 +63,11 @@ Furigana _parseWordFurigana(Element element) {
 
   assert(furiganaParts.length == textParts.length);
 
-  final text = textParts.join("");
+  final text = textParts.join();
 
   // kanji compounds that don't specify ruby locations
   if (isKanji(text) && _hasEmpty(furiganaParts)) {
-    return [FuriganaPart(text, furiganaParts.join(""))];
+    return [FuriganaPart(text, furiganaParts.join())];
   }
 
   return textParts

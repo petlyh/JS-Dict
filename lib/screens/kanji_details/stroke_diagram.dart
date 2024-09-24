@@ -15,7 +15,7 @@ class StrokeDiagramWidget extends StatelessWidget {
   Future<String> getData() async {
     try {
       return await rootBundle.loadString("assets/kanjivg/data/$kanjiCode.svg");
-    } on FlutterError {
+    } catch (_) {
       // asset not found means that KanjiVg doesn't have data for the kanji
       return "";
     }
@@ -24,27 +24,32 @@ class StrokeDiagramWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoaderWidget(
-        onLoad: getData,
-        handler: (data) {
-          if (data.isEmpty) {
-            return const SizedBox();
-          }
+      onLoad: getData,
+      handler: (data) {
+        if (data.isEmpty) {
+          return const SizedBox();
+        }
 
-          return ExpansionTileCard(
-            shadowColor: Theme.of(context).colorScheme.shadow,
-            title: const Text("Stroke Order Diagram"),
-            children: [
-              SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: BrightnessBuilder(builder: (context, brightness) {
-                    return SvgPicture.string(
-                        KanjiDiagram(darkTheme: brightness == Brightness.dark)
-                            .create(data),
-                        height: 90);
-                  })),
-            ],
-          );
-        });
+        return ExpansionTileCard(
+          shadowColor: Theme.of(context).colorScheme.shadow,
+          title: const Text("Stroke Order Diagram"),
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: BrightnessBuilder(
+                builder: (context, brightness) {
+                  return SvgPicture.string(
+                    KanjiDiagram(darkTheme: brightness == Brightness.dark)
+                        .create(data),
+                    height: 90,
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -67,12 +72,18 @@ class BrightnessBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(builder: (context, themeProvider, _) {
-      return MediaQuery(
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, _) {
+        return MediaQuery(
           data: const MediaQueryData(),
           child: Builder(
-              builder: (context) => builder(context,
-                  getBrightness(context, themeProvider.currentTheme))));
-    });
+            builder: (context) => builder(
+              context,
+              getBrightness(context, themeProvider.currentTheme),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

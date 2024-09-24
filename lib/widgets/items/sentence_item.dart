@@ -6,9 +6,8 @@ import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/copyright_text.dart";
+import "package:jsdict/widgets/items/item_card.dart";
 import "package:ruby_text/ruby_text.dart";
-
-import "item_card.dart";
 
 class SentenceItem extends StatelessWidget {
   const SentenceItem({super.key, required this.sentence});
@@ -18,29 +17,33 @@ class SentenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-        onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
-        onLongPress: () => showActionDialog(context, [
-              ActionTile.url(sentence.url),
-              ActionTile.text("Japanese", sentence.japanese.text),
-              ActionTile.text("English", sentence.english),
-            ]),
-        child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
-            title: RubyText(sentence.japanese.rubyData,
-                style: jpTextStyle,
-                rubyAlign: CrossAxisAlignment.start,
-                wrapAlign: TextAlign.start),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(sentence.english),
-                if (sentence.copyright != null) ...[
-                  const SizedBox(height: 4),
-                  CopyrightText(sentence.copyright!),
-                ]
-              ],
-            )));
+      onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
+      onLongPress: () => showActionDialog(context, [
+        ActionTile.url(sentence.url),
+        ActionTile.text("Japanese", sentence.japanese.text),
+        ActionTile.text("English", sentence.english),
+      ]),
+      child: ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+        title: RubyText(
+          sentence.japanese.rubyData,
+          style: jpTextStyle,
+          rubyAlign: CrossAxisAlignment.start,
+          wrapAlign: TextAlign.start,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(sentence.english),
+            if (sentence.copyright != null) ...[
+              const SizedBox(height: 4),
+              CopyrightText(sentence.copyright!),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }

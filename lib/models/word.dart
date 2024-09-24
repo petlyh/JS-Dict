@@ -23,35 +23,37 @@ class Word implements SearchType {
 
   final WordDetails? details;
 
-  const Word(
-      {required this.word,
-      required this.definitions,
-      this.otherForms = const [],
-      this.commonWord = false,
-      this.wanikaniLevels = const [],
-      this.jlptLevel = JLPTLevel.none,
-      this.audioUrl,
-      this.notes = const [],
-      this.collocations = const [],
-      this.id,
-      this.inflectionId = "",
-      this.hasWikipedia = false,
-      this.details});
+  const Word({
+    required this.word,
+    required this.definitions,
+    this.otherForms = const [],
+    this.commonWord = false,
+    this.wanikaniLevels = const [],
+    this.jlptLevel = JLPTLevel.none,
+    this.audioUrl,
+    this.notes = const [],
+    this.collocations = const [],
+    this.id,
+    this.inflectionId = "",
+    this.hasWikipedia = false,
+    this.details,
+  });
 
   Word withDetails(WordDetails details) => Word(
-      details: details,
-      word: word,
-      definitions: definitions,
-      otherForms: otherForms,
-      commonWord: commonWord,
-      wanikaniLevels: wanikaniLevels,
-      jlptLevel: jlptLevel,
-      audioUrl: audioUrl,
-      notes: notes,
-      collocations: collocations,
-      id: id,
-      inflectionId: inflectionId,
-      hasWikipedia: hasWikipedia);
+        details: details,
+        word: word,
+        definitions: definitions,
+        otherForms: otherForms,
+        commonWord: commonWord,
+        wanikaniLevels: wanikaniLevels,
+        jlptLevel: jlptLevel,
+        audioUrl: audioUrl,
+        notes: notes,
+        collocations: collocations,
+        id: id,
+        inflectionId: inflectionId,
+        hasWikipedia: hasWikipedia,
+      );
 
   InflectionData? get inflectionData =>
       inflectionId.isNotEmpty ? InflectionData(word.text, inflectionId) : null;
@@ -78,12 +80,13 @@ class Definition {
 
   final Sentence? exampleSentence;
 
-  const Definition(
-      {required this.meanings,
-      this.types = const [],
-      this.tags = const [],
-      this.seeAlso = const [],
-      this.exampleSentence});
+  const Definition({
+    required this.meanings,
+    this.types = const [],
+    this.tags = const [],
+    this.seeAlso = const [],
+    this.exampleSentence,
+  });
 
   @override
   String toString() {
@@ -98,11 +101,13 @@ class WikipediaInfo {
   final WikipediaPage? wikipediaJapanese;
   final WikipediaPage? dbpedia;
 
-  const WikipediaInfo(this.title,
-      {this.textAbstract,
-      this.wikipediaEnglish,
-      this.wikipediaJapanese,
-      this.dbpedia});
+  const WikipediaInfo(
+    this.title, {
+    this.textAbstract,
+    this.wikipediaEnglish,
+    this.wikipediaJapanese,
+    this.dbpedia,
+  });
 }
 
 class WikipediaPage {
@@ -140,21 +145,11 @@ class Note {
 
   const Note(this.form, this.note);
 
-  @override
-  String toString() => "$form: $note";
-
-  static Note parse(String text) {
+  factory Note.parse(String text) {
     final split = text.split(": ");
     return Note(split.first, split.last);
   }
 
-  static List<Note> parseAll(String text) {
-    return text
-        .trim()
-        .replaceFirst(RegExp(r"\.$"), "")
-        .split(". ")
-        .deduplicate<String>()
-        .map(Note.parse)
-        .toList();
-  }
+  @override
+  String toString() => "$form: $note";
 }

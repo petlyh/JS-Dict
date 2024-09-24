@@ -26,8 +26,10 @@ void main() {
     expect(response.grammarInfo, isNotNull);
     expect(response.grammarInfo!.word, "ありふれた");
     expect(response.grammarInfo!.possibleInflectionOf, "ありふれる");
-    expect(response.grammarInfo!.formInfos,
-        ["Ta-form. It indicates the past tense of the verb."]);
+    expect(
+      response.grammarInfo!.formInfos,
+      ["Ta-form. It indicates the past tense of the verb."],
+    );
   });
 
   test("year converion", () async {

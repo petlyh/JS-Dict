@@ -18,10 +18,12 @@ Word parseWordDetails(Document document) {
       .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"))
       ?.transform((w) => _parseWikipediaInfo(w.nextElementSibling!));
 
-  return word.withDetails(WordDetails(
-    kanji: kanji,
-    wikipedia: wikipedia,
-  ));
+  return word.withDetails(
+    WordDetails(
+      kanji: kanji,
+      wikipedia: wikipedia,
+    ),
+  );
 }
 
 Word _parseWordEntry(Element element) {
@@ -51,22 +53,25 @@ Word _parseWordEntry(Element element) {
   final notes = element
           .querySelector("div.meaning-representation_notes > span")
           ?.transform((e) => e.trimmedText)
-          .transform(Note.parseAll) ??
+          .transform(_parseNotes) ??
       [];
 
   final definitionElements = element.querySelectorAll("div.meaning-wrapper");
 
   final otherForms = definitionElements
           .firstWhereOrNull(
-              (e) => e.previousElementSibling?.text == "Other forms")
+            (e) => e.previousElementSibling?.text == "Other forms",
+          )
           ?.transform(_parseOtherForms) ??
       [];
 
   final sourceDefinitions = definitionElements
-      .where((e) =>
-          e.previousElementSibling?.text != "Other forms" &&
-          e.previousElementSibling?.text != "Wikipedia definition" &&
-          e.querySelector(".meaning-representation_notes") == null)
+      .where(
+    (e) =>
+        e.previousElementSibling?.text != "Other forms" &&
+        e.previousElementSibling?.text != "Wikipedia definition" &&
+        e.querySelector(".meaning-representation_notes") == null,
+  )
       .fold(<Definition>[], _parseDefinition).toList();
 
   final wikipediaElement = element
@@ -97,34 +102,47 @@ Word _parseWordEntry(Element element) {
           ?.transform(
             (e) => element
                 .querySelectorAll(
-                    "#${e.attributes["data-reveal-id"]!} > ul > li > a")
-                .map((e2) => e2.text
-                    .trim()
-                    .split(" - ")
-                    .transform((split) => Collocation(split[0], split[1])))
+                  "#${e.attributes["data-reveal-id"]!} > ul > li > a",
+                )
+                .map(
+                  (e2) => e2.text
+                      .trim()
+                      .split(" - ")
+                      .transform((split) => Collocation(split[0], split[1])),
+                )
                 .toList(),
           ) ??
       [];
 
   return Word(
-      word: word,
-      definitions: definitions,
-      otherForms: otherForms,
-      commonWord: commonWord,
-      wanikaniLevels: wanikaniLevels,
-      jlptLevel: jlptLevel,
-      audioUrl: audioUrl,
-      notes: notes,
-      collocations: collocations,
-      id: id,
-      inflectionId: inflectionId,
-      hasWikipedia: hasWikipedia);
+    word: word,
+    definitions: definitions,
+    otherForms: otherForms,
+    commonWord: commonWord,
+    wanikaniLevels: wanikaniLevels,
+    jlptLevel: jlptLevel,
+    audioUrl: audioUrl,
+    notes: notes,
+    collocations: collocations,
+    id: id,
+    inflectionId: inflectionId,
+    hasWikipedia: hasWikipedia,
+  );
 }
+
+List<Note> _parseNotes(String text) => text
+    .trim()
+    .replaceFirst(RegExp(r"\.$"), "")
+    .split(". ")
+    .deduplicate<String>()
+    .map(Note.parse)
+    .toList();
 
 List<Definition> _parseWikipediaDefinition(Element e) => [
       Definition(
-          meanings: [e.querySelector(".meaning-meaning")!.text],
-          types: ["Word"])
+        meanings: [e.querySelector(".meaning-meaning")!.text],
+        types: ["Word"],
+      ),
     ];
 
 List<Definition> _parseDefinition(List<Definition> previous, Element element) {
@@ -156,18 +174,20 @@ List<Definition> _parseDefinition(List<Definition> previous, Element element) {
       .allTrimmedText
       .deduplicate<String>();
 
-  final exampleSentence =
-      element.querySelector("div.sentence")?.transform((e) => Sentence.example(
-            _parseSentenceFurigana(e),
-            e.querySelector("span.english")!.trimmedText,
-          ));
+  final exampleSentence = element.querySelector("div.sentence")?.transform(
+        (e) => Sentence.example(
+          _parseSentenceFurigana(e),
+          e.querySelector("span.english")!.trimmedText,
+        ),
+      );
 
   final definition = Definition(
-      meanings: meanings,
-      types: types,
-      tags: tags,
-      seeAlso: seeAlso,
-      exampleSentence: exampleSentence);
+    meanings: meanings,
+    types: types,
+    tags: tags,
+    seeAlso: seeAlso,
+    exampleSentence: exampleSentence,
+  );
 
   return previous + [definition];
 }

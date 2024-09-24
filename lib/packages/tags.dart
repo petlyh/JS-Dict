@@ -289,7 +289,7 @@ const wordTags = {
     "Godan verb with zu ending": "v5z",
     "Wasei, word made in Japan": "wasei",
     "Literary or formal term": "litf",
-  }
+  },
 };
 
 const nameTags = {

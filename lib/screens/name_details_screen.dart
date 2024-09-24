@@ -2,12 +2,12 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/is_kanji.dart";
-import "package:jsdict/widgets/wikipedia.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/loader.dart";
+import "package:jsdict/widgets/wikipedia.dart";
 
 class NameDetailsScreen extends StatelessWidget {
   const NameDetailsScreen(this.name, {super.key});
@@ -25,7 +25,7 @@ class NameDetailsScreen extends StatelessWidget {
               (
                 "Open in Browser",
                 "https://jisho.org/word/${name.wikipediaWord}"
-              )
+              ),
             ]),
         ],
       ),
@@ -35,24 +35,27 @@ class NameDetailsScreen extends StatelessWidget {
           child: Column(
             children: [
               SelectionArea(
-                  child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          Text(
-                              name.japanese +
-                                  (name.reading != null
-                                      ? "\n${name.reading}"
-                                      : ""),
-                              style: const TextStyle(fontSize: 20).jp(),
-                              textAlign: TextAlign.center),
-                          const SizedBox(height: 12),
-                          Text(name.english,
-                              style: const TextStyle(fontSize: 18),
-                              textAlign: TextAlign.center),
-                        ],
-                      ))),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      Text(
+                        name.japanese +
+                            (name.reading != null ? "\n${name.reading}" : ""),
+                        style: const TextStyle(fontSize: 20).jp(),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        name.english,
+                        style: const TextStyle(fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               if (name.type != null) ...[
                 InfoChip(name.type!),
                 const SizedBox(height: 10),

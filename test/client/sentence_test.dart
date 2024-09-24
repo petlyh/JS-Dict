@@ -12,13 +12,17 @@ void main() {
     final sentence = response.results.first;
 
     expect(sentence.japanese.text, equals("わたしは国の富が公平に分配される社会を夢見ている。"));
-    expect(sentence.english,
-        equals("I dream of a society whose wealth is distributed fairly."));
+    expect(
+      sentence.english,
+      equals("I dream of a society whose wealth is distributed fairly."),
+    );
 
     expect(sentence.copyright, isNotNull);
     expect(sentence.copyright?.name, equals("Tatoeba"));
-    expect(sentence.copyright?.url,
-        equals("http://tatoeba.org/eng/sentences/show/76360"));
+    expect(
+      sentence.copyright?.url,
+      equals("http://tatoeba.org/eng/sentences/show/76360"),
+    );
   });
 
   test("sentence details", () async {
@@ -27,16 +31,20 @@ void main() {
     expect(sentence.japanese.text, equals("ここ数年は芸術鑑賞が趣味で、暇を見つけては美術館に足を運んでいる。"));
 
     expect(
-        sentence.english,
-        equals(
-            "For the past few years, I have pursued my appreciation of art by visiting art museums whenever I find spare time."));
+      sentence.english,
+      equals(
+        "For the past few years, I have pursued my appreciation of art by visiting art museums whenever I find spare time.",
+      ),
+    );
 
     expect(sentence.copyright, isNotNull);
     expect(sentence.copyright?.name, equals("Jreibun"));
     expect(
-        sentence.copyright?.url,
-        equals(
-            "http://www.tufs.ac.jp/ts/personal/SUZUKI_Tomomi/jreibun/index-jreibun.html"));
+      sentence.copyright?.url,
+      equals(
+        "http://www.tufs.ac.jp/ts/personal/SUZUKI_Tomomi/jreibun/index-jreibun.html",
+      ),
+    );
 
     expect(sentence.kanji, isNotNull);
     expect(sentence.kanji, hasLength(14));

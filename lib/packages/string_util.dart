@@ -1,5 +1,6 @@
 /// Allows text breaking.
 const zeroWidthSpace = "\u200B";
+
 /// Prevents text breaking.
 const zeroWidthNoBreakSpace = "\uFEFF";
 

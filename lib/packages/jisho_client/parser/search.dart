@@ -17,8 +17,11 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
           [];
 
   if (noMatchesFor.isNotEmpty) {
-    return SearchResponse.noMatches(noMatchesFor,
-        conversion: conversion, zenEntries: limitedZenEntries);
+    return SearchResponse.noMatches(
+      noMatchesFor,
+      conversion: conversion,
+      zenEntries: limitedZenEntries,
+    );
   }
 
   final correction =
@@ -61,13 +64,14 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
   } as List<T>;
 
   return SearchResponse(
-      results: results,
-      hasNextPage: hasNextPage,
-      zenEntries: limitedZenEntries,
-      correction: correction,
-      noMatchesFor: noMatchesFor,
-      grammarInfo: grammarInfo,
-      conversion: conversion);
+    results: results,
+    hasNextPage: hasNextPage,
+    zenEntries: limitedZenEntries,
+    correction: correction,
+    noMatchesFor: noMatchesFor,
+    grammarInfo: grammarInfo,
+    conversion: conversion,
+  );
 }
 
 Conversion _parseConversion(Element e) => e.trimmedText

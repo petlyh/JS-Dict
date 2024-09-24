@@ -25,8 +25,10 @@ WikipediaPage? _parseWikipediaPage(Element definitionElement, String name) =>
         .querySelectorAll("span.meaning-abstract > a")
         .firstWhereOrNull((e) => e.text.contains(name))
         ?.transform(
-          (e) => WikipediaPage(RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
-              e.attributes["href"]!),
+          (e) => WikipediaPage(
+            RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
+            e.attributes["href"]!,
+          ),
         );
 
 final _abstractFixPattern = RegExp(r"^(?:is |was |, |\()");

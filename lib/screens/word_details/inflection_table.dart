@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/furigana_ruby.dart";
 import "package:jsdict/packages/inflection.dart";
-import "package:jsdict/models/models.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class InflectionTable extends StatelessWidget {
@@ -11,13 +11,17 @@ class InflectionTable extends StatelessWidget {
   final InflectionData data;
 
   Widget _headerCell([String? text]) => _cell(
-      Text(text ?? "", style: const TextStyle(fontWeight: FontWeight.w500)));
+        Text(text ?? "", style: const TextStyle(fontWeight: FontWeight.w500)),
+      );
 
   Widget _furiganaCell(Furigana furigana) => _cell(
         furigana.hasFurigana
             ? RubyText(furigana.rubyData, wrapAlign: TextAlign.start)
-            : Text(furigana.text,
-                style: jpTextStyle, textAlign: TextAlign.start),
+            : Text(
+                furigana.text,
+                style: jpTextStyle,
+                textAlign: TextAlign.start,
+              ),
       );
 
   Widget _cell(Widget child) => Padding(
@@ -42,16 +46,22 @@ class InflectionTable extends StatelessWidget {
         },
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
-          TableRow(children: [
-            _headerCell(),
-            _headerCell("Affermative"),
-            _headerCell("Negative"),
-          ]),
-          ...data.toMap().entries.map((entry) => TableRow(children: [
-                _headerCell(entry.key),
-                _furiganaCell(entry.value.affermative),
-                _furiganaCell(entry.value.negative),
-              ])),
+          TableRow(
+            children: [
+              _headerCell(),
+              _headerCell("Affermative"),
+              _headerCell("Negative"),
+            ],
+          ),
+          ...data.toMap().entries.map(
+                (entry) => TableRow(
+                  children: [
+                    _headerCell(entry.key),
+                    _furiganaCell(entry.value.affermative),
+                    _furiganaCell(entry.value.negative),
+                  ],
+                ),
+              ),
         ],
       ),
     );

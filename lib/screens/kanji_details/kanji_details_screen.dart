@@ -2,22 +2,21 @@ import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/copy.dart";
 import "package:jsdict/packages/katakana_convert.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
+import "package:jsdict/screens/kanji_details/compound_list.dart";
+import "package:jsdict/screens/kanji_details/stroke_diagram.dart";
 import "package:jsdict/screens/search/result_page.dart";
-import "package:jsdict/widgets/action_dialog.dart";
-import "package:jsdict/widgets/link_popup.dart";
-import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/link_span.dart";
 import "package:jsdict/widgets/loader.dart";
-
-import "compound_list.dart";
-import "stroke_diagram.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
   const KanjiDetailsScreen(Kanji this.kanji, {super.key}) : kanjiId = null;
@@ -80,8 +79,10 @@ class _KanjiContentWidget extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(kanji.kanji,
-                    style: const TextStyle(fontSize: 40).jp()),
+                child: Text(
+                  kanji.kanji,
+                  style: const TextStyle(fontSize: 40).jp(),
+                ),
               ),
             ),
             Wrap(
@@ -89,8 +90,10 @@ class _KanjiContentWidget extends StatelessWidget {
               children: [
                 InfoChip("${kanji.strokeCount} strokes", color: Colors.green),
                 if (kanji.jlptLevel != JLPTLevel.none)
-                  InfoChip("JLPT ${kanji.jlptLevel.toString()}",
-                      color: Colors.blue),
+                  InfoChip(
+                    "JLPT ${kanji.jlptLevel}",
+                    color: Colors.blue,
+                  ),
                 if (kanji.type != null)
                   InfoChip(kanji.type.toString(), color: Colors.blue),
               ],
@@ -110,20 +113,22 @@ class _KanjiContentWidget extends StatelessWidget {
                     valueListenable: radicalValue,
                     builder: (_, __, ___) => radical != null
                         ? JpText(
-                            "Radical: ${radical!.meanings.join(', ')} ${radical!.character}")
+                            "Radical: ${radical!.meanings.join(', ')} ${radical!.character}",
+                          )
                         : const SizedBox(),
                   ),
                 ],
               ),
             ),
             const Divider(),
-            kanji.details != null
-                ? _KanjiDetailsWidget(kanji, kanji.details!)
-                : LoaderWidget(
-                    onLoad: () => _future,
-                    handler: (kanjiDetails) =>
-                        _KanjiDetailsWidget(kanji, kanjiDetails.details!),
-                  ),
+            if (kanji.details != null)
+              _KanjiDetailsWidget(kanji, kanji.details!)
+            else
+              LoaderWidget(
+                onLoad: () => _future,
+                handler: (kanjiDetails) =>
+                    _KanjiDetailsWidget(kanji, kanjiDetails.details!),
+              ),
           ],
         ),
       ),
@@ -147,19 +152,32 @@ class _ReadingsWidget extends StatelessWidget {
 
     return RichText(
       text: TextSpan(
-          children: [
-                TextSpan(
-                    text: "$name: ", style: TextStyle(color: textColor).jp())
-              ] +
-              readings
-                  .map((reading) => LinkSpan(context,
-                      text: reading.noBreak,
-                      onTap: pushScreen(
-                          context, ResultPageScreen<Word>(query(reading)))))
-                  .toList()
-                  .intersperce(TextSpan(
-                      text: "、 ", style: TextStyle(color: textColor).jp())),
-          style: TextStyle(color: textColor, height: 1.5).jp()),
+        children: [
+              TextSpan(
+                text: "$name: ",
+                style: TextStyle(color: textColor).jp(),
+              ),
+            ] +
+            readings
+                .map(
+                  (reading) => LinkSpan(
+                    context,
+                    text: reading.noBreak,
+                    onTap: pushScreen(
+                      context,
+                      ResultPageScreen<Word>(query(reading)),
+                    ),
+                  ),
+                )
+                .toList()
+                .intersperce(
+                  TextSpan(
+                    text: "、 ",
+                    style: TextStyle(color: textColor).jp(),
+                  ),
+                ),
+        style: TextStyle(color: textColor, height: 1.5).jp(),
+      ),
     );
   }
 }
@@ -176,28 +194,33 @@ class _KanjiDetailsWidget extends StatelessWidget {
       children: [
         if (kanjiDetails.parts.length > 1) ...[
           Wrap(
-              alignment: WrapAlignment.center,
-              children: kanjiDetails.parts
-                  .whereNot((part) => part == kanji.kanji)
-                  .map((part) => Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(4),
-                          onTap:
-                              pushScreen(context, KanjiDetailsScreen.id(part)),
-                          onLongPress: () => showActionDialog(context, [
-                            ActionTile.url(Kanji.createUrl(part)),
-                            ActionTile.text("Kanji", part),
-                          ]),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(part,
-                                style: const TextStyle(fontSize: 20).jp()),
-                          ),
+            alignment: WrapAlignment.center,
+            children: kanjiDetails.parts
+                .whereNot((part) => part == kanji.kanji)
+                .map(
+                  (part) => Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(4),
+                      onTap: pushScreen(context, KanjiDetailsScreen.id(part)),
+                      onLongPress: () => showActionDialog(context, [
+                        ActionTile.url(Kanji.createUrl(part)),
+                        ActionTile.text("Kanji", part),
+                      ]),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          part,
+                          style: const TextStyle(fontSize: 20).jp(),
                         ),
-                      ))
-                  .toList()),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
           const Divider(),
         ],
         if (kanjiDetails.variants.isNotEmpty)
@@ -233,20 +256,27 @@ class _VariantsWidget extends StatelessWidget {
                     .map(
                       (variant) => Card(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(4),
                           onTap: pushScreen(
-                              context, KanjiDetailsScreen.id(variant)),
+                            context,
+                            KanjiDetailsScreen.id(variant),
+                          ),
                           onLongPress: () => showActionDialog(context, [
                             ActionTile.url(Kanji.createUrl(variant)),
                             ActionTile.text("Kanji", variant),
                           ]),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
-                            child: Text(variant,
-                                style: const TextStyle(fontSize: 20).jp()),
+                              vertical: 8,
+                              horizontal: 12,
+                            ),
+                            child: Text(
+                              variant,
+                              style: const TextStyle(fontSize: 20).jp(),
+                            ),
                           ),
                         ),
                       ),
@@ -255,7 +285,7 @@ class _VariantsWidget extends StatelessWidget {
               ),
             ),
           ],
-        )
+        ),
       ],
     );
   }

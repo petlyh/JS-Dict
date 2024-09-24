@@ -3,7 +3,10 @@ import "package:jsdict/packages/jisho_client/jisho_client.dart";
 import "package:test/test.dart";
 
 Future<void> Function() _furiganaTest(
-    String wordId, String text, String reading) {
+  String wordId,
+  String text,
+  String reading,
+) {
   return () async {
     final wordDetails = await JishoClient().wordDetails(wordId);
     expect(wordDetails.word.text, text);

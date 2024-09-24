@@ -23,7 +23,8 @@ Sentence _parseSentenceEntry(Element element) {
   final japanese = _parseSentenceFurigana(element);
 
   final copyright = element.querySelector("span.inline_copyright a")?.transform(
-      (e) => SentenceCopyright(e.trimmedText, e.attributes["href"]!));
+        (e) => SentenceCopyright(e.trimmedText, e.attributes["href"]!),
+      );
 
   final id = element
           .querySelector("a.light-details_link")

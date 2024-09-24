@@ -20,15 +20,16 @@ class Kanji implements SearchType {
   static String createUrl(String kanji) =>
       "https://jisho.org/search/${Uri.encodeComponent("$kanji #kanji")}";
 
-  const Kanji(
-      {required this.kanji,
-      required this.strokeCount,
-      this.type,
-      this.jlptLevel = JLPTLevel.none,
-      this.meanings = const [],
-      this.kunReadings = const [],
-      this.onReadings = const [],
-      this.details});
+  const Kanji({
+    required this.kanji,
+    required this.strokeCount,
+    this.type,
+    this.jlptLevel = JLPTLevel.none,
+    this.meanings = const [],
+    this.kunReadings = const [],
+    this.onReadings = const [],
+    this.details,
+  });
 }
 
 class KanjiDetails {
@@ -42,13 +43,14 @@ class KanjiDetails {
   final List<Compound> onCompounds;
   final List<Compound> kunCompounds;
 
-  const KanjiDetails(
-      {required this.parts,
-      required this.variants,
-      required this.radical,
-      required this.frequency,
-      required this.onCompounds,
-      required this.kunCompounds});
+  const KanjiDetails({
+    required this.parts,
+    required this.variants,
+    required this.radical,
+    required this.frequency,
+    required this.onCompounds,
+    required this.kunCompounds,
+  });
 }
 
 class Radical {

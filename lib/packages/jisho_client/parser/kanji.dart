@@ -43,13 +43,14 @@ Kanji _parseKanjiEntry(Element element) {
       .allTrimmedText;
 
   return Kanji(
-      kanji: kanji,
-      strokeCount: strokeCount,
-      type: type,
-      jlptLevel: jlptLevel,
-      meanings: meanings,
-      kunReadings: kunReadings,
-      onReadings: onReadings);
+    kanji: kanji,
+    strokeCount: strokeCount,
+    type: type,
+    jlptLevel: jlptLevel,
+    meanings: meanings,
+    kunReadings: kunReadings,
+    onReadings: onReadings,
+  );
 }
 
 Kanji _parseKanjiDetailsEntry(Element element) {
@@ -75,7 +76,8 @@ Kanji _parseKanjiDetailsEntry(Element element) {
 
   final kunReadings = element
       .querySelectorAll(
-          "div.kanji-details__main-readings > dl.kun_yomi > dd > a")
+        "div.kanji-details__main-readings > dl.kun_yomi > dd > a",
+      )
       .allTrimmedText;
 
   final onReadings = element
@@ -85,14 +87,15 @@ Kanji _parseKanjiDetailsEntry(Element element) {
   final details = _parseKanjiDetails(element);
 
   return Kanji(
-      kanji: kanji,
-      strokeCount: strokeCount,
-      type: type,
-      jlptLevel: jlptLevel,
-      meanings: meanings,
-      kunReadings: kunReadings,
-      onReadings: onReadings,
-      details: details);
+    kanji: kanji,
+    strokeCount: strokeCount,
+    type: type,
+    jlptLevel: jlptLevel,
+    meanings: meanings,
+    kunReadings: kunReadings,
+    onReadings: onReadings,
+    details: details,
+  );
 }
 
 KanjiDetails _parseKanjiDetails(Element element) {
@@ -115,12 +118,13 @@ KanjiDetails _parseKanjiDetails(Element element) {
   final kunCompounds = _findCompounds(element, "Kun");
 
   return KanjiDetails(
-      parts: parts,
-      variants: variants,
-      radical: radical,
-      frequency: frequency,
-      onCompounds: onCompounds,
-      kunCompounds: kunCompounds);
+    parts: parts,
+    variants: variants,
+    radical: radical,
+    frequency: frequency,
+    onCompounds: onCompounds,
+    kunCompounds: kunCompounds,
+  );
 }
 
 Radical _parseRadical(Element e) {
@@ -155,8 +159,10 @@ KanjiType? _getKanjiType(Element element) {
 List<Compound> _findCompounds(Element element, String type) =>
     element
         .querySelectorAll("div.row.compounds > div.columns")
-        .firstWhereOrNull((e) =>
-            e.querySelector("h2")!.text.contains("$type reading compounds"))
+        .firstWhereOrNull(
+          (e) =>
+              e.querySelector("h2")!.text.contains("$type reading compounds"),
+        )
         ?.transform(_parseCompounds) ??
     [];
 

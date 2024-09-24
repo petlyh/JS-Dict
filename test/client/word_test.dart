@@ -22,8 +22,10 @@ void main() {
 
     expect(word.collocations, hasLength(16));
     expect(word.collocations.first.word, "見るに堪えない");
-    expect(word.collocations.first.meaning,
-        "so miserable that it is painful to look at");
+    expect(
+      word.collocations.first.meaning,
+      "so miserable that it is painful to look at",
+    );
 
     expect(word.definitions, hasLength(6));
     expect(word.definitions.first.meanings, contains("to observe"));
@@ -49,7 +51,9 @@ void main() {
     expect(sentence, isNotNull);
     expect(sentence?.japanese.text, equals("彼は池で溺れそうになっている子どもを助けた。"));
     expect(
-        sentence?.english, equals("He saved a child from drowning in a pond."));
+      sentence?.english,
+      equals("He saved a child from drowning in a pond."),
+    );
   });
 
   test("notes", () async {

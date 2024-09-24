@@ -1,7 +1,6 @@
+import "package:jsdict/packages/kanji_diagram/extensions.dart";
+import "package:jsdict/packages/kanji_diagram/style.dart";
 import "package:xml/xml.dart";
-
-import "extensions.dart";
-import "style.dart";
 
 /// A class for generating stroke order diagrams for kanji.
 class KanjiDiagram {
@@ -29,7 +28,12 @@ class KanjiDiagram {
   void addGlobalGuides(XmlBuilder builder, int canvasWidth) {
     builder.line(style.boundingBox, 1, 1, canvasWidth - 1, 1);
     builder.line(
-        style.guideLine, 0, canvasHeight ~/ 2, canvasWidth, canvasHeight ~/ 2);
+      style.guideLine,
+      0,
+      canvasHeight ~/ 2,
+      canvasWidth,
+      canvasHeight ~/ 2,
+    );
 
     // For aesthetic reasons, left and bottom guides are not shown.
     // builder.line(style.boundingBox, 1, 1, 1, canvasHeight - 1);
@@ -37,26 +41,40 @@ class KanjiDiagram {
     //     canvasHeight - 1);
   }
 
-  void addFrameGuideLine(XmlBuilder builder) => builder.line(style.guideLine,
-      frameSize ~/ 2, 1, frameSize - (frameSize ~/ 2), canvasHeight - 1);
+  void addFrameGuideLine(XmlBuilder builder) => builder.line(
+        style.guideLine,
+        frameSize ~/ 2,
+        1,
+        frameSize - (frameSize ~/ 2),
+        canvasHeight - 1,
+      );
 
   void addFrameBoundingBox(XmlBuilder builder) => builder.line(
-      style.boundingBox, frameSize - 1, 1, frameSize - 1, canvasHeight - 1);
+        style.boundingBox,
+        frameSize - 1,
+        1,
+        frameSize - 1,
+        canvasHeight - 1,
+      );
 
   static final strokePattern = RegExp(
-      r"^[LMT]\s*(\d+(?:\.\d+)?)[,\s](\d+(?:\.\d+)?)",
-      caseSensitive: false);
+    r"^[LMT]\s*(\d+(?:\.\d+)?)[,\s](\d+(?:\.\d+)?)",
+    caseSensitive: false,
+  );
 
   void addStartPoint(XmlBuilder builder, XmlElement path) {
     final pathData = path.getAttribute("d")!;
     final match = strokePattern.firstMatch(pathData)!;
 
-    builder.element("circle", nest: () {
-      builder.style(style.startPoint);
-      builder.attribute("cx", match.group(1)!);
-      builder.attribute("cy", match.group(2)!);
-      builder.attribute("r", 4);
-    });
+    builder.element(
+      "circle",
+      nest: () {
+        builder.style(Style.startPoint);
+        builder.attribute("cx", match.group(1));
+        builder.attribute("cy", match.group(2));
+        builder.attribute("r", 4);
+      },
+    );
   }
 
   void addStrokes(XmlBuilder builder, List<XmlElement> paths) {
@@ -66,29 +84,35 @@ class KanjiDiagram {
     for (final currentPath in paths) {
       final xOffset = frameSize * (pathIndex - 1);
 
-      builder.element("g", nest: () {
-        builder.attribute("transform", "translate($xOffset)");
-        addFrameGuideLine(builder);
+      builder.element(
+        "g",
+        nest: () {
+          builder.attribute("transform", "translate($xOffset)");
+          addFrameGuideLine(builder);
 
-        if (pathIndex < paths.length) {
-          addFrameBoundingBox(builder);
-        }
-
-        builder.element("g", nest: () {
-          // Offset strokes to align with grid.
-          // Likely needed because we're using translate instead of matrix.
-          builder.attribute("transform", "translate(-4, -4)");
-
-          // Add previously drawn paths.
-          for (final drawnPath in drawnPaths) {
-            builder.copyElement(drawnPath.withStyle(style.existingStroke));
+          if (pathIndex < paths.length) {
+            addFrameBoundingBox(builder);
           }
 
-          // Add current path and starting point.
-          builder.copyElement(currentPath.withStyle(style.currentStroke));
-          addStartPoint(builder, currentPath);
-        });
-      });
+          builder.element(
+            "g",
+            nest: () {
+              // Offset strokes to align with grid.
+              // Likely needed because we're using translate instead of matrix.
+              builder.attribute("transform", "translate(-4, -4)");
+
+              // Add previously drawn paths.
+              for (final drawnPath in drawnPaths) {
+                builder.copyElement(drawnPath.withStyle(style.existingStroke));
+              }
+
+              // Add current path and starting point.
+              builder.copyElement(currentPath.withStyle(style.currentStroke));
+              addStartPoint(builder, currentPath);
+            },
+          );
+        },
+      );
 
       drawnPaths.add(currentPath);
       pathIndex++;
@@ -105,17 +129,23 @@ class KanjiDiagram {
 
     final builder = XmlBuilder();
 
-    builder.element("svg", nest: () {
-      final canvasWidth = (paths.length * diagramSize) ~/ 2;
-      builder.attribute("viewBox", "0 0 $canvasWidth $canvasHeight");
+    builder.element(
+      "svg",
+      nest: () {
+        final canvasWidth = (paths.length * diagramSize) ~/ 2;
+        builder.attribute("viewBox", "0 0 $canvasWidth $canvasHeight");
 
-      builder.element("g", nest: () {
-        builder.style(style.global);
+        builder.element(
+          "g",
+          nest: () {
+            builder.style(Style.global);
 
-        addGlobalGuides(builder, canvasWidth);
-        addStrokes(builder, paths);
-      });
-    });
+            addGlobalGuides(builder, canvasWidth);
+            addStrokes(builder, paths);
+          },
+        );
+      },
+    );
 
     return builder.buildDocument().toXmlString();
   }

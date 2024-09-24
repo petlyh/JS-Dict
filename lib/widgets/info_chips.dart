@@ -15,12 +15,12 @@ class InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
-      builder: (dynamicColorScheme, _) =>
-          Consumer<ThemeProvider>(builder: (context, themeProvider, _) {
-        final dynamicColorsDisabled =
-            dynamicColorScheme == null || !themeProvider.dynamicColors;
+      builder: (dynamicColorScheme, _) => Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          final dynamicColorsDisabled =
+              dynamicColorScheme == null || !themeProvider.dynamicColors;
 
-        return Card(
+          return Card(
             surfaceTintColor: dynamicColorsDisabled ? color : null,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(48)),
@@ -40,8 +40,10 @@ class InfoChip extends StatelessWidget {
                       )
                     : JpText(text),
               ),
-            ));
-      }),
+            ),
+          );
+        },
+      ),
     );
   }
 }

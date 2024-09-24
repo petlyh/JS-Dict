@@ -15,8 +15,10 @@ void main() async {
 }
 
 void registerKanjivgLicense() => LicenseRegistry.addLicense(() async* {
-      yield LicenseEntryWithLineBreaks(["KanjiVg"],
-          await rootBundle.loadString("assets/kanjivg/LICENSE.kanjivg.txt"));
+      yield LicenseEntryWithLineBreaks(
+        ["KanjiVg"],
+        await rootBundle.loadString("assets/kanjivg/LICENSE.kanjivg.txt"),
+      );
     });
 
 const mainColor = Color(0xFF27CA27);
@@ -26,8 +28,9 @@ class JsDictApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DynamicColorBuilder(builder: (lightDynamic, darkDynamic) {
-      return MultiProvider(
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => QueryProvider()),
             ChangeNotifierProvider(create: (_) => ThemeProvider()),
@@ -57,8 +60,10 @@ class JsDictApp extends StatelessWidget {
               ),
               home: const SearchScreen(),
             );
-          });
-    });
+          },
+        );
+      },
+    );
   }
 
   // Adds a "Debug" suffix if the app is running in debug mode.

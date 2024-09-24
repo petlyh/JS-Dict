@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
-import "package:jsdict/widgets/copyable_furigana_text.dart";
-import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/copyright_text.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
+import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/loader.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
@@ -35,7 +35,8 @@ class SentenceDetailsScreen extends StatelessWidget {
           ? _SentenceDetails(sentence!)
           : LoaderWidget(
               onLoad: () => getClient().sentenceDetails(sentenceId!),
-              handler: _SentenceDetails.new),
+              handler: _SentenceDetails.new,
+            ),
     );
   }
 }
@@ -53,27 +54,33 @@ class _SentenceDetails extends StatelessWidget {
         child: Column(
           children: [
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  children: [
-                    CopyableFuriganaText(sentence.japanese,
-                        style: const TextStyle(fontSize: 18).jp(),
-                        rubyAlign: CrossAxisAlignment.start,
-                        wrapAlign: TextAlign.start),
-                    const SizedBox(height: 20),
-                    SelectableText(sentence.english,
-                        style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 20),
-                    if (!sentence.isExample) CopyrightText(sentence.copyright!),
-                  ],
-                )),
-            sentence.kanji != null
-                ? KanjiItemList(sentence.kanji!)
-                : LoaderWidget(
-                    onLoad: () =>
-                        getClient().search<Kanji>(sentence.japanese.text),
-                    handler: (response) => KanjiItemList(response.results)),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  CopyableFuriganaText(
+                    sentence.japanese,
+                    style: const TextStyle(fontSize: 18).jp(),
+                    rubyAlign: CrossAxisAlignment.start,
+                    wrapAlign: TextAlign.start,
+                  ),
+                  const SizedBox(height: 20),
+                  SelectableText(
+                    sentence.english,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 20),
+                  if (!sentence.isExample) CopyrightText(sentence.copyright!),
+                ],
+              ),
+            ),
+            if (sentence.kanji != null)
+              KanjiItemList(sentence.kanji!)
+            else
+              LoaderWidget(
+                onLoad: () => getClient().search<Kanji>(sentence.japanese.text),
+                handler: (response) => KanjiItemList(response.results),
+              ),
           ],
         ),
       ),

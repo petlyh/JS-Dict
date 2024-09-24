@@ -13,21 +13,23 @@ class SearchResponse<T extends SearchType> {
   final GrammarInfo? grammarInfo;
   final Conversion? conversion;
 
-  const SearchResponse(
-      {required this.results,
-      this.hasNextPage = false,
-      this.zenEntries = const [],
-      this.correction,
-      this.noMatchesFor = const [],
-      this.grammarInfo,
-      this.conversion});
+  const SearchResponse({
+    required this.results,
+    this.hasNextPage = false,
+    this.zenEntries = const [],
+    this.correction,
+    this.noMatchesFor = const [],
+    this.grammarInfo,
+    this.conversion,
+  });
 
-  const SearchResponse.noMatches(this.noMatchesFor,
-      {this.zenEntries = const [],
-      this.correction,
-      this.grammarInfo,
-      this.conversion})
-      : results = const [],
+  const SearchResponse.noMatches(
+    this.noMatchesFor, {
+    this.zenEntries = const [],
+    this.correction,
+    this.grammarInfo,
+    this.conversion,
+  })  : results = const [],
         hasNextPage = false;
 }
 

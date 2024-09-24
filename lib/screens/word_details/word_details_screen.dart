@@ -2,20 +2,19 @@ import "package:audioplayers/audioplayers.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
-import "package:jsdict/widgets/copyable_furigana_text.dart";
-import "package:jsdict/widgets/wikipedia.dart";
-import "package:jsdict/widgets/entry_tile.dart";
-import "package:jsdict/models/models.dart";
+import "package:jsdict/screens/word_details/definition_tile.dart";
+import "package:jsdict/screens/word_details/inflection_table.dart";
 import "package:jsdict/singletons.dart";
+import "package:jsdict/widgets/copyable_furigana_text.dart";
+import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/loader.dart";
-
-import "definition_tile.dart";
-import "inflection_table.dart";
+import "package:jsdict/widgets/wikipedia.dart";
 
 class WordDetailsScreen extends StatelessWidget {
   WordDetailsScreen(String this.wordInput, {super.key})
@@ -67,13 +66,14 @@ class WordDetailsScreen extends StatelessWidget {
                 ? IconButton(
                     tooltip: "Play Audio",
                     onPressed: () => AudioPlayer().play(
-                          UrlSource(audioUrl!),
-                          mode: PlayerMode.lowLatency,
-                          ctx: AudioContextConfig(
-                            focus: AudioContextConfigFocus.duckOthers,
-                          ).build(),
-                        ),
-                    icon: const Icon(Icons.play_arrow))
+                      UrlSource(audioUrl!),
+                      mode: PlayerMode.lowLatency,
+                      ctx: AudioContextConfig(
+                        focus: AudioContextConfigFocus.duckOthers,
+                      ).build(),
+                    ),
+                    icon: const Icon(Icons.play_arrow),
+                  )
                 : const SizedBox(),
           ),
           ValueListenableBuilder(
@@ -126,11 +126,16 @@ class _WordContentWidget extends StatelessWidget {
                 if (word.commonWord)
                   const InfoChip("Common", color: Colors.green),
                 if (word.jlptLevel != JLPTLevel.none)
-                  InfoChip("JLPT ${word.jlptLevel.toString()}",
-                      color: Colors.blue),
-                ...word.wanikaniLevels.map((wanikaniLevel) => InfoChip(
+                  InfoChip(
+                    "JLPT ${word.jlptLevel}",
+                    color: Colors.blue,
+                  ),
+                ...word.wanikaniLevels.map(
+                  (wanikaniLevel) => InfoChip(
                     "WaniKani Lv. $wanikaniLevel",
-                    color: Colors.blue)),
+                    color: Colors.blue,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -141,16 +146,19 @@ class _WordContentWidget extends StatelessWidget {
                 title: const Text("Definitions"),
                 children: [
                   SelectionArea(
-                      child: Column(
-                    children: word.definitions
-                        .map((definition) => DefinitionTile(
+                    child: Column(
+                      children: word.definitions
+                          .map(
+                            (definition) => DefinitionTile(
                               definition,
                               textColor: textColor,
                               isLast: definition == word.definitions.last,
-                            ))
-                        .toList()
-                        .intersperce(const Divider(height: 0)),
-                  ))
+                            ),
+                          )
+                          .toList()
+                          .intersperce(const Divider(height: 0)),
+                    ),
+                  ),
                 ],
               ),
               if (word.inflectionData != null)
@@ -164,13 +172,17 @@ class _WordContentWidget extends StatelessWidget {
                   shadowColor: shadowColor,
                   title: const Text("Collocations"),
                   children: word.collocations
-                      .map((collocation) => EntryTile(
-                            isLast: collocation == word.collocations.last,
-                            title: JpText(collocation.word),
-                            subtitle: Text(collocation.meaning),
-                            onTap: pushScreen(context,
-                                WordDetailsScreen.search(collocation.word)),
-                          ))
+                      .map(
+                        (collocation) => EntryTile(
+                          isLast: collocation == word.collocations.last,
+                          title: JpText(collocation.word),
+                          subtitle: Text(collocation.meaning),
+                          onTap: pushScreen(
+                            context,
+                            WordDetailsScreen.search(collocation.word),
+                          ),
+                        ),
+                      )
                       .toList()
                       .intersperce(const Divider(height: 0)),
                 ),
@@ -181,23 +193,33 @@ class _WordContentWidget extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       alignment: Alignment.centerLeft,
                       child: Wrap(
-                          alignment: WrapAlignment.start,
-                          spacing: 2,
-                          runSpacing: 8,
-                          children: word.otherForms
-                              .map((otherForm) => Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 6),
-                                    child: CopyableFuriganaText([
-                                      FuriganaPart(
-                                          otherForm.form, otherForm.reading)
-                                    ], style: const TextStyle(fontSize: 16)),
-                                  ))
-                              .toList()),
-                    )
+                        spacing: 2,
+                        runSpacing: 8,
+                        children: word.otherForms
+                            .map(
+                              (otherForm) => Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                ),
+                                child: CopyableFuriganaText(
+                                  [
+                                    FuriganaPart(
+                                      otherForm.form,
+                                      otherForm.reading,
+                                    ),
+                                  ],
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
                   ],
                 ),
               if (word.notes.isNotEmpty)
@@ -210,7 +232,9 @@ class _WordContentWidget extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
                             child: JpText(word.notes.deduplicate().join("\n")),
                           ),
                         ],

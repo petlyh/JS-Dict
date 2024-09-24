@@ -19,7 +19,7 @@ class ThemeProvider extends ChangeNotifier {
   String get currentThemeString =>
       _preferences.getString(_themeKey) ?? _defaultThemeString;
 
-  void setTheme(String name) async {
+  Future<void> setTheme(String name) async {
     await _preferences.setString(_themeKey, name);
     notifyListeners();
   }
@@ -27,7 +27,7 @@ class ThemeProvider extends ChangeNotifier {
   static const _dynamicColorsKey = "DynamicColors";
   bool get dynamicColors => _preferences.getBool(_dynamicColorsKey) ?? true;
 
-  void setDynamicColors(bool value) async {
+  Future<void> setDynamicColors(bool value) async {
     await _preferences.setBool(_dynamicColorsKey, value);
     notifyListeners();
   }

@@ -6,10 +6,10 @@ typedef _StringInflectionEntry = ({String affermative, String negative});
 sealed class InflectionData {
   final String name;
 
-  const InflectionData._(this.name);
-
   factory InflectionData(String word, String code) =>
       _createInflectionData(word, code);
+
+  const InflectionData._(this.name);
 
   Map<String, InflectionEntry> toMap();
 }
@@ -107,18 +107,19 @@ VerbData _verb(String word, String code) => switch (code) {
     };
 
 IAdjectiveData _iAdjective(String word) => _withStem(
-    word,
-    "い",
-    (stem) => IAdjectiveData._(
-          nonPast: (
-            affermative: word,
-            negative: "$stemくない",
-          ),
-          past: (
-            affermative: "$stemかった",
-            negative: "$stemくなかった",
-          ),
-        ));
+      word,
+      "い",
+      (stem) => IAdjectiveData._(
+        nonPast: (
+          affermative: word,
+          negative: "$stemくない",
+        ),
+        past: (
+          affermative: "$stemかった",
+          negative: "$stemくなかった",
+        ),
+      ),
+    );
 
 VerbData _ichidan(String word) => _withStem(
       word,
@@ -161,8 +162,14 @@ enum _GodanData {
   final String takei;
   final String ending;
 
-  const _GodanData(this.base, this.renyokei, this.mizenkei, this.meireikei,
-      this.takei, this.ending);
+  const _GodanData(
+    this.base,
+    this.renyokei,
+    this.mizenkei,
+    this.meireikei,
+    this.takei,
+    this.ending,
+  );
 
   factory _GodanData.fromCode(String code) => switch (code) {
         "u" => u,
@@ -231,107 +238,113 @@ VerbData _godan(String word, _GodanData data) => _withStem(
       ),
     );
 
-typedef _FuriganaSuffixer = Furigana Function(String furigana, String suffix);
-
 T _withFuriganaSuffixer<T>(
-        String stem, T Function(_FuriganaSuffixer suffix) f) =>
-    f((furigana, suffix) =>
-        [FuriganaPart(stem, furigana), FuriganaPart.textOnly(suffix)]);
+  String stem,
+  T Function(Furigana Function(String, String) suffix) f,
+) =>
+    f(
+      (furigana, suffix) =>
+          [FuriganaPart(stem, furigana), FuriganaPart.textOnly(suffix)],
+    );
 
 final _kuru = _withFuriganaSuffixer(
-    "来",
-    (suffix) => VerbData._(
-          name: "Kuru verb - special class",
-          nonPast: (
-            affermative: suffix("く", "る"),
-            negative: suffix("こ", "ない"),
-          ),
-          past: (
-            affermative: suffix("き", "た"),
-            negative: suffix("こ", "なかった"),
-          ),
-          nonPastPolite: (
-            affermative: suffix("き", "ます"),
-            negative: suffix("き", "ません"),
-          ),
-          pastPolite: (
-            affermative: suffix("き", "ました"),
-            negative: suffix("き", "ませんでした"),
-          ),
-          teForm: (
-            affermative: suffix("き", "て"),
-            negative: suffix("こ", "なくて"),
-          ),
-          potential: (
-            affermative: suffix("こ", "られる"),
-            negative: suffix("こ", "られない"),
-          ),
-          passive: (
-            affermative: suffix("こ", "られる"),
-            negative: suffix("こ", "られない"),
-          ),
-          causative: (
-            affermative: suffix("こ", "させる"),
-            negative: suffix("こ", "させない"),
-          ),
-          causativePassive: (
-            affermative: suffix("こ", "させられる"),
-            negative: suffix("こ", "させられない"),
-          ),
-          imperative: (
-            affermative: suffix("こ", "い"),
-            negative: suffix("く", "るな"),
-          ),
-        ));
+  "来",
+  (suffix) => VerbData._(
+    name: "Kuru verb - special class",
+    nonPast: (
+      affermative: suffix("く", "る"),
+      negative: suffix("こ", "ない"),
+    ),
+    past: (
+      affermative: suffix("き", "た"),
+      negative: suffix("こ", "なかった"),
+    ),
+    nonPastPolite: (
+      affermative: suffix("き", "ます"),
+      negative: suffix("き", "ません"),
+    ),
+    pastPolite: (
+      affermative: suffix("き", "ました"),
+      negative: suffix("き", "ませんでした"),
+    ),
+    teForm: (
+      affermative: suffix("き", "て"),
+      negative: suffix("こ", "なくて"),
+    ),
+    potential: (
+      affermative: suffix("こ", "られる"),
+      negative: suffix("こ", "られない"),
+    ),
+    passive: (
+      affermative: suffix("こ", "られる"),
+      negative: suffix("こ", "られない"),
+    ),
+    causative: (
+      affermative: suffix("こ", "させる"),
+      negative: suffix("こ", "させない"),
+    ),
+    causativePassive: (
+      affermative: suffix("こ", "させられる"),
+      negative: suffix("こ", "させられない"),
+    ),
+    imperative: (
+      affermative: suffix("こ", "い"),
+      negative: suffix("く", "るな"),
+    ),
+  ),
+);
 
 final _suruSpecial = _withFuriganaSuffixer(
-    "為",
-    (suffix) => VerbData._(
-          name: "Suru verb - included",
-          nonPast: (
-            affermative: suffix("す", "る"),
-            negative: suffix("し", "ない"),
-          ),
-          past: (
-            affermative: suffix("し", "た"),
-            negative: suffix("し", "なかった"),
-          ),
-          nonPastPolite: (
-            affermative: suffix("し", "ます"),
-            negative: suffix("し", "ません"),
-          ),
-          pastPolite: (
-            affermative: suffix("し", "ました"),
-            negative: suffix("し", "ませんでした"),
-          ),
-          teForm: (
-            affermative: suffix("し", "て"),
-            negative: suffix("し", "なくて"),
-          ),
-          potential: (
-            affermative: "できる".furigana,
-            negative: "できない".furigana,
-          ),
-          passive: (
-            affermative: suffix("さ", "れる"),
-            negative: suffix("さ", "れない"),
-          ),
-          causative: (
-            affermative: suffix("さ", "せる"),
-            negative: suffix("さ", "せない"),
-          ),
-          causativePassive: (
-            affermative: suffix("さ", "せられる"),
-            negative: suffix("さ", "せられない"),
-          ),
-          imperative: (
-            affermative: suffix("し", "ろ"),
-            negative: suffix("す", "るな"),
-          ),
-        ));
+  "為",
+  (suffix) => VerbData._(
+    name: "Suru verb - included",
+    nonPast: (
+      affermative: suffix("す", "る"),
+      negative: suffix("し", "ない"),
+    ),
+    past: (
+      affermative: suffix("し", "た"),
+      negative: suffix("し", "なかった"),
+    ),
+    nonPastPolite: (
+      affermative: suffix("し", "ます"),
+      negative: suffix("し", "ません"),
+    ),
+    pastPolite: (
+      affermative: suffix("し", "ました"),
+      negative: suffix("し", "ませんでした"),
+    ),
+    teForm: (
+      affermative: suffix("し", "て"),
+      negative: suffix("し", "なくて"),
+    ),
+    potential: (
+      affermative: "できる".furigana,
+      negative: "できない".furigana,
+    ),
+    passive: (
+      affermative: suffix("さ", "れる"),
+      negative: suffix("さ", "れない"),
+    ),
+    causative: (
+      affermative: suffix("さ", "せる"),
+      negative: suffix("さ", "せない"),
+    ),
+    causativePassive: (
+      affermative: suffix("さ", "せられる"),
+      negative: suffix("さ", "せられない"),
+    ),
+    imperative: (
+      affermative: suffix("し", "ろ"),
+      negative: suffix("す", "るな"),
+    ),
+  ),
+);
 
 _StringInflectionEntry _entryReadingWithStem(
-        String stem, InflectionEntry entry) =>
+  String stem,
+  InflectionEntry entry,
+) =>
     (
       affermative: stem + entry.affermative.reading,
       negative: stem + entry.negative.reading
