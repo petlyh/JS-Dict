@@ -2,10 +2,9 @@ import "package:collection/collection.dart";
 
 extension ListExtensions on List<dynamic> {
   List<T> intersperce<T>(T item) => List<T>.from(this)
-      .map((element) => [item, element])
+      .mapIndexed((index, element) => [if (index != 0) item, element])
       .flattened
-      .toList()
-      .sublist(1);
+      .toList();
 
   List<T> deduplicate<T>() => toSet().toList() as List<T>;
 
