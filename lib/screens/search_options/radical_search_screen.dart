@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
@@ -107,7 +109,7 @@ class _RadicalSelection extends StatelessWidget {
   Widget build(BuildContext context) {
     final strokeIndicatorColor = Theme.of(context).highlightColor;
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final selectedColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final selectedColor = Theme.of(context).colorScheme.surfaceVariant;
     final disabledColor = Theme.of(context).focusColor;
 
     return SingleChildScrollView(
@@ -172,8 +174,7 @@ class _KanjiSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final backgroundColor =
-        Theme.of(context).colorScheme.surfaceContainerHighest;
+    final backgroundColor = Theme.of(context).colorScheme.surfaceVariant;
 
     return matchingKanji.isEmpty
         ? const Center(child: Text("Select radicals"))
