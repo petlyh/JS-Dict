@@ -31,7 +31,7 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
       .querySelector("div.grammar-breakdown")
       ?.transform(_parseGrammarInfo);
 
-  final hasNextPage = document.querySelector("a.more") != null;
+  final hasNextPage = document.querySelector("#primary a.more") != null;
 
   List<U> collectResults<U extends SearchType>(
     String selector,
