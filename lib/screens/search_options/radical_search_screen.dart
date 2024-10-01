@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
@@ -77,7 +75,7 @@ class _RadicalSelection extends StatelessWidget {
     final theme = Theme.of(context);
 
     final textColor = theme.textTheme.bodyLarge!.color;
-    final selectedColor = theme.colorScheme.surfaceVariant;
+    final selectedColor = theme.colorScheme.surfaceContainerHighest;
     final disabledColor = theme.focusColor;
 
     return SingleChildScrollView(
@@ -139,8 +137,9 @@ class _KanjiSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final backgroundColor = Theme.of(context).colorScheme.surfaceVariant;
+    final theme = Theme.of(context);
+    final textColor = theme.textTheme.bodyLarge!.color;
+    final backgroundColor = theme.colorScheme.surfaceContainerHighest;
 
     return matches.isEmpty
         ? const Center(child: Text("Select radicals"))

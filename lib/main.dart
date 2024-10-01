@@ -21,10 +21,34 @@ void registerKanjivgLicense() => LicenseRegistry.addLicense(() async* {
       );
     });
 
-const mainColor = Color(0xFF27CA27);
-
 class JsDictApp extends StatelessWidget {
   const JsDictApp({super.key});
+
+  static const _mainColor = Color(0xFF27CA27);
+
+  /// Returns [title] with an added "Debug" suffix if the app is running in debug mode.
+  String _createTitle(String title) {
+    var fullTitle = title;
+    assert(() {
+      fullTitle += " Debug";
+      return true;
+    }());
+    return fullTitle;
+  }
+
+  /// Modifies [scheme] to account for dynamic_color not supporting tone-based colors yet.
+  ///
+  /// See https://github.com/material-foundation/flutter-packages/issues/582
+  ColorScheme? _fixDynamicScheme(ColorScheme? scheme) => scheme?.copyWith(
+        // Color used for cards, apply tint manually.
+        surfaceContainerLow: ElevationOverlay.applySurfaceTint(
+          scheme.surface,
+          scheme.primary,
+          1,
+        ),
+        // ignore: deprecated_member_use
+        surfaceContainerHighest: scheme.surfaceVariant,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +63,27 @@ class JsDictApp extends StatelessWidget {
             final themeProvider = Provider.of<ThemeProvider>(context);
 
             return MaterialApp(
-              title: createTitle("JS-Dict"),
+              title: _createTitle("JS-Dict"),
               themeMode: themeProvider.currentTheme,
               theme: ThemeData(
                 useMaterial3: true,
-                colorScheme: themeProvider.dynamicColors ? lightDynamic : null,
+                colorScheme: themeProvider.dynamicColors
+                    ? _fixDynamicScheme(lightDynamic)
+                    : null,
                 colorSchemeSeed:
                     (lightDynamic == null || !themeProvider.dynamicColors)
-                        ? mainColor
+                        ? _mainColor
                         : null,
               ),
               darkTheme: ThemeData(
                 brightness: Brightness.dark,
                 useMaterial3: true,
-                colorScheme: themeProvider.dynamicColors ? darkDynamic : null,
+                colorScheme: themeProvider.dynamicColors
+                    ? _fixDynamicScheme(darkDynamic)
+                    : null,
                 colorSchemeSeed:
                     (darkDynamic == null || !themeProvider.dynamicColors)
-                        ? mainColor
+                        ? _mainColor
                         : null,
               ),
               home: const SearchScreen(),
@@ -64,15 +92,5 @@ class JsDictApp extends StatelessWidget {
         );
       },
     );
-  }
-
-  // Adds a "Debug" suffix if the app is running in debug mode.
-  String createTitle(String title) {
-    var fullTitle = title;
-    assert(() {
-      fullTitle += " Debug";
-      return true;
-    }());
-    return fullTitle;
   }
 }
