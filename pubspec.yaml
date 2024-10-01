@@ -16,6 +16,7 @@ dependencies:
   expansion_tile_card: ^3.0.0
   flutter:
     sdk: flutter
+  flutter_hooks: ^0.18.6
   flutter_svg: ^2.0.9
   get_it: ^8.0.0
   html: ^0.15.3

@@ -7,11 +7,18 @@ import "package:http/http.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
 
 class ErrorIndicator extends StatelessWidget {
-  const ErrorIndicator(this.error, {super.key, this.stackTrace, this.onRetry});
+  const ErrorIndicator(
+    this.error, {
+    super.key,
+    this.stackTrace,
+    this.onRetry,
+    this.isCompact = false,
+  });
 
   final Object error;
-  final Function()? onRetry;
   final StackTrace? stackTrace;
+  final void Function()? onRetry;
+  final bool isCompact;
 
   String get _userMessage {
     if (error is NotFoundException) {
@@ -25,28 +32,46 @@ class ErrorIndicator extends StatelessWidget {
     return "An error occured";
   }
 
+  Widget _createButton({
+    required String name,
+    required IconData icon,
+    void Function()? onTap,
+  }) =>
+      isCompact
+          ? IconButton.filledTonal(
+              icon: Icon(icon),
+              tooltip: name,
+              onPressed: onTap,
+            )
+          : ElevatedButton.icon(
+              icon: Icon(icon),
+              label: Text(name),
+              onPressed: onTap,
+            );
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.all(20.0),
-        child: Column(
+        margin: EdgeInsets.all(isCompact ? 12 : 24),
+        child: Flex(
+          direction: isCompact ? Axis.horizontal : Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(_userMessage, textAlign: TextAlign.center),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              child: const Text("Show Error"),
-              onPressed: () =>
-                  showErrorInfoDialog(context, error, stackTrace: stackTrace),
+            const SizedBox(height: 16, width: 16),
+            _createButton(
+              name: "Show Error",
+              icon: Icons.info_outline,
+              onTap: () => showErrorInfoDialog(
+                context: context,
+                error: error,
+                stackTrace: stackTrace,
+              ),
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 4),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.refresh),
-                label: const Text("Retry"),
-                onPressed: onRetry,
-              ),
+              const SizedBox(height: 2, width: 2),
+              _createButton(name: "Retry", icon: Icons.refresh, onTap: onRetry),
             ],
           ],
         ),
@@ -55,9 +80,9 @@ class ErrorIndicator extends StatelessWidget {
   }
 }
 
-void showErrorInfoDialog(
-  BuildContext context,
-  Object error, {
+void showErrorInfoDialog({
+  required BuildContext context,
+  required Object error,
   StackTrace? stackTrace,
 }) =>
     showDialog(

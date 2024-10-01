@@ -1,11 +1,15 @@
+import "dart:async";
+
 import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/screens/search/paging_hook.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/error_indicator.dart";
@@ -15,10 +19,11 @@ import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";
 import "package:jsdict/widgets/items/word_item.dart";
 import "package:jsdict/widgets/link_span.dart";
+import "package:jsdict/widgets/loader.dart";
 import "package:provider/provider.dart";
 
 class ResultPageScreen<T extends SearchType> extends StatelessWidget {
-  const ResultPageScreen(this.query, {super.key});
+  const ResultPageScreen({super.key, required this.query});
 
   final String query;
 
@@ -26,268 +31,308 @@ class ResultPageScreen<T extends SearchType> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(query)),
-      body: ResultPage<T>(query),
+      body: ResultPage<T>(query: query),
     );
   }
 }
 
-class ResultPage<T extends SearchType> extends StatefulWidget {
-  const ResultPage(this.query, {super.key});
+class ResultPage<T extends SearchType> extends HookWidget {
+  const ResultPage({super.key, required this.query});
 
   final String query;
 
   @override
-  State<ResultPage<T>> createState() => _ResultPageState<T>();
+  Widget build(BuildContext context) {
+    useAutomaticKeepAlive();
+
+    return LoaderWidget(
+      onLoad: () => getClient().search<T>(query),
+      handler: (response) => _ResultPageContent(
+        query: query,
+        initialResponse: response,
+      ),
+    );
+  }
 }
 
-class _ResultPageState<T extends SearchType> extends State<ResultPage<T>>
-    with AutomaticKeepAliveClientMixin<ResultPage<T>> {
-  @override
-  final bool wantKeepAlive = true;
+class _ResultPageContent<T extends SearchType> extends HookWidget {
+  const _ResultPageContent({
+    required this.query,
+    required this.initialResponse,
+  });
 
-  final pagingController = PagingController<int, T>(firstPageKey: 1);
+  final String query;
+  final SearchResponse<T> initialResponse;
 
-  List<String> noMatchesFor = [];
-
-  final zenInfo = ValueNotifier<ZenInfo?>(null);
-  final correction = ValueNotifier<Correction?>(null);
-  final grammarInfo = ValueNotifier<GrammarInfo?>(null);
-  final conversion = ValueNotifier<Conversion?>(null);
-
-  String get query => zenInfo.value?.selectedEntry ?? widget.query;
-
-  @override
-  void initState() {
-    pagingController.addPageRequestListener(_fetchPage);
-    super.initState();
-  }
-
-  void _selectZenEntry(int index) {
-    if (zenInfo.value == null) {
-      return;
-    }
-
-    zenInfo.value = zenInfo.value!.withSelected(index);
-    pagingController.refresh();
-  }
-
-  Future<void> _fetchPage(int pageKey) async {
-    noMatchesFor = [];
-
-    if (pageKey == 1) {
-      correction.value = null;
-      grammarInfo.value = null;
-      conversion.value = null;
-    }
-
-    try {
-      final cachedQuery = query;
-      final response = await getClient().search<T>(cachedQuery, page: pageKey);
-
-      // avoid accessing the PagingController after the widget has been disposed
-      if (!mounted) return;
-
-      // restart if selected zen entry was changed during request
-      if (cachedQuery != query) {
-        return _fetchPage(pageKey);
-      }
-
-      if (response.noMatchesFor.isNotEmpty) {
-        noMatchesFor = response.noMatchesFor;
-      }
-
-      if (pageKey == 1) {
-        if (zenInfo.value == null && response.zenEntries.isNotEmpty) {
-          zenInfo.value = ZenInfo(response.zenEntries);
-        }
-        correction.value = response.correction;
-        grammarInfo.value = response.grammarInfo;
-        conversion.value = response.conversion;
-      }
-
-      if (!response.hasNextPage) {
-        pagingController.appendLastPage(response.results);
-        return;
-      }
-
-      pagingController.appendPage(response.results, pageKey + 1);
-    } catch (error, stackTrace) {
-      pagingController.error = (error, stackTrace);
-    }
-  }
+  List<Widget> _onReponse(SearchResponse<T> response, {required int key}) => [
+        if (response.results.isEmpty)
+          _NoResultsText(noMatchesFor: response.noMatchesFor),
+        if (response.conversion != null)
+          _ConversionText(conversion: response.conversion!),
+        if (response.grammarInfo != null)
+          _GrammarInfoText(info: response.grammarInfo!),
+        if (response.correction != null)
+          _CorrectionText(correction: response.correction!),
+        if (response.results.isNotEmpty)
+          _PagedResultList(
+            key: ValueKey(key),
+            query: query,
+            initialState: PagingState<int, T>(
+              itemList: response.results,
+              nextPageKey: response.hasNextPage ? 2 : null,
+            ),
+          ),
+      ];
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final zenIndex = useRef(0);
+    final zenEntries = initialResponse.zenEntries;
 
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final queryProvider = Provider.of<QueryProvider>(context, listen: false);
+    final future = useState<Future<SearchResponse<T>>>(
+      SynchronousFuture(initialResponse),
+    );
+
+    final snapshot = useFuture(future.value, preserveState: false);
+
+    final cache = useRef(<int, SearchResponse<T>>{});
+
+    if (snapshot.hasData && !cache.value.containsKey(zenIndex.value)) {
+      cache.value[zenIndex.value] = snapshot.requireData;
+    }
 
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
-        SearchMetaInfo(
-          listenable: zenInfo,
-          builder: (context, value) => Wrap(
-            alignment: WrapAlignment.center,
-            children: value.entries.mapIndexed((index, entry) {
-              final selected = value.selectedIndex == index;
-
-              return InfoChip(
-                entry,
-                icon: selected ? Icons.check : null,
-                onTap: !selected ? () => _selectZenEntry(index) : null,
-              );
-            }).toList(),
+        if (zenEntries.isNotEmpty)
+          _ZenBar(
+            entries: zenEntries,
+            selectedIndex: zenIndex.value,
+            onSelect: (index) {
+              zenIndex.value = index;
+              future.value = cache.value.containsKey(index)
+                  ? SynchronousFuture(cache.value[index]!)
+                  : getClient().search<T>(zenEntries[index]);
+            },
           ),
-        ),
-        SearchMetaInfo(
-          listenable: conversion,
-          builder: (_, value) => SelectableText(
-            "${value.original} is ${value.converted}",
-            textAlign: TextAlign.center,
-            style: jpTextStyle,
-          ),
-        ),
-        SearchMetaInfo(
-          listenable: grammarInfo,
-          builder: (context, value) => SelectableText.rich(
-            textAlign: TextAlign.center,
-            TextSpan(
-              style: TextStyle(color: textColor, height: 1.5).jp(),
-              children: [
-                TextSpan(text: value.word),
-                const TextSpan(text: " could be an inflection of "),
-                LinkSpan(
-                  context,
-                  text: value.possibleInflectionOf,
-                  onTap: pushScreen(
-                    context,
-                    WordDetailsScreen.search(
-                      value.possibleInflectionOf,
-                    ),
-                  ),
-                ),
-              ],
+        if (snapshot.hasData)
+          ..._onReponse(snapshot.requireData, key: zenIndex.value)
+        else if (snapshot.hasError)
+          _paddedSliverAdapter(
+            child: ErrorIndicator(
+              snapshot.error!,
+              stackTrace: snapshot.stackTrace,
+              onRetry: () => future.value =
+                  getClient().search<T>(zenEntries[zenIndex.value]),
             ),
-          ),
-        ),
-        SearchMetaInfo(
-          listenable: correction,
-          builder: (_, value) => SelectableText.rich(
-            textAlign: TextAlign.center,
-            TextSpan(
-              style: TextStyle(color: textColor, height: 1.5).jp(),
-              children: [
-                const TextSpan(text: "Searched for "),
-                TextSpan(
-                  text: value.effective,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const TextSpan(text: "\n"),
-                if (!value.noMatchesForOriginal) ...[
-                  const TextSpan(text: "Try searching for "),
-                  LinkSpan(
-                    context,
-                    text: value.original,
-                    bold: true,
-                    onTap: () {
-                      queryProvider.searchController.text = value.original;
-                      queryProvider.updateQuery();
-                    },
-                  ),
-                ] else
-                  TextSpan(text: "No matches for ${value.original}"),
-              ],
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.all(8.0),
-          sliver: PagedSliverList<int, T>(
-            pagingController: pagingController,
-            builderDelegate: PagedChildBuilderDelegate<T>(
-              itemBuilder: (context, item, index) => _createItem(item),
-              firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                (pagingController.error as (Object, StackTrace)).$1,
-                stackTrace: (pagingController.error as (Object, StackTrace)).$2,
-                onRetry: pagingController.refresh,
-              ),
-              noItemsFoundIndicatorBuilder: (context) {
-                return Container(
-                  alignment: Alignment.topCenter,
-                  margin: const EdgeInsets.all(16),
-                  child: Text(
-                    noMatchesFor.isNotEmpty
-                        ? "No matches for:\n${noMatchesFor.join("\n")}"
-                        : "No matches found",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(height: 1.75),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
+          )
+        else if (snapshot.connectionState == ConnectionState.waiting)
+          _paddedSliverAdapter(child: loadingIndicator),
       ],
     );
   }
-
-  Widget _createItem(T item) {
-    return switch (T) {
-      const (Word) => WordItem(word: item as Word),
-      const (Kanji) => KanjiItem(kanji: item as Kanji),
-      const (Sentence) => SentenceItem(sentence: item as Sentence),
-      const (Name) => NameItem(name: item as Name),
-      _ => throw Exception("Unknown type"),
-    };
-  }
-
-  @override
-  void dispose() {
-    pagingController.dispose();
-    zenInfo.dispose();
-    correction.dispose();
-    grammarInfo.dispose();
-    conversion.dispose();
-    super.dispose();
-  }
 }
 
-class SearchMetaInfo<T> extends StatelessWidget {
-  const SearchMetaInfo({
+class _PagedResultList<T extends SearchType> extends HookWidget {
+  const _PagedResultList({
     super.key,
-    required this.listenable,
-    required this.builder,
+    required this.query,
+    required this.initialState,
   });
 
-  final ValueListenable<T?> listenable;
-  final Widget Function(BuildContext context, T value) builder;
+  final String query;
+  final PagingState<int, T> initialState;
 
-  static final padding =
-      const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12);
+  Future<void> _onRequest(PagingController<int, T> controller, int key) async {
+    try {
+      final response = await getClient().search<T>(query, page: key);
+
+      controller.appendPage(
+        response.results,
+        response.hasNextPage ? key + 1 : null,
+      );
+    } catch (error, stackTrace) {
+      controller.error = (error, stackTrace);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<T?>(
-      valueListenable: listenable,
-      builder: (_, value, __) => SliverPadding(
-        padding: value != null ? padding : EdgeInsets.zero,
-        sliver: SliverToBoxAdapter(
-          child: value != null ? builder(context, value) : null,
+    final controller = usePagingController(
+      firstPageKey: 1,
+      requestListener: _onRequest,
+      initialState: initialState,
+    );
+
+    return SliverPadding(
+      padding: const EdgeInsets.all(8),
+      sliver: PagedSliverList<int, T>(
+        pagingController: controller,
+        builderDelegate: PagedChildBuilderDelegate<T>(
+          itemBuilder: (context, item, index) => switch (item) {
+            final Word word => WordItem(word: word),
+            final Kanji kanji => KanjiItem(kanji: kanji),
+            final Sentence sentence => SentenceItem(sentence: sentence),
+            final Name name => NameItem(name: name),
+          },
+          newPageErrorIndicatorBuilder: (context) {
+            final error = controller.error as (Object, StackTrace);
+
+            return ErrorIndicator(
+              error.$1,
+              stackTrace: error.$2,
+              onRetry: controller.retryLastFailedRequest,
+              isCompact: true,
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class ZenInfo {
+class _ZenBar extends StatelessWidget {
+  const _ZenBar({
+    required this.entries,
+    required this.selectedIndex,
+    required this.onSelect,
+  });
+
   final List<String> entries;
   final int selectedIndex;
+  final void Function(int index) onSelect;
 
-  ZenInfo(this.entries, {this.selectedIndex = 0});
+  @override
+  Widget build(BuildContext context) {
+    return _paddedSliverAdapter(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        children: entries.mapIndexed((index, entry) {
+          final isSelected = index == selectedIndex;
 
-  String get selectedEntry => entries[selectedIndex];
-
-  ZenInfo withSelected(int index) => ZenInfo(entries, selectedIndex: index);
+          return InfoChip(
+            entry,
+            icon: isSelected ? Icons.check : null,
+            onTap: !isSelected ? () => onSelect(index) : null,
+          );
+        }).toList(),
+      ),
+    );
+  }
 }
+
+class _ConversionText extends StatelessWidget {
+  const _ConversionText({required this.conversion});
+
+  final Conversion conversion;
+
+  @override
+  Widget build(BuildContext context) {
+    return _paddedSliverAdapter(
+      child: Text(
+        "${conversion.original} is ${conversion.converted}",
+        textAlign: TextAlign.center,
+        style: jpTextStyle,
+      ),
+    );
+  }
+}
+
+class _CorrectionText extends StatelessWidget {
+  const _CorrectionText({required this.correction});
+
+  final Correction correction;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+
+    return _paddedSliverAdapter(
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: TextStyle(color: textColor, height: 1.5).jp(),
+          children: [
+            const TextSpan(text: "Searched for "),
+            TextSpan(
+              text: "${correction.effective}\n",
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            if (correction.noMatchesForOriginal)
+              TextSpan(text: "No matches for ${correction.original}")
+            else ...[
+              const TextSpan(text: "Try searching for "),
+              LinkSpan(
+                context,
+                text: correction.original,
+                bold: true,
+                onTap: () => Provider.of<QueryProvider>(context, listen: false)
+                  ..searchController.text = correction.original
+                  ..updateQuery(),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NoResultsText extends StatelessWidget {
+  const _NoResultsText({required this.noMatchesFor});
+
+  final List<String> noMatchesFor;
+
+  @override
+  Widget build(BuildContext context) {
+    return _paddedSliverAdapter(
+      child: Container(
+        alignment: Alignment.topCenter,
+        margin: const EdgeInsets.all(16),
+        child: Text(
+          noMatchesFor.isNotEmpty
+              ? "No matches for:\n${noMatchesFor.join("\n")}"
+              : "No matches found",
+          textAlign: TextAlign.center,
+          style: const TextStyle(height: 1.75),
+        ),
+      ),
+    );
+  }
+}
+
+class _GrammarInfoText extends StatelessWidget {
+  const _GrammarInfoText({required this.info});
+
+  final GrammarInfo info;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+
+    return _paddedSliverAdapter(
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: TextStyle(color: textColor, height: 1.5).jp(),
+          children: [
+            TextSpan(text: "${info.word} could be an inflection of "),
+            LinkSpan(
+              context,
+              text: info.possibleInflectionOf,
+              onTap: pushScreen(
+                context,
+                WordDetailsScreen.search(info.possibleInflectionOf),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _paddedSliverAdapter({required Widget child}) => SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 12),
+      sliver: SliverToBoxAdapter(child: child),
+    );

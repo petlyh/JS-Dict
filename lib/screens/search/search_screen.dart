@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
-import "package:jsdict/packages/link_handler.dart";
+import "package:jsdict/packages/intent_handler.dart";
 import "package:jsdict/packages/navigation.dart";
-import "package:jsdict/packages/share_intent_handler.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/screens/search_options/radical_search_screen.dart";
@@ -11,45 +11,23 @@ import "package:jsdict/screens/search_options/tag_selection_screen.dart";
 import "package:jsdict/screens/settings_screen.dart";
 import "package:provider/provider.dart";
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends HookWidget {
   const SearchScreen({super.key});
 
-  static const placeholder =
-      Center(child: Text("JS-Dict", style: TextStyle(fontSize: 32.0)));
-
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  late LinkHandler _linkHandler;
-  late ShareIntentHandler _shareIntentHandler;
-  late FocusNode _searchFocusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: 4);
-    _linkHandler = LinkHandler(context, _tabController);
-    _shareIntentHandler = ShareIntentHandler(context, _tabController);
-    _searchFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _linkHandler.dispose();
-    _shareIntentHandler.dispose();
-    _searchFocusNode.dispose();
-    super.dispose();
-  }
+  static const _placeholder = Center(
+    child: Text("JS-Dict", style: TextStyle(fontSize: 32)),
+  );
 
   @override
   Widget build(BuildContext context) {
     final queryProvider = QueryProvider.of(context);
+
     final searchController = queryProvider.searchController;
+    final searchFocusNode = useFocusNode();
+
+    final tabController = useTabController(initialLength: 4);
+
+    useIntentHandler(tabController: tabController);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -61,7 +39,7 @@ class _SearchScreenState extends State<SearchScreen>
       appBar: AppBar(
         title: TextField(
           style: jpTextStyle,
-          focusNode: _searchFocusNode,
+          focusNode: searchFocusNode,
           controller: searchController,
           onSubmitted: (_) => queryProvider.updateQuery(),
           decoration: InputDecoration(
@@ -71,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen>
             suffixIcon: IconButton(
               icon: const Icon(Icons.clear),
               onPressed: () {
-                _searchFocusNode.requestFocus();
+                searchFocusNode.requestFocus();
                 searchController.clear();
               },
               tooltip: "Clear",
@@ -91,7 +69,7 @@ class _SearchScreenState extends State<SearchScreen>
           ),
         ],
         bottom: TabBar(
-          controller: _tabController,
+          controller: tabController,
           isScrollable: true,
           tabAlignment: TabAlignment.center,
           tabs: const [
@@ -104,14 +82,14 @@ class _SearchScreenState extends State<SearchScreen>
       ),
       body: Consumer<QueryProvider>(
         builder: (_, provider, __) => provider.query.isEmpty
-            ? SearchScreen.placeholder
+            ? _placeholder
             : TabBarView(
-                controller: _tabController,
+                controller: tabController,
                 children: [
-                  ResultPage<Word>(provider.query, key: UniqueKey()),
-                  ResultPage<Kanji>(provider.query, key: UniqueKey()),
-                  ResultPage<Name>(provider.query, key: UniqueKey()),
-                  ResultPage<Sentence>(provider.query, key: UniqueKey()),
+                  ResultPage<Word>(query: provider.query, key: UniqueKey()),
+                  ResultPage<Kanji>(query: provider.query, key: UniqueKey()),
+                  ResultPage<Name>(query: provider.query, key: UniqueKey()),
+                  ResultPage<Sentence>(query: provider.query, key: UniqueKey()),
                 ],
               ),
       ),

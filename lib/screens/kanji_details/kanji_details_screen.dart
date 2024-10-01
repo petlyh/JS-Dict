@@ -143,7 +143,7 @@ class _ReadingsWidget extends StatelessWidget {
   final String kanji;
   final List<String> readings;
 
-  String query(String reading) =>
+  String _query(String reading) =>
       "$kanji ${convertKatakana(reading.replaceAll(RegExp(r"[\.-]"), ""))}";
 
   @override
@@ -165,7 +165,7 @@ class _ReadingsWidget extends StatelessWidget {
                     text: reading.noBreak,
                     onTap: pushScreen(
                       context,
-                      ResultPageScreen<Word>(query(reading)),
+                      ResultPageScreen<Word>(query: _query(reading)),
                     ),
                   ),
                 )

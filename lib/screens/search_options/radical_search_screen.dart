@@ -2,6 +2,7 @@
 
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/radical_search/radical_search.dart";
 import "package:jsdict/providers/query_provider.dart";
@@ -11,79 +12,45 @@ class RadicalSearchScreen extends SearchOptionsScreen {
   const RadicalSearchScreen({super.key}) : super(body: const _RadicalSearch());
 }
 
-class _RadicalSearch extends StatefulWidget {
+class _RadicalSearch extends HookWidget {
   const _RadicalSearch();
-
-  @override
-  State<_RadicalSearch> createState() => _RadicalSearchState();
-}
-
-class _RadicalSearchState extends State<_RadicalSearch> {
-  List<String> matchingKanji = [];
-  List<String> selectedRadicals = [];
-  List<String> validRadicals = [];
-
-  void reset() {
-    setState(() {
-      matchingKanji = [];
-      selectedRadicals = [];
-      validRadicals = [];
-    });
-  }
-
-  void selectRadical(String radical) {
-    final newSelectedRadicals = selectedRadicals;
-    newSelectedRadicals.add(radical);
-    _update(newSelectedRadicals);
-  }
-
-  void deselectRadical(String radical) {
-    final newSelectedRadicals = selectedRadicals;
-    newSelectedRadicals.remove(radical);
-
-    if (newSelectedRadicals.isEmpty) {
-      reset();
-      return;
-    }
-
-    _update(newSelectedRadicals);
-  }
-
-  void _update(List<String> newSelectedRadicals) {
-    final newMatchingKanji = kanjiByRadicals(selectedRadicals);
-    final newValidRadicals = findValidRadicals(newMatchingKanji);
-
-    setState(() {
-      selectedRadicals = newSelectedRadicals;
-      matchingKanji = newMatchingKanji;
-      validRadicals = newValidRadicals;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final queryProvider = QueryProvider.of(context);
 
+    final selectedRadicals = useState(<String>[]);
+
+    final matchingKanji = selectedRadicals.value.isNotEmpty
+        ? kanjiByRadicals(selectedRadicals.value)
+        : <String>[];
+
     return Column(
       children: [
         Expanded(
           child: _KanjiSelection(
-            matchingKanji,
+            matches: matchingKanji,
             onSelect: (kanji) {
-              reset();
+              selectedRadicals.value = [];
               queryProvider.insertText(kanji);
             },
-            onReset: reset,
+            onReset: () => selectedRadicals.value = [],
           ),
         ),
         const Divider(height: 0),
         Expanded(
           flex: 3,
           child: _RadicalSelection(
-            selectedRadicals,
-            validRadicals,
-            selectRadical,
-            deselectRadical,
+            selected: selectedRadicals.value,
+            valid: matchingKanji.isNotEmpty
+                ? findValidRadicals(matchingKanji)
+                : [],
+            onSelect: (radical) => selectedRadicals.value = [
+              ...selectedRadicals.value,
+              radical,
+            ],
+            onDeselect: (radical) => selectedRadicals.value =
+                selectedRadicals.value.where((r) => r != radical).toList(),
           ),
         ),
       ],
@@ -92,66 +59,65 @@ class _RadicalSearchState extends State<_RadicalSearch> {
 }
 
 class _RadicalSelection extends StatelessWidget {
-  const _RadicalSelection(
-    this.selectedRadicals,
-    this.validRadicals,
-    this.onSelect,
-    this.onDeselect,
-  );
+  const _RadicalSelection({
+    required this.selected,
+    required this.valid,
+    required this.onSelect,
+    required this.onDeselect,
+  });
 
-  final List<String> selectedRadicals;
-  final List<String> validRadicals;
+  final List<String> selected;
+  final List<String> valid;
 
-  final Function(String) onSelect;
-  final Function(String) onDeselect;
+  final Function(String radical) onSelect;
+  final Function(String radical) onDeselect;
 
   @override
   Widget build(BuildContext context) {
-    final strokeIndicatorColor = Theme.of(context).highlightColor;
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
-    final selectedColor = Theme.of(context).colorScheme.surfaceVariant;
-    final disabledColor = Theme.of(context).focusColor;
+    final theme = Theme.of(context);
+
+    final textColor = theme.textTheme.bodyLarge!.color;
+    final selectedColor = theme.colorScheme.surfaceVariant;
+    final disabledColor = theme.focusColor;
 
     return SingleChildScrollView(
       child: Center(
         child: Wrap(
-          children: List<Widget>.from(
-            radicalsByStrokeCount.keys
-                .map(
-                  (strokeCount) => [
-                    _CustomButton(
-                      strokeCount.toString(),
-                      backgroundColor: strokeIndicatorColor,
-                      textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: textColor,
-                      ),
-                      padding: 3,
+          children: radicalsByStrokeCount.keys
+              .map(
+                (strokeCount) => [
+                  _CustomButton(
+                    strokeCount.toString(),
+                    backgroundColor: theme.highlightColor,
+                    textStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: textColor,
                     ),
-                    ...radicalsByStrokeCount[strokeCount]!.map((radical) {
-                      final isSelected = selectedRadicals.contains(radical);
-                      final isValid = validRadicals.isEmpty ||
-                          validRadicals.contains(radical);
+                    padding: 3,
+                  ),
+                  ...radicalsByStrokeCount[strokeCount]!.map((radical) {
+                    final isSelected = selected.contains(radical);
+                    final isValid = valid.isEmpty || valid.contains(radical);
 
-                      return _CustomButton(
-                        radical,
-                        onPressed: isSelected
-                            ? () => onDeselect(radical)
-                            : isValid
-                                ? () => onSelect(radical)
-                                : null,
-                        backgroundColor: isSelected ? selectedColor : null,
-                        textStyle: TextStyle(
-                          fontSize: 20,
-                          color: isValid ? textColor : disabledColor,
-                        ),
-                      );
-                    }),
-                  ],
-                )
-                .flattened,
-          ),
+                    return _CustomButton(
+                      radical,
+                      onPressed: isSelected
+                          ? () => onDeselect(radical)
+                          : isValid
+                              ? () => onSelect(radical)
+                              : null,
+                      backgroundColor: isSelected ? selectedColor : null,
+                      textStyle: TextStyle(
+                        fontSize: 20,
+                        color: isValid ? textColor : disabledColor,
+                      ),
+                    );
+                  }),
+                ],
+              )
+              .flattened
+              .toList(),
         ),
       ),
     );
@@ -159,14 +125,14 @@ class _RadicalSelection extends StatelessWidget {
 }
 
 class _KanjiSelection extends StatelessWidget {
-  const _KanjiSelection(
-    this.matchingKanji, {
+  const _KanjiSelection({
+    required this.matches,
     required this.onSelect,
     required this.onReset,
   });
 
-  final List<String> matchingKanji;
-  final Function(String) onSelect;
+  final List<String> matches;
+  final Function(String kanji) onSelect;
   final Function() onReset;
 
   static const displayLimit = 100;
@@ -176,7 +142,7 @@ class _KanjiSelection extends StatelessWidget {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
     final backgroundColor = Theme.of(context).colorScheme.surfaceVariant;
 
-    return matchingKanji.isEmpty
+    return matches.isEmpty
         ? const Center(child: Text("Select radicals"))
         : SingleChildScrollView(
             child: Padding(
@@ -191,7 +157,7 @@ class _KanjiSelection extends StatelessWidget {
                       iconColor: textColor,
                       onPressed: onReset,
                     ),
-                    ...matchingKanji.take(displayLimit).map(
+                    ...matches.take(displayLimit).map(
                           (kanji) => _CustomButton(
                             kanji,
                             onPressed: () => onSelect(kanji),

@@ -1,13 +1,21 @@
 import "package:flutter/material.dart";
+import "package:flutter_hooks/flutter_hooks.dart";
 
 import "package:jsdict/widgets/error_indicator.dart";
 
-class LoaderWidget<T> extends StatefulWidget {
+final loadingIndicator = Center(
+  child: Container(
+    margin: const EdgeInsets.all(20),
+    child: const CircularProgressIndicator(),
+  ),
+);
+
+class LoaderWidget<T> extends HookWidget {
   const LoaderWidget({
     super.key,
     required this.onLoad,
     required this.handler,
-    this.placeholder = const Text(""),
+    this.placeholder = const SizedBox.shrink(),
   });
 
   final Future<T> Function() onLoad;
@@ -15,56 +23,22 @@ class LoaderWidget<T> extends StatefulWidget {
   final Widget placeholder;
 
   @override
-  State<LoaderWidget<T>> createState() => _LoaderWidgetState<T>();
-}
-
-class _LoaderWidgetState<T> extends State<LoaderWidget<T>> {
-  late Future<T> _future;
-
-  @override
-  void initState() {
-    super.initState();
-    _future = widget.onLoad();
-  }
-
-  void _retry() {
-    setState(() {
-      _future = widget.onLoad();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Container(
-              margin: const EdgeInsets.all(20.0),
-              child: const CircularProgressIndicator(),
+    final initialFuture = useMemoized(onLoad);
+    final future = useState(initialFuture);
+    final snapshot = useFuture(future.value);
+
+    return switch (snapshot.connectionState) {
+      ConnectionState.none => placeholder,
+      ConnectionState.waiting => loadingIndicator,
+      ConnectionState.done => snapshot.hasData
+          ? handler(snapshot.data as T)
+          : ErrorIndicator(
+              snapshot.error!,
+              stackTrace: snapshot.stackTrace,
+              onRetry: () => future.value = onLoad(),
             ),
-          );
-        }
-
-        if (snapshot.connectionState == ConnectionState.none) {
-          return widget.placeholder;
-        }
-
-        if (snapshot.hasError) {
-          return ErrorIndicator(
-            snapshot.error!,
-            stackTrace: snapshot.stackTrace,
-            onRetry: _retry,
-          );
-        }
-
-        if (snapshot.hasData && snapshot.data != null) {
-          return widget.handler(snapshot.data as T);
-        }
-
-        throw AssertionError();
-      },
-    );
+      _ => throw StateError("Unhandled async state"),
+    };
   }
 }
