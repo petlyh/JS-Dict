@@ -175,9 +175,9 @@ List<Definition> _parseDefinition(List<Definition> previous, Element element) {
       .deduplicate<String>();
 
   final exampleSentence = element.querySelector("div.sentence")?.transform(
-        (e) => Sentence.example(
-          _parseSentenceFurigana(e),
-          e.querySelector("span.english")!.trimmedText,
+        (e) => Sentence(
+          japanese: _parseSentenceFurigana(e),
+          english: e.querySelector("span.english")!.trimmedText,
         ),
       );
 

@@ -31,5 +31,10 @@ Sentence _parseSentenceEntry(Element element) {
           ?.transform((e) => e.attributes["href"]!.split("/").last) ??
       "";
 
-  return Sentence.copyright(id, japanese, english, copyright);
+  return Sentence(
+    japanese: japanese,
+    english: english,
+    id: id,
+    copyright: copyright,
+  );
 }
