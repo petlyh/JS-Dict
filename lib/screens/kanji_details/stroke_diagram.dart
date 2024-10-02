@@ -4,7 +4,7 @@ import "package:flutter/services.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:jsdict/packages/kanji_diagram/kanji_diagram.dart";
 import "package:jsdict/providers/theme_provider.dart";
-import "package:jsdict/widgets/loader.dart";
+import "package:jsdict/widgets/future_loader.dart";
 import "package:provider/provider.dart";
 
 class StrokeDiagramWidget extends StatelessWidget {
@@ -23,7 +23,7 @@ class StrokeDiagramWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LoaderWidget(
+    return FutureLoader(
       onLoad: getData,
       handler: (data) {
         if (data.isEmpty) {

@@ -19,7 +19,7 @@ import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";
 import "package:jsdict/widgets/items/word_item.dart";
 import "package:jsdict/widgets/link_span.dart";
-import "package:jsdict/widgets/loader.dart";
+import "package:jsdict/widgets/future_loader.dart";
 import "package:provider/provider.dart";
 
 class ResultPageScreen<T extends SearchType> extends StatelessWidget {
@@ -45,7 +45,7 @@ class ResultPage<T extends SearchType> extends HookWidget {
   Widget build(BuildContext context) {
     useAutomaticKeepAlive();
 
-    return LoaderWidget(
+    return FutureLoader(
       onLoad: () => getClient().search<T>(query),
       handler: (response) => _ResultPageContent(
         query: query,

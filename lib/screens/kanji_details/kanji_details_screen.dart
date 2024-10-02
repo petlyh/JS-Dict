@@ -13,10 +13,10 @@ import "package:jsdict/screens/kanji_details/stroke_diagram.dart";
 import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/action_dialog.dart";
+import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/link_span.dart";
-import "package:jsdict/widgets/loader.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
   const KanjiDetailsScreen(Kanji this.kanji, {super.key}) : kanjiId = null;
@@ -45,7 +45,7 @@ class KanjiDetailsScreen extends StatelessWidget {
       ),
       body: kanji != null
           ? _KanjiContentWidget(kanji!)
-          : LoaderWidget(
+          : FutureLoader(
               onLoad: () => getClient().kanjiDetails(kanjiId!),
               handler: _KanjiContentWidget.new,
             ),
@@ -124,7 +124,7 @@ class _KanjiContentWidget extends StatelessWidget {
             if (kanji.details != null)
               _KanjiDetailsWidget(kanji, kanji.details!)
             else
-              LoaderWidget(
+              FutureLoader(
                 onLoad: () => _future,
                 handler: (kanjiDetails) =>
                     _KanjiDetailsWidget(kanji, kanjiDetails.details!),

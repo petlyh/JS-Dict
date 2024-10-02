@@ -4,9 +4,9 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/copyright_text.dart";
+import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
-import "package:jsdict/widgets/loader.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
   const SentenceDetailsScreen(Sentence this.sentence, {super.key})
@@ -33,7 +33,7 @@ class SentenceDetailsScreen extends StatelessWidget {
       ),
       body: sentenceId == null
           ? _SentenceDetails(sentence!)
-          : LoaderWidget(
+          : FutureLoader(
               onLoad: () => getClient().sentenceDetails(sentenceId!),
               handler: _SentenceDetails.new,
             ),
@@ -77,7 +77,7 @@ class _SentenceDetails extends StatelessWidget {
             if (sentence.kanji != null)
               KanjiItemList(sentence.kanji!)
             else
-              LoaderWidget(
+              FutureLoader(
                 onLoad: () => getClient().search<Kanji>(sentence.japanese.text),
                 handler: (response) => KanjiItemList(response.results),
               ),

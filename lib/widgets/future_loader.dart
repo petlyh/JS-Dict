@@ -10,8 +10,8 @@ final loadingIndicator = Center(
   ),
 );
 
-class LoaderWidget<T> extends HookWidget {
-  const LoaderWidget({
+class FutureLoader<T> extends HookWidget {
+  const FutureLoader({
     super.key,
     required this.onLoad,
     required this.handler,
