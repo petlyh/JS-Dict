@@ -1,6 +1,6 @@
 part of "parser.dart";
 
-SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
+SearchResponse<T> parseSearch<T extends ResultType>(Document document) {
   final conversion = document
       .querySelector("#number_conversion, #year_conversion")
       ?.transform(_parseConversion);
@@ -33,7 +33,7 @@ SearchResponse<T> parseSearch<T extends SearchType>(Document document) {
 
   final hasNextPage = document.querySelector("#primary a.more") != null;
 
-  List<U> collectResults<U extends SearchType>(
+  List<U> collectResults<U extends ResultType>(
     String selector,
     U Function(Element) handler,
   ) =>

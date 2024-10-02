@@ -13,16 +13,16 @@ import "package:jsdict/screens/search/paging_hook.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/error_indicator.dart";
+import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chips.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";
 import "package:jsdict/widgets/items/word_item.dart";
 import "package:jsdict/widgets/link_span.dart";
-import "package:jsdict/widgets/future_loader.dart";
 import "package:provider/provider.dart";
 
-class ResultPageScreen<T extends SearchType> extends StatelessWidget {
+class ResultPageScreen<T extends ResultType> extends StatelessWidget {
   const ResultPageScreen({super.key, required this.query});
 
   final String query;
@@ -36,7 +36,7 @@ class ResultPageScreen<T extends SearchType> extends StatelessWidget {
   }
 }
 
-class ResultPage<T extends SearchType> extends HookWidget {
+class ResultPage<T extends ResultType> extends HookWidget {
   const ResultPage({super.key, required this.query});
 
   final String query;
@@ -55,7 +55,7 @@ class ResultPage<T extends SearchType> extends HookWidget {
   }
 }
 
-class _ResultPageContent<T extends SearchType> extends HookWidget {
+class _ResultPageContent<T extends ResultType> extends HookWidget {
   const _ResultPageContent({
     required this.query,
     required this.initialResponse,
@@ -133,7 +133,7 @@ class _ResultPageContent<T extends SearchType> extends HookWidget {
   }
 }
 
-class _PagedResultList<T extends SearchType> extends HookWidget {
+class _PagedResultList<T extends ResultType> extends HookWidget {
   const _PagedResultList({
     super.key,
     required this.query,

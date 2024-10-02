@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Sentence implements SearchType {
+class Sentence implements ResultType {
   const Sentence({
     required this.japanese,
     required this.english,

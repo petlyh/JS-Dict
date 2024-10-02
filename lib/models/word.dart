@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Word implements SearchType {
+class Word implements ResultType {
   final Furigana word;
 
   final List<Definition> definitions;

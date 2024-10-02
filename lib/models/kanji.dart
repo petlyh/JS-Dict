@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Kanji implements SearchType {
+class Kanji implements ResultType {
   final String kanji;
   final int strokeCount;
 

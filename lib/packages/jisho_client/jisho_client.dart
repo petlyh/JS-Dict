@@ -35,7 +35,7 @@ class JishoClient {
     return parse(response.body);
   }
 
-  String _searchPath<T extends SearchType>(String query, {int page = -1}) {
+  String _searchPath<T extends ResultType>(String query, {int page = -1}) {
     final path = "/search/${Uri.encodeComponent(_lowercaseQuery(query))}";
 
     // don't add type tag for page 1 of words
@@ -60,7 +60,7 @@ class JishoClient {
         (match) => match.group(0)!.toLowerCase(),
       );
 
-  Future<SearchResponse<T>> search<T extends SearchType>(
+  Future<SearchResponse<T>> search<T extends ResultType>(
     String query, {
     int page = 1,
   }) =>

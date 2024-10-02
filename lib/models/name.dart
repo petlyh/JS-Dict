@@ -1,6 +1,6 @@
 part of "models.dart";
 
-class Name implements SearchType {
+class Name implements ResultType {
   final String japanese;
   final String? reading;
   final String english;

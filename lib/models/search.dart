@@ -1,8 +1,8 @@
 part of "models.dart";
 
-sealed class SearchType {}
+sealed class ResultType {}
 
-class SearchResponse<T extends SearchType> {
+class SearchResponse<T extends ResultType> {
   final List<T> results;
   final bool hasNextPage;
 
