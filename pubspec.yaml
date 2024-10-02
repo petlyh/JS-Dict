@@ -56,4 +56,4 @@ flutter:
 
   assets:
     - assets/kanjivg/LICENSE.kanjivg.txt
-    - assets/kanjivg/data/
+    - assets/kanjivg/kanjivg_data

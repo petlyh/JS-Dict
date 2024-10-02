@@ -12,21 +12,19 @@ class StrokeDiagramWidget extends StatelessWidget {
 
   final String kanjiCode;
 
-  Future<String> getData() async {
-    try {
-      return await rootBundle.loadString("assets/kanjivg/data/$kanjiCode.svg");
-    } catch (_) {
-      // asset not found means that KanjiVg doesn't have data for the kanji
-      return "";
-    }
-  }
+  Future<List<String>?> loadPaths() async =>
+      (await rootBundle.loadString("assets/kanjivg/kanjivg_data"))
+          .split("\n")
+          .where((line) => line.startsWith(kanjiCode))
+          .map((line) => line.split(":").lastOrNull?.split("_"))
+          .firstOrNull;
 
   @override
   Widget build(BuildContext context) {
     return FutureLoader(
-      onLoad: getData,
+      onLoad: loadPaths,
       handler: (data) {
-        if (data.isEmpty) {
+        if (data == null) {
           return const SizedBox();
         }
 

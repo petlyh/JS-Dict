@@ -9,18 +9,6 @@ class KanjiDiagram {
 
   final Style style;
 
-  XmlElement cleanPath(XmlElement path) {
-    path.removeAttribute("id");
-    path.removeAttribute("kvg:type");
-    return path;
-  }
-
-  List<XmlElement> parsePaths(String svgInput) => XmlDocument.parse(svgInput)
-      .descendantElements
-      .where((element) => element.name.local == "path")
-      .map(cleanPath)
-      .toList();
-
   static const diagramSize = 200;
   static const canvasHeight = diagramSize ~/ 2;
   static const frameSize = diagramSize ~/ 2;
@@ -62,8 +50,7 @@ class KanjiDiagram {
     caseSensitive: false,
   );
 
-  void addStartPoint(XmlBuilder builder, XmlElement path) {
-    final pathData = path.getAttribute("d")!;
+  void addStartPoint(XmlBuilder builder, String pathData) {
     final match = strokePattern.firstMatch(pathData)!;
 
     builder.element(
@@ -77,9 +64,14 @@ class KanjiDiagram {
     );
   }
 
-  void addStrokes(XmlBuilder builder, List<XmlElement> paths) {
+  XmlElement createPathElement(String pathData) => XmlElement.tag(
+        "path",
+        attributes: [XmlAttribute(XmlName("d"), pathData)],
+      );
+
+  void addStrokes(XmlBuilder builder, List<String> paths) {
     var pathIndex = 1;
-    final drawnPaths = <XmlElement>[];
+    final drawnPaths = <String>[];
 
     for (final currentPath in paths) {
       final xOffset = frameSize * (pathIndex - 1);
@@ -103,11 +95,16 @@ class KanjiDiagram {
 
               // Add previously drawn paths.
               for (final drawnPath in drawnPaths) {
-                builder.copyElement(drawnPath.withStyle(style.existingStroke));
+                builder.copyElement(
+                  createPathElement(drawnPath).withStyle(style.existingStroke),
+                );
               }
 
               // Add current path and starting point.
-              builder.copyElement(currentPath.withStyle(style.currentStroke));
+              builder.copyElement(
+                createPathElement(currentPath).withStyle(style.currentStroke),
+              );
+
               addStartPoint(builder, currentPath);
             },
           );
@@ -124,9 +121,7 @@ class KanjiDiagram {
   /// [inputData] must be the contents of a KanjiVG file.
   ///
   /// Note: The KanjiVG file format is an extension of SVG.
-  String create(String inputData) {
-    final paths = parsePaths(inputData);
-
+  String create(List<String> paths) {
     final builder = XmlBuilder();
 
     builder.element(

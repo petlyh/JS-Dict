@@ -1,26 +1,15 @@
 # KanjiVg data
 
-Data from [KanjiVg](https://kanjivg.tagaini.net/index.html) is used to generate the kanji stroke order diagrams. While the generation is done at runtime, the following preprocessing is applied to reduce the file size impact of bundling these files.
+Data from [KanjiVg](https://kanjivg.tagaini.net/index.html) is used to generate the kanji stroke order diagrams. While the generation is done at runtime, the following preprocessing is applied to reduce the file size impact of bundling this data.
 
-Currently used commit: [3ec0014](https://github.com/KanjiVG/kanjivg/tree/3ec001413336228e91e4317fbdbd8ddab526d284)
+Currently used commit: [d642ea9](https://github.com/KanjiVG/kanjivg/tree/d642ea972efa70dc5155d7fb62b9a6eea92585d6)
 
 ## Preprocessing
 
-1. Remove variants (Kaisho, Insatsu, etc.)
-
-    These are unneeded, as the app only shows diagrams for the main schoolbook style.
-
-    ```sh
-    $ fd '-' -e svg --batch-size 100 -X rm -v
-    ```
-
-2. Run the preprocessing script on the files
-
-    The script removes everything that isn't needed for the diagram generation.
-
-    ```sh
-    $ fd . './data/' -e svg -X python ./kanjivg_preprocess.py
-    ```
+```sh
+$ git clone https://github.com/KanjiVG/kanjivg
+$ dart run process.dart kanjivg/kanji/ kanjivg_data
+```
 
 ## License
 
