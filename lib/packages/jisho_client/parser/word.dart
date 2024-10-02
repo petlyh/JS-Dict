@@ -91,7 +91,7 @@ Word _parseWordEntry(Element element) {
       ?.transform((e) => e.attributes["href"]!.split("/").last)
       .transform(Uri.decodeComponent);
 
-  final inflectionId = element
+  final inflectionCode = element
           .querySelector("a.show_inflection_table")
           ?.transform((e) => e.attributes["data-pos"]!) ??
       "";
@@ -125,7 +125,7 @@ Word _parseWordEntry(Element element) {
     notes: notes,
     collocations: collocations,
     id: id,
-    inflectionId: inflectionId,
+    inflectionCode: inflectionCode,
     hasWikipedia: hasWikipedia,
   );
 }

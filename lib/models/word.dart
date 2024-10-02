@@ -18,7 +18,7 @@ class Word implements SearchType {
   // Form of word used to get details page
   final String? id;
 
-  final String inflectionId;
+  final String inflectionCode;
   final bool hasWikipedia;
 
   final WordDetails? details;
@@ -34,7 +34,7 @@ class Word implements SearchType {
     this.notes = const [],
     this.collocations = const [],
     this.id,
-    this.inflectionId = "",
+    this.inflectionCode = "",
     this.hasWikipedia = false,
     this.details,
   });
@@ -51,12 +51,13 @@ class Word implements SearchType {
         notes: notes,
         collocations: collocations,
         id: id,
-        inflectionId: inflectionId,
+        inflectionCode: inflectionCode,
         hasWikipedia: hasWikipedia,
       );
 
-  InflectionData? get inflectionData =>
-      inflectionId.isNotEmpty ? InflectionData(word.text, inflectionId) : null;
+  InflectionData? get inflectionData => inflectionCode.isNotEmpty
+      ? InflectionData(word.text, inflectionCode)
+      : null;
 
   /// whether there is any point in loading details
   bool get shouldLoadDetails => hasWikipedia || !isNonKanji(word.text);
