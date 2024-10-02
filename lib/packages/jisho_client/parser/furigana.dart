@@ -7,22 +7,21 @@ Furigana _parseSentenceFurigana(Element element) {
   return nodes.map((node) {
     if (node.nodeType == Node.TEXT_NODE) {
       return FuriganaPart.textOnly(node.text!.trim());
-    } else {
-      final element = node as Element;
-      final text =
-          element.querySelector("span.unlinked")!.firstChild!.text!.trim();
-      final furiganaElement = element.querySelector("span.furigana");
-      if (furiganaElement == null) {
-        return FuriganaPart.textOnly(text);
-      } else {
-        return FuriganaPart(text, furiganaElement.trimmedText);
-      }
     }
+
+    final element = node as Element;
+    final text =
+        element.querySelector("span.unlinked")!.firstChild!.text!.trim();
+
+    final furiganaElement = element.querySelector("span.furigana");
+    return FuriganaPart(text, furiganaElement?.trimmedText ?? "");
   }).toList();
 }
 
-List<String> _limitTextPartsSize(List<String> list, int size) =>
-    list.sublist(0, size - 1) + [list.sublist(size - 1).join()];
+List<String> _limitTextPartsSize(List<String> list, int size) => [
+      ...list.sublist(0, size - 1),
+      list.sublist(size - 1).join(),
+    ];
 
 bool _hasEmpty(List<String> list) =>
     list.firstWhereOrNull((part) => part.isEmpty) != null;
@@ -39,10 +38,14 @@ Furigana _parseWordFurigana(Element element) {
       .allTrimmedText;
 
   if (furiganaParts.length == 1) {
-    final text = element
-        .querySelector("div.concept_light-representation > span.text")!
-        .trimmedText;
-    return [FuriganaPart(text, furiganaParts.first)];
+    return [
+      FuriganaPart(
+        element
+            .querySelector("div.concept_light-representation > span.text")!
+            .trimmedText,
+        furiganaParts.first,
+      ),
+    ];
   }
 
   var textParts = element
@@ -53,8 +56,7 @@ Furigana _parseWordFurigana(Element element) {
         // split kanji if it's a text node
         return node.nodeType == Node.TEXT_NODE ? text.split("") : [text];
       })
-      // flatten list
-      .expand((e) => e)
+      .flattened
       .toList();
 
   if (textParts.length > furiganaParts.length) {
@@ -89,7 +91,7 @@ Furigana _parseRubyFurigana(Element element) {
       .querySelector("div.concept_light-representation > span.text")!
       .nodes
       .map((node) => node.text!.trim())
-      .whereNot((text) => text.isEmpty)
+      .where((text) => text.isNotEmpty)
       .toList();
 
   assert(furiganaParts.length == textParts.length);
