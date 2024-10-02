@@ -24,8 +24,7 @@ class SentenceItem extends StatelessWidget {
         ActionTile.text("English", sentence.english),
       ]),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),
         title: RubyText(
           sentence.japanese.rubyData,
           style: jpTextStyle,

@@ -25,8 +25,7 @@ class NameItem extends StatelessWidget {
         ActionTile.text("English", name.english),
       ]),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),
         title: JpText(name.toString()),
         subtitle: Text(name.english),
       ),

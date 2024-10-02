@@ -12,6 +12,8 @@ linter:
     - prefer_const_constructors_in_immutables
     - prefer_const_declarations
     - unawaited_futures
+    - unnecessary_lambdas
+    - prefer_int_literals
 
 analyzer:
   language:

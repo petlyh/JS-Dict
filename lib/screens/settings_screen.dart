@@ -15,7 +15,7 @@ class SettingScreen extends StatelessWidget {
         body: Column(
           children: [
             ListTile(
-              leading: const Icon(Icons.water_drop, size: 32.0),
+              leading: const Icon(Icons.water_drop, size: 32),
               title: const Text("Theme"),
               trailing: Consumer<ThemeProvider>(
                 builder: (context, provider, _) {
@@ -36,7 +36,7 @@ class SettingScreen extends StatelessWidget {
             ),
             if (dynamicColorScheme != null)
               ListTile(
-                leading: const Icon(Icons.format_color_fill, size: 32.0),
+                leading: const Icon(Icons.format_color_fill, size: 32),
                 title: const Text("Dynamic Colors"),
                 trailing: Consumer<ThemeProvider>(
                   builder: (context, provider, _) => Switch(
@@ -58,7 +58,7 @@ class SettingScreen extends StatelessWidget {
                   );
                 }
               },
-              leading: const Icon(Icons.info, size: 32.0),
+              leading: const Icon(Icons.info, size: 32),
               title: const Text("About"),
             ),
           ],

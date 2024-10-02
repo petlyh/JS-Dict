@@ -108,7 +108,7 @@ class _WordContentWidget extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Container(
-        margin: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8),
         child: Column(
           children: [
             Container(

@@ -27,8 +27,7 @@ class WordItem extends StatelessWidget {
           ActionTile.text("Reading", word.word.reading),
       ]),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),
         title: RubyText(
           word.word.rubyData,
           style: const TextStyle(fontSize: 18).jp(),

@@ -71,7 +71,7 @@ class _KanjiContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        margin: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8),
         child: Column(
           children: [
             GestureDetector(

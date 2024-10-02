@@ -22,8 +22,7 @@ class KanjiItem extends StatelessWidget {
         ActionTile.text("Meanings", kanji.meanings.join(", ")),
       ]),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 22.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),
         leading: JpText(kanji.kanji, style: const TextStyle(fontSize: 35)),
         title: Text(
           kanji.meanings.join(", "),
