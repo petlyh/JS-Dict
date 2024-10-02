@@ -20,12 +20,9 @@ class NameDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Name"),
         actions: [
-          if (name.wikipediaWord != null)
+          if (name.wordId != null)
             LinkPopupButton([
-              (
-                "Open in Browser",
-                "https://jisho.org/word/${name.wikipediaWord}"
-              ),
+              ("Open in Browser", "https://jisho.org/word/${name.wordId}"),
             ]),
         ],
       ),
@@ -60,9 +57,9 @@ class NameDetailsScreen extends StatelessWidget {
                 InfoChip(name.type!),
                 const SizedBox(height: 10),
               ],
-              if (name.wikipediaWord != null) ...[
+              if (name.wordId != null)
                 FutureLoader(
-                  onLoad: () => getClient().wordDetails(name.wikipediaWord!),
+                  onLoad: () => getClient().wordDetails(name.wordId!),
                   handler: (word) => Column(
                     children: [
                       WikipediaWidget(word.details!.wikipedia!),
@@ -70,8 +67,8 @@ class NameDetailsScreen extends StatelessWidget {
                       KanjiItemList(word.details!.kanji),
                     ],
                   ),
-                ),
-              ] else if (!isNonKanji(name.japanese))
+                )
+              else if (!isNonKanji(name.japanese))
                 FutureLoader(
                   onLoad: () => getClient().search<Kanji>(name.japanese),
                   handler: (response) => KanjiItemList(response.results),

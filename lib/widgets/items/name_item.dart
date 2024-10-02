@@ -16,9 +16,9 @@ class NameItem extends StatelessWidget {
     return ItemCard(
       onTap: pushScreen(context, NameDetailsScreen(name)),
       onLongPress: () => showActionDialog(context, [
-        if (name.wikipediaWord != null)
+        if (name.wordId != null)
           ActionTile.url(
-            "https://jisho.org/word/${Uri.encodeComponent(name.wikipediaWord!)}",
+            "https://jisho.org/word/${Uri.encodeComponent(name.wordId!)}",
           ),
         ActionTile.text("Name", name.japanese),
         if (name.reading != null) ActionTile.text("Reading", name.reading!),

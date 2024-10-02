@@ -8,8 +8,10 @@ class Name implements ResultType {
   /// null if type is "Unclassified name"
   final String? type;
 
-  /// id of a corresponding [Word] that has a Wikipedia definition
-  final String? wikipediaWord;
+  /// The ID of the corresponding [Word], if available.
+  /// 
+  /// Names seem to only be linked to a [Word] if the word has Wikipedia data.
+  final String? wordId;
 
   @override
   String toString() => reading != null ? "$japanese【$reading】" : japanese;
@@ -19,6 +21,6 @@ class Name implements ResultType {
     this.reading,
     this.english,
     this.type,
-    this.wikipediaWord,
+    this.wordId,
   );
 }
