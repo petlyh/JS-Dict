@@ -15,7 +15,7 @@ void main() {
     expect(word.jlptLevel, JLPTLevel.n5);
     expect(word.audioUrl, isNotEmpty);
     expect(word.notes, isEmpty);
-    expect(word.inflectionId, "v1");
+    expect(word.inflectionCode, "v1");
 
     expect(word.details!.kanji, hasLength(1));
     expect(word.details!.kanji.first.kanji, "見");
