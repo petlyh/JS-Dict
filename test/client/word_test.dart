@@ -5,61 +5,134 @@ import "package:test/test.dart";
 void main() {
   final client = JishoClient();
 
-  test("word details", () async {
-    final word = await client.wordDetails("見る");
+  test(
+    "word details",
+    () async {
+      final actual = await client.wordDetails("歌");
 
-    expect(word.word.text, "見る");
-    expect(word.word.reading, "みる");
-    expect(word.commonWord, true);
-    expect(word.wanikaniLevels, [22, 4]);
-    expect(word.jlptLevel, JLPTLevel.n5);
-    expect(word.audioUrl, isNotEmpty);
-    expect(word.notes, isEmpty);
-    expect(word.inflectionCode, "v1");
+      expect(
+        actual,
+        equals(
+          const Word(
+            word: [FuriganaPart("歌", "うた")],
+            definitions: [
+              Definition(
+                meanings: ["song", "singing"],
+                types: ["Noun"],
+                tags: ["esp. 唄 for folk songs and shamisen songs"],
+                exampleSentence: Sentence(
+                  japanese: [
+                    FuriganaPart("この"),
+                    FuriganaPart("歌", "うた"),
+                    FuriganaPart("を"),
+                    FuriganaPart("聞く", "き"),
+                    FuriganaPart("と"),
+                    FuriganaPart("私", "わたし"),
+                    FuriganaPart("は"),
+                    FuriganaPart("いつも"),
+                    FuriganaPart("、"),
+                    FuriganaPart("学生時代", "がくせいじだい"),
+                    FuriganaPart("を"),
+                    FuriganaPart("思い出す", "おもいだ"),
+                    FuriganaPart("。"),
+                  ],
+                  english:
+                      "Whenever I hear this song, I am reminded of my school days.",
+                ),
+              ),
+              Definition(
+                meanings: ["classical Japanese poem (esp. tanka)"],
+                types: ["Noun"],
+                seeAlso: ["短歌"],
+              ),
+              Definition(meanings: ["modern poetry"], types: ["Noun"]),
+            ],
+            otherForms: [
+              OtherForm(form: "唄", reading: "うた"),
+              OtherForm(form: "詩", reading: "うた"),
+            ],
+            isCommon: true,
+            jlptLevel: JLPTLevel.n5,
+            wanikaniLevels: [10, 60],
+            hasWikipedia: true,
+            details: WordDetails(
+              kanji: [
+                Kanji(
+                  kanji: "歌",
+                  strokeCount: 14,
+                  meanings: ["song", "sing"],
+                  kunReadings: ["うた", "うた.う"],
+                  onReadings: ["カ"],
+                  jlptLevel: JLPTLevel.n4,
+                  type: Jouyou(2),
+                ),
+              ],
+              wikipedia: WikipediaInfo(
+                title: "Song",
+                textAbstract:
+                    "In music, a song is a composition for voice or voices, performed by singing. A song may be accompanied by musical instruments, or it may be unaccompanied, as in the case of a cappella songs. The lyrics (words) of songs are typically of a poetic, rhyming nature, though they may be religious verses or free prose. A song may be for a solo singer, a duet, trio, or larger ensemble involving more voices. Songs with more than one voice to a part are considered choral works.",
+                wikipediaEnglish: WikipediaPage(
+                  title: "Song",
+                  url: "http://en.wikipedia.org/wiki/Song?oldid=493361844",
+                ),
+                wikipediaJapanese: WikipediaPage(
+                  title: "歌",
+                  url: "http://ja.wikipedia.org/wiki/歌?oldid=42711902",
+                ),
+                dbpedia: WikipediaPage(
+                  title: "Song",
+                  url: "http://dbpedia.org/resource/Song",
+                ),
+              ),
+            ),
+          ).copyWith(audioUrl: actual.audioUrl),
+        ),
+      );
+    },
+  );
 
-    expect(word.details!.kanji, hasLength(1));
-    expect(word.details!.kanji.first.kanji, "見");
+  test(
+    "word with only wikipedia definition",
+    () async => expect(
+      (await client.wordDetails("518699edd5dda7b2c605d29b")).definitions,
+      equals(const [
+        Definition(meanings: ["Love Actually"], types: ["Word"]),
+      ]),
+    ),
+  );
 
-    expect(word.collocations, hasLength(16));
-    expect(word.collocations.first.word, "見るに堪えない");
-    expect(
-      word.collocations.first.meaning,
-      "so miserable that it is painful to look at",
-    );
+  test(
+    "word example sentence",
+    () async => expect(
+      (await client.wordDetails("助ける"))
+          .definitions
+          .firstOrNull
+          ?.exampleSentence,
+      equals(
+        const Sentence(
+          japanese: [
+            FuriganaPart("彼", "かれ"),
+            FuriganaPart("は"),
+            FuriganaPart("池", "いけ"),
+            FuriganaPart("で"),
+            FuriganaPart("溺れ", "おぼ"),
+            FuriganaPart("そうになっている"),
+            FuriganaPart("子ども", "こ"),
+            FuriganaPart("を"),
+            FuriganaPart("助けた", "たす"),
+            FuriganaPart("。"),
+          ],
+          english: "He saved a child from drowning in a pond.",
+        ),
+      ),
+    ),
+  );
 
-    expect(word.definitions, hasLength(6));
-    expect(word.definitions.first.meanings, contains("to observe"));
-    expect(word.definitions.first.types, contains("Transitive verb"));
-
-    expect(word.otherForms, hasLength(2));
-    expect(word.otherForms.first.form, "観る");
-  });
-
-  test("word with only wikipedia definition", () async {
-    final word = await client.wordDetails("518699edd5dda7b2c605d29b");
-    expect(word.definitions, hasLength(1));
-
-    final definition = word.definitions[0];
-    expect(definition.types, equals(["Word"]));
-    expect(definition.meanings, equals(["Love Actually"]));
-  });
-
-  test("word example sentence", () async {
-    final word = await client.wordDetails("助ける");
-    final sentence = word.definitions.first.exampleSentence;
-
-    expect(sentence, isNotNull);
-    expect(sentence?.japanese.text, equals("彼は池で溺れそうになっている子どもを助けた。"));
-    expect(
-      sentence?.english,
-      equals("He saved a child from drowning in a pond."),
-    );
-  });
-
-  test("notes", () async {
-    final response = await client.wordDetails("何方");
-    final note = response.notes.first;
-    expect(note.form, "何方");
-    expect(note.note, "Rarely-used kanji form");
-  });
+  test(
+    "notes",
+    () async => expect(
+      (await client.wordDetails("何方")).notes,
+      equals(const [Note(form: "何方", note: "Rarely-used kanji form")]),
+    ),
+  );
 }

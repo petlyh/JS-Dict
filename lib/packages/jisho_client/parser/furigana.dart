@@ -1,22 +1,23 @@
 part of "parser.dart";
 
-Furigana _parseSentenceFurigana(Element element) {
-  final nodes =
-      element.querySelector("ul.japanese_sentence, ul.japanese")!.nodes;
+Furigana _parseSentenceFurigana(Element element) => element
+    .querySelector("ul.japanese_sentence, ul.japanese")!
+    .nodes
+    .map((node) {
+      if (node.nodeType == Node.TEXT_NODE) {
+        final text = node.text!.trim();
+        return text.isNotEmpty ? FuriganaPart(text) : null;
+      }
 
-  return nodes.map((node) {
-    if (node.nodeType == Node.TEXT_NODE) {
-      return FuriganaPart.textOnly(node.text!.trim());
-    }
+      final element = node as Element;
+      final text =
+          element.querySelector("span.unlinked")!.firstChild!.text!.trim();
 
-    final element = node as Element;
-    final text =
-        element.querySelector("span.unlinked")!.firstChild!.text!.trim();
-
-    final furiganaElement = element.querySelector("span.furigana");
-    return FuriganaPart(text, furiganaElement?.trimmedText ?? "");
-  }).toList();
-}
+      final furiganaElement = element.querySelector("span.furigana");
+      return FuriganaPart(text, furiganaElement?.trimmedText);
+    })
+    .nonNulls
+    .toList();
 
 List<String> _limitTextPartsSize(List<String> list, int size) => [
       ...list.sublist(0, size - 1),
@@ -72,9 +73,10 @@ Furigana _parseWordFurigana(Element element) {
     return [FuriganaPart(text, furiganaParts.join())];
   }
 
-  return textParts
-      .mapIndexed((index, text) => FuriganaPart(text, furiganaParts[index]))
-      .toList();
+  return textParts.mapIndexed((index, text) {
+    final furigana = furiganaParts[index];
+    return FuriganaPart(text, furigana.isNotEmpty ? furigana : null);
+  }).toList();
 }
 
 Furigana _parseRubyFurigana(Element element) {

@@ -18,30 +18,26 @@ Word parseWordDetails(Document document) {
       .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"))
       ?.transform((w) => _parseWikipediaInfo(w.nextElementSibling!));
 
-  return word.withDetails(
-    WordDetails(
-      kanji: kanji,
-      wikipedia: wikipedia,
-    ),
+  return word.copyWith(
+    details: WordDetails(kanji: kanji, wikipedia: wikipedia),
   );
 }
 
 Word _parseWordEntry(Element element) {
   final word = _parseWordFurigana(element);
 
-  final commonWord = element.querySelector("span.concept_light-common") != null;
+  final isCommon = element.querySelector("span.concept_light-common") != null;
 
   final audioUrl = element
       .querySelector("audio > source")
       ?.transform((e) => "https:${e.attributes["src"]!}");
 
   final jlptLevel = element
-          .querySelectorAll("span.concept_light-tag")
-          .firstWhereOrNull((e) => e.text.contains("JLPT"))
-          ?.trimmedText
-          .transform((e) => e.split(" ")[1])
-          .transform(JLPTLevel.fromString) ??
-      JLPTLevel.none;
+      .querySelectorAll("span.concept_light-tag")
+      .firstWhereOrNull((e) => e.text.contains("JLPT"))
+      ?.trimmedText
+      .transform((e) => e.split(" ")[1])
+      .transform(JLPTLevel.fromString);
 
   final wanikaniLevels = element
       .querySelectorAll("span.concept_light-tag")
@@ -92,9 +88,8 @@ Word _parseWordEntry(Element element) {
       .transform(Uri.decodeComponent);
 
   final inflectionCode = element
-          .querySelector("a.show_inflection_table")
-          ?.transform((e) => e.attributes["data-pos"]!) ??
-      "";
+      .querySelector("a.show_inflection_table")
+      ?.transform((e) => e.attributes["data-pos"]!);
 
   final collocations = element
           .querySelectorAll(".concept_light-status_link")
@@ -105,10 +100,12 @@ Word _parseWordEntry(Element element) {
                   "#${e.attributes["data-reveal-id"]!} > ul > li > a",
                 )
                 .map(
-                  (e2) => e2.text
-                      .trim()
-                      .split(" - ")
-                      .transform((split) => Collocation(split[0], split[1])),
+                  (e2) => e2.text.trim().split(" - ").transform(
+                        (split) => Collocation(
+                          word: split[0],
+                          meaning: split[1],
+                        ),
+                      ),
                 )
                 .toList(),
           ) ??
@@ -118,7 +115,7 @@ Word _parseWordEntry(Element element) {
     word: word,
     definitions: definitions,
     otherForms: otherForms,
-    commonWord: commonWord,
+    isCommon: isCommon,
     wanikaniLevels: wanikaniLevels,
     jlptLevel: jlptLevel,
     audioUrl: audioUrl,
@@ -181,21 +178,24 @@ List<Definition> _parseDefinition(List<Definition> previous, Element element) {
         ),
       );
 
-  final definition = Definition(
-    meanings: meanings,
-    types: types,
-    tags: tags,
-    seeAlso: seeAlso,
-    exampleSentence: exampleSentence,
-  );
-
-  return previous + [definition];
+  return [
+    ...previous,
+    Definition(
+      meanings: meanings,
+      types: types,
+      tags: tags,
+      seeAlso: seeAlso,
+      exampleSentence: exampleSentence,
+    ),
+  ];
 }
 
 List<OtherForm> _parseOtherForms(Element element) =>
     element.querySelectorAll("span.break-unit").map((e) {
       final split = e.trimmedText.replaceFirst("】", "").split(" 【");
-      final form = split.first;
-      final reading = split.length == 2 ? split.last : "";
-      return OtherForm(form, reading);
+
+      return OtherForm(
+        form: split.first,
+        reading: split.length == 2 ? split.last : "",
+      );
     }).toList();

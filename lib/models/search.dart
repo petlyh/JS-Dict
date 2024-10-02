@@ -2,51 +2,41 @@ part of "models.dart";
 
 sealed class ResultType {}
 
-class SearchResponse<T extends ResultType> {
-  final List<T> results;
-  final bool hasNextPage;
-
-  final List<String> zenEntries;
-
-  final Correction? correction;
-  final List<String> noMatchesFor;
-  final GrammarInfo? grammarInfo;
-  final Conversion? conversion;
-
-  const SearchResponse({
-    required this.results,
-    this.hasNextPage = false,
-    this.zenEntries = const [],
-    this.correction,
-    this.noMatchesFor = const [],
-    this.grammarInfo,
-    this.conversion,
-  });
-
-  const SearchResponse.noMatches(
-    this.noMatchesFor, {
-    this.zenEntries = const [],
-    this.correction,
-    this.grammarInfo,
-    this.conversion,
-  })  : results = const [],
-        hasNextPage = false;
+@freezed
+class SearchResponse<T extends ResultType> with _$SearchResponse<T> {
+  const factory SearchResponse({
+    required List<T> results,
+    @Default(false) bool hasNextPage,
+    @Default([]) List<String> zenEntries,
+    @Default([]) List<String> noMatchesFor,
+    Correction? correction,
+    GrammarInfo? grammarInfo,
+    Conversion? conversion,
+  }) = _SearchResponse<T>;
 }
 
-class Correction {
-  final String effective;
-  final String original;
-  final bool noMatchesForOriginal;
-
-  const Correction(this.effective, this.original, this.noMatchesForOriginal);
+@freezed
+class Correction with _$Correction {
+  const factory Correction({
+    required String effective,
+    required String original,
+    required bool noMatchesForOriginal,
+  }) = _Correction;
 }
 
-class GrammarInfo {
-  final String word;
-  final String possibleInflectionOf;
-  final List<String> formInfos;
-
-  const GrammarInfo(this.word, this.possibleInflectionOf, this.formInfos);
+@freezed
+class GrammarInfo with _$GrammarInfo {
+  const factory GrammarInfo({
+    required String word,
+    required String possibleInflectionOf,
+    required List<String> formInfos,
+  }) = _GrammarInfo;
 }
 
-typedef Conversion = ({String original, String converted});
+@freezed
+class Conversion with _$Conversion {
+  const factory Conversion({
+    required String original,
+    required String converted,
+  }) = _Conversion;
+}

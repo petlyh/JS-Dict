@@ -22,13 +22,19 @@ Name _parseNameEntry(Element element) {
       ?.trimmedText
       .transform(_parseNameType);
 
-  final wikipediaWord = element
+  final wordId = element
       .querySelector("span.meaning-abstract > a")
       ?.transform((e) => e.attributes["href"])
       ?.transform(Uri.decodeFull)
       .transform((e) => e.split("/word/").last);
 
-  return Name(japanese, reading, english, type, wikipediaWord);
+  return Name(
+    japanese: japanese,
+    english: english,
+    reading: reading,
+    type: type,
+    wordId: wordId,
+  );
 }
 
 final _lifespanPattern = RegExp(r" \(\d+(?:\.\d+){,2}-(?:\d+(?:\.\d+){,2})?\)");

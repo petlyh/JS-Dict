@@ -12,7 +12,7 @@ WikipediaInfo? _parseWikipediaInfo(Element element) {
       ?.transform((e) => e.nodes.first.text!);
 
   return WikipediaInfo(
-    title,
+    title: title,
     textAbstract: text != null ? _parseWikipediaAbstract(title, text) : null,
     wikipediaEnglish: _parseWikipediaPage(element, "English Wikipedia"),
     wikipediaJapanese: _parseWikipediaPage(element, "Japanese Wikipedia"),
@@ -26,8 +26,8 @@ WikipediaPage? _parseWikipediaPage(Element definitionElement, String name) =>
         .firstWhereOrNull((e) => e.text.contains(name))
         ?.transform(
           (e) => WikipediaPage(
-            RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
-            e.attributes["href"]!,
+            title: RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
+            url: e.attributes["href"]!,
           ),
         );
 

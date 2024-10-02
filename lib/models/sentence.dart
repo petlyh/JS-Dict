@@ -1,37 +1,24 @@
 part of "models.dart";
 
-class Sentence implements ResultType {
-  const Sentence({
-    required this.japanese,
-    required this.english,
-    this.id,
-    this.copyright,
-    this.kanji,
-  });
+@freezed
+class Sentence with _$Sentence implements ResultType {
+  const factory Sentence({
+    required Furigana japanese,
+    required String english,
+    String? id,
+    SentenceCopyright? copyright,
+    List<Kanji>? kanji,
+  }) = _Sentence;
 
-  final Furigana japanese;
-  final String english;
-  final String? id;
-  final SentenceCopyright? copyright;
-  final List<Kanji>? kanji;
-
-  bool get isExample => id == null;
+  const Sentence._();
 
   String get url => "https://jisho.org/sentences/$id";
-
-  Sentence withKanji(List<Kanji> kanji) => Sentence(
-        japanese: japanese,
-        english: english,
-        id: id,
-        copyright: copyright,
-        kanji: kanji,
-      );
 }
 
-// TODO: record typedef instead?
-class SentenceCopyright {
-  final String name;
-  final String url;
-
-  const SentenceCopyright(this.name, this.url);
+@freezed
+class SentenceCopyright with _$SentenceCopyright {
+  const factory SentenceCopyright({
+    required String name,
+    required String url,
+  }) = _SentenceCopyright;
 }

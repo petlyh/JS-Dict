@@ -1,17 +1,19 @@
 part of "models.dart";
 
-class Kanji implements ResultType {
-  final String kanji;
-  final int strokeCount;
+@freezed
+class Kanji with _$Kanji implements ResultType {
+  const factory Kanji({
+    required String kanji,
+    required int strokeCount,
+    required List<String> meanings,
+    required List<String> kunReadings,
+    required List<String> onReadings,
+    KanjiType? type,
+    JLPTLevel? jlptLevel,
+    KanjiDetails? details,
+  }) = _Kanji;
 
-  final KanjiType? type;
-  final JLPTLevel jlptLevel;
-
-  final List<String> meanings;
-  final List<String> kunReadings;
-  final List<String> onReadings;
-
-  final KanjiDetails? details;
+  const Kanji._();
 
   String get code => kanji.codeUnitAt(0).toRadixString(16).padLeft(5, "0");
 
@@ -19,80 +21,79 @@ class Kanji implements ResultType {
 
   static String createUrl(String kanji) =>
       "https://jisho.org/search/${Uri.encodeComponent("$kanji #kanji")}";
-
-  const Kanji({
-    required this.kanji,
-    required this.strokeCount,
-    this.type,
-    this.jlptLevel = JLPTLevel.none,
-    this.meanings = const [],
-    this.kunReadings = const [],
-    this.onReadings = const [],
-    this.details,
-  });
 }
 
-class KanjiDetails {
-  final List<String> parts;
-  final List<String> variants;
-
-  final Radical? radical;
-
-  final int? frequency;
-
-  final List<Compound> onCompounds;
-  final List<Compound> kunCompounds;
-
-  const KanjiDetails({
-    required this.parts,
-    required this.variants,
-    required this.radical,
-    required this.frequency,
-    required this.onCompounds,
-    required this.kunCompounds,
-  });
+@freezed
+class KanjiDetails with _$KanjiDetails {
+  const factory KanjiDetails({
+    required List<String> parts,
+    required List<String> variants,
+    required List<Compound> onCompounds,
+    required List<Compound> kunCompounds,
+    Radical? radical,
+    int? frequency,
+  }) = _KanjiDetails;
 }
 
-class Radical {
-  final String character;
-  final List<String> meanings;
-
-  const Radical(this.character, this.meanings);
+@freezed
+class Radical with _$Radical {
+  const factory Radical({
+    required String character,
+    required List<String> meanings,
+  }) = _Radical;
 }
 
-class Compound {
-  final String compound;
-  final String reading;
-  final List<String> meanings;
-
-  const Compound(this.compound, this.reading, this.meanings);
+@freezed
+class Compound with _$Compound {
+  const factory Compound({
+    required String compound,
+    required String reading,
+    required List<String> meanings,
+  }) = _Compound;
 }
 
 sealed class KanjiType {
-  const KanjiType();
+  String get name;
 }
 
-class Jinmeiyou extends KanjiType {
+class Jinmeiyou implements KanjiType {
   const Jinmeiyou();
 
   @override
-  String toString() {
-    return "Jinmeiyō";
-  }
+  String get name => "Jinmeiyō";
+
+  @override
+  String toString() => name;
+
+  @override
+  bool operator ==(Object other) => other is Jinmeiyou;
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
-class Jouyou extends KanjiType {
+class Jouyou implements KanjiType {
+  const Jouyou(this.grade)
+      : assert(
+          (grade >= 1 && grade <= 6) || grade == juniorHighGrade,
+        );
+
+  const Jouyou.juniorHigh() : grade = juniorHighGrade;
+
   static const juniorHighGrade = 8;
 
   final int grade;
 
-  const Jouyou(this.grade)
-      : assert((grade >= 1 && grade <= 6) || grade == juniorHighGrade);
-  const Jouyou.juniorHigh() : grade = juniorHighGrade;
+  @override
+  String get name =>
+      "Jōyō ${grade == juniorHighGrade ? "junior high" : "grade $grade"}";
 
   @override
-  String toString() {
-    final gradePart = grade == juniorHighGrade ? "junior high" : "grade $grade";
-    return "Jōyō $gradePart";
-  }
+  String toString() => name;
+
+  @override
+  bool operator ==(Object other) => other is Jouyou && grade == other.grade;
+
+  @override
+  int get hashCode => grade.hashCode;
 }

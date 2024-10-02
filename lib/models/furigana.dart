@@ -2,35 +2,24 @@ part of "models.dart";
 
 typedef Furigana = List<FuriganaPart>;
 
-class FuriganaPart {
-  final String text;
-  final String furigana;
+@freezed
+class FuriganaPart with _$FuriganaPart {
+  const factory FuriganaPart(String text, [String? furigana]) = _FuriganaPart;
 
-  const FuriganaPart(this.text, this.furigana);
-  const FuriganaPart.textOnly(this.text) : furigana = "";
-
-  @override
-  bool operator ==(Object other) =>
-      other is FuriganaPart && text == other.text && furigana == other.furigana;
+  const FuriganaPart._();
 
   @override
-  int get hashCode => Object.hash(text, furigana);
-
-  @override
-  String toString() => text + (furigana.isNotEmpty ? "($furigana)" : "");
+  String toString() => text + (furigana != null ? "($furigana)" : "");
 }
 
 extension FuriganaMethods on Furigana {
   String get text => map((part) => part.text.trim()).join().trim();
 
-  String get reading =>
-      map((part) => part.furigana.isNotEmpty ? part.furigana : part.text)
-          .join()
-          .trim();
+  String get reading => map((part) => part.furigana ?? part.text).join().trim();
 
-  bool get hasFurigana => where((part) => part.furigana.isNotEmpty).isNotEmpty;
+  bool get hasFurigana => any((part) => part.furigana != null);
 }
 
 extension FuriganaStringExtension on String {
-  Furigana get furigana => [FuriganaPart.textOnly(this)];
+  Furigana get furigana => [FuriganaPart(this)];
 }

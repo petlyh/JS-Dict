@@ -281,7 +281,7 @@ Furigana _furigana(Iterable<dynamic> input) => input
     .map(
       (e) => e is (String, String)
           ? FuriganaPart(e.$1, e.$2)
-          : FuriganaPart.textOnly(e.toString()),
+          : FuriganaPart(e.toString()),
     )
     .toList();
 

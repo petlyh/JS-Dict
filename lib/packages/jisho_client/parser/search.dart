@@ -17,8 +17,9 @@ SearchResponse<T> parseSearch<T extends ResultType>(Document document) {
           [];
 
   if (noMatchesFor.isNotEmpty) {
-    return SearchResponse.noMatches(
-      noMatchesFor,
+    return SearchResponse(
+      results: [],
+      noMatchesFor: noMatchesFor,
       conversion: conversion,
       zenEntries: limitedZenEntries,
     );
@@ -74,9 +75,9 @@ SearchResponse<T> parseSearch<T extends ResultType>(Document document) {
   );
 }
 
-Conversion _parseConversion(Element e) => e.trimmedText
-    .split(" is ")
-    .transform((data) => (original: removeTags(data[0]), converted: data[1]));
+Conversion _parseConversion(Element e) => e.trimmedText.split(" is ").transform(
+      (data) => Conversion(original: removeTags(data[0]), converted: data[1]),
+    );
 
 List<String> _parseNoMatchesFor(Element e) => e.trimmedText
     .replaceFirst(RegExp(r"\.$"), "")
@@ -90,7 +91,11 @@ Correction _parseCorrection(Element e) {
       removeTypeTags(e.querySelector("span.meant > a")?.trimmedText ?? "");
 
   if (original.isNotEmpty) {
-    return Correction(effective, original, false);
+    return Correction(
+      effective: effective,
+      original: original,
+      noMatchesForOriginal: false,
+    );
   }
 
   final noMatchesOriginal = e
@@ -100,9 +105,9 @@ Correction _parseCorrection(Element e) {
       .group(1)!;
 
   return Correction(
-    effective,
-    noMatchesOriginal,
-    true,
+    effective: effective,
+    original: noMatchesOriginal,
+    noMatchesForOriginal: true,
   );
 }
 
@@ -116,8 +121,8 @@ GrammarInfo _parseGrammarInfo(Element e) {
   final formInfos = e.querySelectorAll("ul > li").allTrimmedText;
 
   return GrammarInfo(
-    word,
-    possibleInflectionOf,
-    formInfos,
+    word: word,
+    possibleInflectionOf: possibleInflectionOf,
+    formInfos: formInfos,
   );
 }

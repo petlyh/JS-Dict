@@ -89,13 +89,13 @@ class _KanjiContentWidget extends StatelessWidget {
               alignment: WrapAlignment.center,
               children: [
                 InfoChip("${kanji.strokeCount} strokes", color: Colors.green),
-                if (kanji.jlptLevel != JLPTLevel.none)
+                if (kanji.jlptLevel != null)
                   InfoChip(
                     "JLPT ${kanji.jlptLevel}",
                     color: Colors.blue,
                   ),
                 if (kanji.type != null)
-                  InfoChip(kanji.type.toString(), color: Colors.blue),
+                  InfoChip(kanji.type!.name, color: Colors.blue),
               ],
             ),
             const Divider(),
@@ -126,8 +126,10 @@ class _KanjiContentWidget extends StatelessWidget {
             else
               FutureLoader(
                 onLoad: () => _future,
-                handler: (kanjiDetails) =>
-                    _KanjiDetailsWidget(kanji, kanjiDetails.details!),
+                handler: (kanjiDetails) => _KanjiDetailsWidget(
+                  kanji,
+                  kanjiDetails.details!,
+                ),
               ),
           ],
         ),

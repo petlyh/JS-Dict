@@ -70,7 +70,8 @@ class _SentenceDetails extends StatelessWidget {
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 20),
-                  if (!sentence.isExample) CopyrightText(sentence.copyright!),
+                  if (sentence.copyright != null)
+                    CopyrightText(sentence.copyright!),
                 ],
               ),
             ),

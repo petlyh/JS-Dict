@@ -23,10 +23,9 @@ Kanji _parseKanjiEntry(Element element) {
   final type = element.querySelector("div.info")?.transform(_getKanjiType);
 
   final jlptLevel = element
-          .querySelector("div.info")
-          ?.trimmedText
-          .transform(JLPTLevel.fromText) ??
-      JLPTLevel.none;
+      .querySelector("div.info")
+      ?.trimmedText
+      .transform(JLPTLevel.fromText);
 
   final meanings = element
       .querySelectorAll("div.meanings > span")
@@ -67,10 +66,9 @@ Kanji _parseKanjiDetailsEntry(Element element) {
       .transform(int.parse);
 
   final jlptLevel = element
-          .querySelector("div.jlpt > strong")
-          ?.trimmedText
-          .transform(JLPTLevel.fromString) ??
-      JLPTLevel.none;
+      .querySelector("div.jlpt > strong")
+      ?.trimmedText
+      .transform(JLPTLevel.fromString);
 
   final type = element.querySelector("div.grade")?.transform(_getKanjiType);
 
@@ -127,15 +125,15 @@ KanjiDetails _parseKanjiDetails(Element element) {
   );
 }
 
-Radical _parseRadical(Element e) {
-  final character =
-      e.nodes.allTrimmedText.firstWhere((text) => text.isNotEmpty);
-
-  final meanings =
-      e.querySelector("span.radical_meaning")!.trimmedText.split(", ");
-
-  return Radical(character, meanings);
-}
+Radical _parseRadical(Element element) => Radical(
+      character: element.nodes.allTrimmedText.firstWhere(
+        (text) => text.isNotEmpty,
+      ),
+      meanings: element
+          .querySelector("span.radical_meaning")!
+          .trimmedText
+          .split(", "),
+    );
 
 KanjiType? _getKanjiType(Element element) {
   final text = element.text;
@@ -171,9 +169,9 @@ List<Compound> _parseCompounds(Element column) =>
       final lines = e.trimmedText.split("\n");
       assert(lines.length == 3);
 
-      final compound = lines[0].trim();
-      final reading = lines[1].trim().replaceAll("【", "").replaceAll("】", "");
-      final meanings = lines[2].trim().split(", ");
-
-      return Compound(compound, reading, meanings);
+      return Compound(
+        compound: lines[0].trim(),
+        reading: lines[1].trim().replaceAll("【", "").replaceAll("】", ""),
+        meanings: lines[2].trim().split(", "),
+      );
     }).toList();

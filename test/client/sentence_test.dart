@@ -5,48 +5,89 @@ import "package:test/test.dart";
 void main() {
   final client = JishoClient();
 
-  test("sentence search", () async {
-    final response = await client.search<Sentence>("わたしは国の富が");
-    expect(response.results, hasLength(1));
-
-    final sentence = response.results.first;
-
-    expect(sentence.japanese.text, equals("わたしは国の富が公平に分配される社会を夢見ている。"));
-    expect(
-      sentence.english,
-      equals("I dream of a society whose wealth is distributed fairly."),
-    );
-
-    expect(sentence.copyright, isNotNull);
-    expect(sentence.copyright?.name, equals("Tatoeba"));
-    expect(
-      sentence.copyright?.url,
-      equals("http://tatoeba.org/eng/sentences/show/76360"),
-    );
-  });
-
-  test("sentence details", () async {
-    final sentence = await client.sentenceDetails("65dbf69a12a53778d6000087");
-
-    expect(sentence.japanese.text, equals("ここ数年は芸術鑑賞が趣味で、暇を見つけては美術館に足を運んでいる。"));
-
-    expect(
-      sentence.english,
+  test(
+    "sentence search",
+    () async => expect(
+      (await client.search<Sentence>("わたしは国の富が")).results.firstOrNull,
       equals(
-        "For the past few years, I have pursued my appreciation of art by visiting art museums whenever I find spare time.",
+        const Sentence(
+          japanese: [
+            FuriganaPart("わたし"),
+            FuriganaPart("は"),
+            FuriganaPart("国", "くに"),
+            FuriganaPart("の"),
+            FuriganaPart("富", "とみ"),
+            FuriganaPart("が"),
+            FuriganaPart("公平に", "こうへい"),
+            FuriganaPart("分配", "ぶんぱい"),
+            FuriganaPart("される"),
+            FuriganaPart("社会", "しゃかい"),
+            FuriganaPart("を"),
+            FuriganaPart("夢見ている", "ゆめみ"),
+            FuriganaPart("。"),
+          ],
+          english: "I dream of a society whose wealth is distributed fairly.",
+          id: "518663bbd5dda7e981000959",
+          copyright: SentenceCopyright(
+            name: "Tatoeba",
+            url: "http://tatoeba.org/eng/sentences/show/76360",
+          ),
+        ),
       ),
-    );
+    ),
+  );
 
-    expect(sentence.copyright, isNotNull);
-    expect(sentence.copyright?.name, equals("Jreibun"));
-    expect(
-      sentence.copyright?.url,
+  test(
+    "sentence details",
+    () async => expect(
+      await client.sentenceDetails("5186635bd5dda7e981000185"),
       equals(
-        "http://www.tufs.ac.jp/ts/personal/SUZUKI_Tomomi/jreibun/index-jreibun.html",
+        const Sentence(
+          japanese: [
+            FuriganaPart("いびつな"),
+            FuriganaPart("野菜", "やさい"),
+            FuriganaPart("は"),
+            FuriganaPart("お"),
+            FuriganaPart("嫌い", "きら"),
+            FuriganaPart("ですか"),
+            FuriganaPart("？"),
+          ],
+          english: "Do you hate misshapen vegetables?",
+          copyright: SentenceCopyright(
+            name: "Tatoeba",
+            url: "http://tatoeba.org/eng/sentences/show/74344",
+          ),
+          kanji: [
+            Kanji(
+              kanji: "嫌",
+              strokeCount: 13,
+              meanings: ["dislike", "detest", "hate"],
+              kunReadings: ["きら.う", "きら.い", "いや"],
+              onReadings: ["ケン", "ゲン"],
+              type: Jouyou.juniorHigh(),
+              jlptLevel: JLPTLevel.n1,
+            ),
+            Kanji(
+              kanji: "菜",
+              strokeCount: 11,
+              meanings: ["vegetable", "side dish", "greens"],
+              kunReadings: ["な"],
+              onReadings: ["サイ"],
+              type: Jouyou(4),
+              jlptLevel: JLPTLevel.n2,
+            ),
+            Kanji(
+              kanji: "野",
+              strokeCount: 11,
+              meanings: ["plains", "field", "rustic", "civilian life"],
+              kunReadings: ["の", "の-"],
+              onReadings: ["ヤ", "ショ"],
+              type: Jouyou(2),
+              jlptLevel: JLPTLevel.n4,
+            ),
+          ],
+        ),
       ),
-    );
-
-    expect(sentence.kanji, isNotNull);
-    expect(sentence.kanji, hasLength(14));
-  });
+    ),
+  );
 }

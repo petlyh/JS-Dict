@@ -1,62 +1,27 @@
 part of "models.dart";
 
-class Word implements ResultType {
-  final Furigana word;
+@freezed
+class Word with _$Word implements ResultType {
+  const factory Word({
+    required Furigana word,
+    required List<Definition> definitions,
+    @Default([]) List<Collocation> collocations,
+    @Default([]) List<OtherForm> otherForms,
+    @Default([]) List<Note> notes,
+    @Default([]) List<int> wanikaniLevels,
+    @Default(false) bool isCommon,
+    @Default(false) bool hasWikipedia,
+    String? id,
+    String? inflectionCode,
+    String? audioUrl,
+    JLPTLevel? jlptLevel,
+    WordDetails? details,
+  }) = _Word;
 
-  final List<Definition> definitions;
-  final List<OtherForm> otherForms;
+  const Word._();
 
-  final bool commonWord;
-  final List<int> wanikaniLevels;
-  final JLPTLevel jlptLevel;
-
-  final String? audioUrl;
-
-  final List<Note> notes;
-  final List<Collocation> collocations;
-
-  // Form of word used to get details page
-  final String? id;
-
-  final String inflectionCode;
-  final bool hasWikipedia;
-
-  final WordDetails? details;
-
-  const Word({
-    required this.word,
-    required this.definitions,
-    this.otherForms = const [],
-    this.commonWord = false,
-    this.wanikaniLevels = const [],
-    this.jlptLevel = JLPTLevel.none,
-    this.audioUrl,
-    this.notes = const [],
-    this.collocations = const [],
-    this.id,
-    this.inflectionCode = "",
-    this.hasWikipedia = false,
-    this.details,
-  });
-
-  Word withDetails(WordDetails details) => Word(
-        details: details,
-        word: word,
-        definitions: definitions,
-        otherForms: otherForms,
-        commonWord: commonWord,
-        wanikaniLevels: wanikaniLevels,
-        jlptLevel: jlptLevel,
-        audioUrl: audioUrl,
-        notes: notes,
-        collocations: collocations,
-        id: id,
-        inflectionCode: inflectionCode,
-        hasWikipedia: hasWikipedia,
-      );
-
-  InflectionData? get inflectionData => inflectionCode.isNotEmpty
-      ? InflectionData(word.text, inflectionCode)
+  InflectionData? get inflectionData => inflectionCode != null
+      ? InflectionData(word.text, inflectionCode!)
       : null;
 
   /// whether there is any point in loading details
@@ -66,91 +31,69 @@ class Word implements ResultType {
       "https://jisho.org/word/${Uri.encodeComponent(id ?? word.text)}";
 }
 
-class WordDetails {
-  final List<Kanji> kanji;
-  final WikipediaInfo? wikipedia;
-
-  const WordDetails({this.kanji = const [], this.wikipedia});
+@freezed
+class WordDetails with _$WordDetails {
+  const factory WordDetails({
+    @Default([]) List<Kanji> kanji,
+    WikipediaInfo? wikipedia,
+  }) = _WordDetails;
 }
 
-class Definition {
-  final List<String> meanings;
-  final List<String> types;
-  final List<String> tags;
-  final List<String> seeAlso;
-
-  final Sentence? exampleSentence;
-
-  const Definition({
-    required this.meanings,
-    this.types = const [],
-    this.tags = const [],
-    this.seeAlso = const [],
-    this.exampleSentence,
-  });
-
-  @override
-  String toString() {
-    return meanings.join(", ");
-  }
+@freezed
+class Definition with _$Definition {
+  const factory Definition({
+    required List<String> meanings,
+    @Default([]) List<String> types,
+    @Default([]) List<String> tags,
+    @Default([]) List<String> seeAlso,
+    Sentence? exampleSentence,
+  }) = _Definition;
 }
 
-class WikipediaInfo {
-  final String title;
-  final String? textAbstract;
-  final WikipediaPage? wikipediaEnglish;
-  final WikipediaPage? wikipediaJapanese;
-  final WikipediaPage? dbpedia;
-
-  const WikipediaInfo(
-    this.title, {
-    this.textAbstract,
-    this.wikipediaEnglish,
-    this.wikipediaJapanese,
-    this.dbpedia,
-  });
+@freezed
+class WikipediaInfo with _$WikipediaInfo {
+  const factory WikipediaInfo({
+    required String title,
+    String? textAbstract,
+    WikipediaPage? wikipediaEnglish,
+    WikipediaPage? wikipediaJapanese,
+    WikipediaPage? dbpedia,
+  }) = _WikipediaInfo;
 }
 
-class WikipediaPage {
-  final String title;
-  final String url;
-
-  const WikipediaPage(this.title, this.url);
+@freezed
+class WikipediaPage with _$WikipediaPage {
+  const factory WikipediaPage({
+    required String title,
+    required String url,
+  }) = _WikipediaPage;
 }
 
-class OtherForm {
-  final String form;
-  final String reading;
-
-  const OtherForm(this.form, this.reading);
-
-  @override
-  String toString() {
-    if (reading.isEmpty) {
-      return form;
-    }
-    return "$form 【$reading】";
-  }
+@freezed
+class OtherForm with _$OtherForm {
+  const factory OtherForm({
+    required String form,
+    required String reading,
+  }) = _OtherForm;
 }
 
-class Collocation {
-  final String word;
-  final String meaning;
-
-  const Collocation(this.word, this.meaning);
+@freezed
+class Collocation with _$Collocation {
+  const factory Collocation({
+    required String word,
+    required String meaning,
+  }) = _Collocation;
 }
 
-class Note {
-  final String form;
-  final String note;
-
-  const Note(this.form, this.note);
+@freezed
+class Note with _$Note {
+  const factory Note({
+    required String form,
+    required String note,
+  }) = _Note;
 
   factory Note.parse(String text) {
     final split = text.split(": ");
-    return Note(split.first, split.last);
+    return Note(form: split.first, note: split.last);
   }
-
-  @override
-  String toString() => "$form: $note";
 }

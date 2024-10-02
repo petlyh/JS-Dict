@@ -123,16 +123,13 @@ class _WordContentWidget extends StatelessWidget {
             Wrap(
               alignment: WrapAlignment.center,
               children: [
-                if (word.commonWord)
+                if (word.isCommon)
                   const InfoChip("Common", color: Colors.green),
-                if (word.jlptLevel != JLPTLevel.none)
-                  InfoChip(
-                    "JLPT ${word.jlptLevel}",
-                    color: Colors.blue,
-                  ),
+                if (word.jlptLevel != null)
+                  InfoChip("JLPT ${word.jlptLevel}", color: Colors.blue),
                 ...word.wanikaniLevels.map(
-                  (wanikaniLevel) => InfoChip(
-                    "WaniKani Lv. $wanikaniLevel",
+                  (level) => InfoChip(
+                    "WaniKani Lv. $level",
                     color: Colors.blue,
                   ),
                 ),
@@ -235,7 +232,12 @@ class _WordContentWidget extends StatelessWidget {
                               horizontal: 16,
                               vertical: 8,
                             ),
-                            child: JpText(word.notes.deduplicate().join("\n")),
+                            child: JpText(
+                              word.notes
+                                  .deduplicate<Note>()
+                                  .map((note) => "${note.form}: ${note.note}")
+                                  .join("\n"),
+                            ),
                           ),
                         ],
                       ),

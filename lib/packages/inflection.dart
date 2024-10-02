@@ -243,8 +243,10 @@ T _withFuriganaSuffixer<T>(
   T Function(Furigana Function(String, String) suffix) f,
 ) =>
     f(
-      (furigana, suffix) =>
-          [FuriganaPart(stem, furigana), FuriganaPart.textOnly(suffix)],
+      (furigana, suffix) => [
+        FuriganaPart(stem, furigana),
+        FuriganaPart(suffix),
+      ],
     );
 
 final _kuru = _withFuriganaSuffixer(

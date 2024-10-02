@@ -43,9 +43,8 @@ class KanjiItem extends StatelessWidget {
             JpText(
               [
                 "${kanji.strokeCount} strokes",
-                if (kanji.jlptLevel != JLPTLevel.none)
-                  "JLPT ${kanji.jlptLevel}",
-                if (kanji.type != null) kanji.type.toString(),
+                if (kanji.jlptLevel != null) "JLPT ${kanji.jlptLevel}",
+                if (kanji.type != null) kanji.type!.name,
               ].join(", "),
             ),
           ],

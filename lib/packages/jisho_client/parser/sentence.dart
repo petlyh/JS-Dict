@@ -14,7 +14,7 @@ Sentence parseSentenceDetails(Document document) {
       .map(_parseKanjiEntry)
       .toList();
 
-  return kanji.isNotEmpty ? sentence.withKanji(kanji) : sentence;
+  return kanji.isNotEmpty ? sentence.copyWith(kanji: kanji) : sentence;
 }
 
 Sentence _parseSentenceEntry(Element element) {
@@ -23,13 +23,15 @@ Sentence _parseSentenceEntry(Element element) {
   final japanese = _parseSentenceFurigana(element);
 
   final copyright = element.querySelector("span.inline_copyright a")?.transform(
-        (e) => SentenceCopyright(e.trimmedText, e.attributes["href"]!),
+        (e) => SentenceCopyright(
+          name: e.trimmedText,
+          url: e.attributes["href"]!,
+        ),
       );
 
   final id = element
-          .querySelector("a.light-details_link")
-          ?.transform((e) => e.attributes["href"]!.split("/").last) ??
-      "";
+      .querySelector("a.light-details_link")
+      ?.transform((e) => e.attributes["href"]!.split("/").last);
 
   return Sentence(
     japanese: japanese,
