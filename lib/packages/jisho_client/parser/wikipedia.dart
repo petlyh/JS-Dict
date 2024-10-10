@@ -27,7 +27,9 @@ WikipediaPage? _parseWikipediaPage(Element definitionElement, String name) =>
         ?.transform(
           (e) => WikipediaPage(
             title: RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
-            url: e.attributes["href"]!,
+            url: Uri.parse(e.attributes["href"]!)
+                // Query parameter for page version is removed
+                .replace(queryParameters: {}).toString(),
           ),
         );
 

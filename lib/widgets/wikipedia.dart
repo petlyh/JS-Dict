@@ -8,25 +8,22 @@ class WikipediaWidget extends StatelessWidget {
 
   final WikipediaInfo wikipedia;
 
-  Widget link(WikipediaPage page, String wikiName, String id) => Tooltip(
+  Widget _createButton(WikipediaPage page, String wikiName, String id) =>
+      Tooltip(
         message: wikiName,
         child: ElevatedButton(
           child: Text(id),
-          onPressed: () {
-            launchUrl(
-              Uri.parse(page.url.replaceFirst(RegExp(r"[\?&]oldid=\d+"), "")),
-              mode: LaunchMode.externalApplication,
-            );
-          },
+          onPressed: () => launchUrl(
+            Uri.parse(page.url),
+            mode: LaunchMode.externalApplication,
+          ),
         ),
       );
 
   @override
   Widget build(BuildContext context) {
-    final shadowColor = Theme.of(context).colorScheme.shadow;
-
     return ExpansionTileCard(
-      shadowColor: shadowColor,
+      shadowColor: Theme.of(context).colorScheme.shadow,
       title: const Text("Wikipedia"),
       children: [
         Padding(
@@ -41,19 +38,19 @@ class WikipediaWidget extends StatelessWidget {
                 spacing: 8,
                 children: [
                   if (wikipedia.wikipediaEnglish != null)
-                    link(
+                    _createButton(
                       wikipedia.wikipediaEnglish!,
                       "Wikipedia English",
                       "EN",
                     ),
                   if (wikipedia.wikipediaJapanese != null)
-                    link(
+                    _createButton(
                       wikipedia.wikipediaJapanese!,
                       "Wikipedia Japanese",
                       "JP",
                     ),
                   if (wikipedia.dbpedia != null)
-                    link(wikipedia.dbpedia!, "DBpedia", "DB"),
+                    _createButton(wikipedia.dbpedia!, "DBpedia", "DB"),
                 ],
               ),
             ],

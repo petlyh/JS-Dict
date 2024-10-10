@@ -73,15 +73,15 @@ void main() {
                     "In music, a song is a composition for voice or voices, performed by singing. A song may be accompanied by musical instruments, or it may be unaccompanied, as in the case of a cappella songs. The lyrics (words) of songs are typically of a poetic, rhyming nature, though they may be religious verses or free prose. A song may be for a solo singer, a duet, trio, or larger ensemble involving more voices. Songs with more than one voice to a part are considered choral works.",
                 wikipediaEnglish: WikipediaPage(
                   title: "Song",
-                  url: "http://en.wikipedia.org/wiki/Song?oldid=493361844",
+                  url: "http://en.wikipedia.org/wiki/Song?",
                 ),
                 wikipediaJapanese: WikipediaPage(
                   title: "歌",
-                  url: "http://ja.wikipedia.org/wiki/歌?oldid=42711902",
+                  url: "http://ja.wikipedia.org/wiki/%E6%AD%8C?",
                 ),
                 dbpedia: WikipediaPage(
                   title: "Song",
-                  url: "http://dbpedia.org/resource/Song",
+                  url: "http://dbpedia.org/resource/Song?",
                 ),
               ),
             ),
