@@ -15,12 +15,13 @@ class FutureLoader<T> extends HookWidget {
     super.key,
     required this.onLoad,
     required this.handler,
-    this.placeholder = const SizedBox.shrink(),
+    this.frameBuilder,
   });
 
   final Future<T> Function() onLoad;
   final Widget Function(T data) handler;
-  final Widget placeholder;
+  final Widget Function(BuildContext context, Widget child, T? data)?
+      frameBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +29,28 @@ class FutureLoader<T> extends HookWidget {
     final future = useState(initialFuture);
     final snapshot = useFuture(future.value);
 
-    return switch (snapshot.connectionState) {
-      ConnectionState.none => placeholder,
-      ConnectionState.waiting => loadingIndicator,
-      ConnectionState.done => snapshot.hasData
-          ? handler(snapshot.data as T)
-          : ErrorIndicator(
-              snapshot.error!,
-              stackTrace: snapshot.stackTrace,
-              onRetry: () => future.value = onLoad(),
-            ),
-      _ => throw StateError("Unhandled async state"),
-    };
+    final builder = frameBuilder ?? (_, child, __) => child;
+
+    if (snapshot.hasData) {
+      return builder(context, handler(snapshot.data as T), snapshot.data as T);
+    }
+
+    if (snapshot.hasError) {
+      return builder(
+        context,
+        ErrorIndicator(
+          snapshot.error!,
+          stackTrace: snapshot.stackTrace,
+          onRetry: () => future.value = onLoad(),
+        ),
+        null,
+      );
+    }
+
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return builder(context, loadingIndicator, null);
+    }
+
+    throw StateError("Unhandled async state");
   }
 }

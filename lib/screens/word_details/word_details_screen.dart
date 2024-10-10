@@ -1,5 +1,6 @@
 import "package:audioplayers/audioplayers.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
@@ -17,13 +18,15 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia.dart";
 
 class WordDetailsScreen extends StatelessWidget {
-  WordDetailsScreen(String this.wordInput, {super.key})
+  const WordDetailsScreen(String this.wordInput, {super.key})
       : preloadedWord = null,
         isSearch = false;
-  WordDetailsScreen.preload(Word this.preloadedWord, {super.key})
+
+  const WordDetailsScreen.preload(Word this.preloadedWord, {super.key})
       : wordInput = null,
         isSearch = false;
-  WordDetailsScreen.search(String this.wordInput, {super.key})
+
+  const WordDetailsScreen.search(String this.wordInput, {super.key})
       : preloadedWord = null,
         isSearch = true;
 
@@ -31,67 +34,41 @@ class WordDetailsScreen extends StatelessWidget {
   final String? wordInput;
   final bool isSearch;
 
-  final idValue = ValueNotifier<String?>(null);
-  String? get id => preloadedWord?.id ?? idValue.value;
-
-  final audioUrlValue = ValueNotifier<String?>(null);
-  String? get audioUrl => preloadedWord?.audioUrl ?? audioUrlValue.value;
-
-  Future<Word> _searchFuture() async {
-    final word = isSearch
-        ? await getClient()
-            .search<Word>(wordInput!)
-            .then((r) => r.results.firstOrNull)
-        : await getClient().wordDetails(wordInput!);
-
-    if (word == null) {
-      throw Exception("Word not found: $wordInput");
-    }
-
-    idValue.value = word.id;
-    audioUrlValue.value = word.audioUrl;
-
-    return word;
-  }
+  Future<Word> _createFuture() => preloadedWord != null
+      ? SynchronousFuture(preloadedWord!)
+      : isSearch
+          ? getClient().search<Word>(wordInput!).then((r) => r.results.first)
+          : getClient().wordDetails(wordInput!);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Word"),
-        actions: [
-          ValueListenableBuilder(
-            valueListenable: audioUrlValue,
-            builder: (_, __, ___) => audioUrl != null
-                ? IconButton(
-                    tooltip: "Play Audio",
-                    onPressed: () => AudioPlayer().play(
-                      UrlSource(audioUrl!),
-                      mode: PlayerMode.lowLatency,
-                      ctx: AudioContextConfig(
-                        focus: AudioContextConfigFocus.duckOthers,
-                      ).build(),
-                    ),
-                    icon: const Icon(Icons.play_arrow),
-                  )
-                : const SizedBox(),
-          ),
-          ValueListenableBuilder(
-            valueListenable: idValue,
-            builder: (_, __, ___) => id != null
-                ? LinkPopupButton([
-                    ("Open in Browser", "https://jisho.org/word/$id"),
-                  ])
-                : const SizedBox(),
-          ),
-        ],
+    return FutureLoader<Word>(
+      onLoad: _createFuture,
+      handler: _WordContentWidget.new,
+      frameBuilder: (_, child, data) => Scaffold(
+        appBar: AppBar(
+          title: const Text("Word"),
+          actions: [
+            if (data?.audioUrl != null)
+              IconButton(
+                tooltip: "Play Audio",
+                onPressed: () => AudioPlayer().play(
+                  UrlSource(data!.audioUrl!),
+                  mode: PlayerMode.lowLatency,
+                  ctx: AudioContextConfig(
+                    focus: AudioContextConfigFocus.duckOthers,
+                  ).build(),
+                ),
+                icon: const Icon(Icons.play_arrow),
+              ),
+            if (data?.id != null)
+              LinkPopupButton([
+                ("Open in Browser", "https://jisho.org/word/${data?.id}"),
+              ]),
+          ],
+        ),
+        body: child,
       ),
-      body: preloadedWord != null
-          ? _WordContentWidget(preloadedWord!)
-          : FutureLoader(
-              onLoad: _searchFuture,
-              handler: _WordContentWidget.new,
-            ),
     );
   }
 }
