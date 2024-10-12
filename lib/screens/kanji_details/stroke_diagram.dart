@@ -2,7 +2,7 @@ import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_svg/flutter_svg.dart";
-import "package:jsdict/packages/kanji_diagram/kanji_diagram.dart";
+import "package:jsdict/packages/kanji_diagram.dart";
 import "package:jsdict/providers/theme_provider.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:provider/provider.dart";
@@ -37,8 +37,10 @@ class StrokeDiagramWidget extends StatelessWidget {
               child: BrightnessBuilder(
                 builder: (context, brightness) {
                   return SvgPicture.string(
-                    KanjiDiagram(darkTheme: brightness == Brightness.dark)
-                        .create(data),
+                    generateStrokeOrderDiagram(
+                      data,
+                      Style(brightness == Brightness.dark),
+                    ),
                     height: 90,
                   );
                 },
