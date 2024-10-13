@@ -46,6 +46,11 @@ class JsDictApp extends StatelessWidget {
           scheme.primary,
           1,
         ),
+        surfaceContainerHigh: ElevationOverlay.applySurfaceTint(
+          scheme.surface,
+          scheme.onSurface,
+          5,
+        ),
         // ignore: deprecated_member_use
         surfaceContainerHighest: scheme.surfaceVariant,
       );
