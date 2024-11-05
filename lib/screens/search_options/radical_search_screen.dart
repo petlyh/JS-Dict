@@ -74,18 +74,18 @@ class _RadicalSelection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final textColor = theme.textTheme.bodyLarge!.color;
+    final textColor = theme.textTheme.bodyLarge?.color;
     final selectedColor = theme.colorScheme.surfaceContainerHighest;
     final disabledColor = theme.focusColor;
 
     return SingleChildScrollView(
       child: Center(
         child: Wrap(
-          children: radicalsByStrokeCount.keys
+          children: radicalsByStrokeCount.entries
               .map(
-                (strokeCount) => [
+                (entry) => [
                   _CustomButton(
-                    strokeCount.toString(),
+                    entry.key.toString(),
                     backgroundColor: theme.highlightColor,
                     textStyle: TextStyle(
                       fontSize: 16,
@@ -94,7 +94,7 @@ class _RadicalSelection extends StatelessWidget {
                     ),
                     padding: 3,
                   ),
-                  ...radicalsByStrokeCount[strokeCount]!.map((radical) {
+                  ...entry.value.map((radical) {
                     final isSelected = selected.contains(radical);
                     final isValid = valid.isEmpty || valid.contains(radical);
 
