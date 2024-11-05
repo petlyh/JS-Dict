@@ -1,10 +1,7 @@
-import "dart:io";
-
 import "package:expandable_text/expandable_text.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:http/http.dart";
-import "package:jsdict/packages/jisho_client/jisho_client.dart";
+import "package:jsdict/packages/jisho_client/failures.dart";
 
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator(
@@ -20,17 +17,9 @@ class ErrorIndicator extends StatelessWidget {
   final void Function()? onRetry;
   final bool isCompact;
 
-  String get _userMessage {
-    if (error is NotFoundException) {
-      return "Page not found";
-    }
-
-    if (error is SocketException || error is ClientException) {
-      return "A network error occured.\nCheck your connection.";
-    }
-
-    return "An error occured";
-  }
+  String get _userMessage => error is HttpRequestFailure
+      ? "A network error occured.\nCheck your connection."
+      : "An error occured";
 
   Widget _createButton({
     required String name,

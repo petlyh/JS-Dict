@@ -54,7 +54,7 @@ class Definition with _$Definition {
 class WikipediaInfo with _$WikipediaInfo {
   const factory WikipediaInfo({
     required String title,
-    String? textAbstract,
+    required String textAbstract,
     WikipediaPage? wikipediaEnglish,
     WikipediaPage? wikipediaJapanese,
     WikipediaPage? dbpedia,
@@ -91,9 +91,4 @@ class Note with _$Note {
     required String form,
     required String note,
   }) = _Note;
-
-  factory Note.parse(String text) {
-    final split = text.split(": ");
-    return Note(form: split.first, note: split.last);
-  }
 }

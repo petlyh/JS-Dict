@@ -1,52 +1,58 @@
 part of "parser.dart";
 
-Name _parseNameEntry(Element element) {
-  final japaneseText = element
-      .querySelector("div.concept_light-readings")!
-      .trimmedText
-      .transform((e) => e.replaceAll("\n", "").replaceAll(RegExp(" +"), " "));
+Option<Name> _parseNameEntry(Element element) => Option.Do(($) {
+      final japaneseText = $(element.queryOption(".concept_light-readings"))
+          .text
+          .trim()
+          .replaceAll("\n", "")
+          .replaceAll(RegExp(" +"), " ");
 
-  final japanese = japaneseText.split("【").last.replaceFirst(RegExp(r"】$"), "");
+      final japanese = $(japaneseText.split("【").lastOption).replaceFirst(
+        RegExp(r"】$"),
+        "",
+      );
 
-  final reading =
-      japaneseText.contains("【") ? japaneseText.split("【").first.trim() : null;
+      final reading = Option.fromPredicate(
+        japaneseText,
+        (text) => text.contains("【"),
+      )
+          .flatMap((text) => text.split("【").firstOption)
+          .map((text) => text.trim());
 
-  final english = element
-      .querySelectorAll("span.meaning-meaning")
-      .allTrimmedText
-      .last
-      .replaceFirst(_lifespanPattern, "");
+      final english = $(
+        element.querySelectorAll(".meaning-meaning").allTrimmedText.lastOption,
+      ).replaceFirst(_lifespanPattern, "");
 
-  final type = element
-      .querySelector("div.meaning-tags")
-      ?.trimmedText
-      .transform(_parseNameType);
+      final type = element
+          .queryOption(".meaning-tags")
+          .map((element) => element.text.trim())
+          .flatMap(_parseNameType);
 
-  final wordId = element
-      .querySelector("span.meaning-abstract > a")
-      ?.transform((e) => e.attributes["href"])
-      ?.transform(Uri.decodeFull)
-      .transform((e) => e.split("/word/").last);
+      final wordId = element
+          .queryOption(".meaning-abstract > a")
+          .flatMap((element) => element.attributes.extract<String>("href"))
+          .map(Uri.decodeFull)
+          .flatMap((url) => url.split("/word/").lastOption);
 
-  return Name(
-    japanese: japanese,
-    english: english,
-    reading: reading,
-    type: type,
-    wordId: wordId,
-  );
-}
+      return Name(
+        japanese: japanese,
+        english: english,
+        reading: reading.toNullable(),
+        type: type.toNullable(),
+        wordId: wordId.toNullable(),
+      );
+    });
 
 final _lifespanPattern = RegExp(r" \(\d+(?:\.\d+){,2}-(?:\d+(?:\.\d+){,2})?\)");
 
-String? _parseNameType(String input) {
+Option<String> _parseNameType(String input) {
   if (input.contains("Unclassified")) {
-    return null;
+    return none();
   }
 
   if (input.contains("gender not specified")) {
-    return input.split(", ").first;
+    return input.split(", ").firstOption;
   }
 
-  return input;
+  return some(input);
 }

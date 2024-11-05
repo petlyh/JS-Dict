@@ -3469,7 +3469,7 @@ abstract class _Definition implements Definition {
 /// @nodoc
 mixin _$WikipediaInfo {
   String get title => throw _privateConstructorUsedError;
-  String? get textAbstract => throw _privateConstructorUsedError;
+  String get textAbstract => throw _privateConstructorUsedError;
   WikipediaPage? get wikipediaEnglish => throw _privateConstructorUsedError;
   WikipediaPage? get wikipediaJapanese => throw _privateConstructorUsedError;
   WikipediaPage? get dbpedia => throw _privateConstructorUsedError;
@@ -3489,7 +3489,7 @@ abstract class $WikipediaInfoCopyWith<$Res> {
   @useResult
   $Res call(
       {String title,
-      String? textAbstract,
+      String textAbstract,
       WikipediaPage? wikipediaEnglish,
       WikipediaPage? wikipediaJapanese,
       WikipediaPage? dbpedia});
@@ -3515,7 +3515,7 @@ class _$WikipediaInfoCopyWithImpl<$Res, $Val extends WikipediaInfo>
   @override
   $Res call({
     Object? title = null,
-    Object? textAbstract = freezed,
+    Object? textAbstract = null,
     Object? wikipediaEnglish = freezed,
     Object? wikipediaJapanese = freezed,
     Object? dbpedia = freezed,
@@ -3525,10 +3525,10 @@ class _$WikipediaInfoCopyWithImpl<$Res, $Val extends WikipediaInfo>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      textAbstract: freezed == textAbstract
+      textAbstract: null == textAbstract
           ? _value.textAbstract
           : textAbstract // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       wikipediaEnglish: freezed == wikipediaEnglish
           ? _value.wikipediaEnglish
           : wikipediaEnglish // ignore: cast_nullable_to_non_nullable
@@ -3597,7 +3597,7 @@ abstract class _$$WikipediaInfoImplCopyWith<$Res>
   @useResult
   $Res call(
       {String title,
-      String? textAbstract,
+      String textAbstract,
       WikipediaPage? wikipediaEnglish,
       WikipediaPage? wikipediaJapanese,
       WikipediaPage? dbpedia});
@@ -3624,7 +3624,7 @@ class __$$WikipediaInfoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = null,
-    Object? textAbstract = freezed,
+    Object? textAbstract = null,
     Object? wikipediaEnglish = freezed,
     Object? wikipediaJapanese = freezed,
     Object? dbpedia = freezed,
@@ -3634,10 +3634,10 @@ class __$$WikipediaInfoImplCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      textAbstract: freezed == textAbstract
+      textAbstract: null == textAbstract
           ? _value.textAbstract
           : textAbstract // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       wikipediaEnglish: freezed == wikipediaEnglish
           ? _value.wikipediaEnglish
           : wikipediaEnglish // ignore: cast_nullable_to_non_nullable
@@ -3659,7 +3659,7 @@ class __$$WikipediaInfoImplCopyWithImpl<$Res>
 class _$WikipediaInfoImpl implements _WikipediaInfo {
   const _$WikipediaInfoImpl(
       {required this.title,
-      this.textAbstract,
+      required this.textAbstract,
       this.wikipediaEnglish,
       this.wikipediaJapanese,
       this.dbpedia});
@@ -3667,7 +3667,7 @@ class _$WikipediaInfoImpl implements _WikipediaInfo {
   @override
   final String title;
   @override
-  final String? textAbstract;
+  final String textAbstract;
   @override
   final WikipediaPage? wikipediaEnglish;
   @override
@@ -3711,7 +3711,7 @@ class _$WikipediaInfoImpl implements _WikipediaInfo {
 abstract class _WikipediaInfo implements WikipediaInfo {
   const factory _WikipediaInfo(
       {required final String title,
-      final String? textAbstract,
+      required final String textAbstract,
       final WikipediaPage? wikipediaEnglish,
       final WikipediaPage? wikipediaJapanese,
       final WikipediaPage? dbpedia}) = _$WikipediaInfoImpl;
@@ -3719,7 +3719,7 @@ abstract class _WikipediaInfo implements WikipediaInfo {
   @override
   String get title;
   @override
-  String? get textAbstract;
+  String get textAbstract;
   @override
   WikipediaPage? get wikipediaEnglish;
   @override

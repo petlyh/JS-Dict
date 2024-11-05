@@ -1,42 +1,38 @@
 part of "parser.dart";
 
-Sentence parseSentenceDetails(Document document) {
-  final sentence = document
-      .querySelector("li.entry.sentence")
-      ?.transform(_parseSentenceEntry);
+Option<Sentence> parseSentenceDetails(Document document) =>
+    document.queryOption(".entry.sentence").flatMap(_parseSentenceEntry).map(
+          (sentence) => sentence.copyWith(
+            kanji: document
+                .querySelectorAll(".kanji_light_block > .entry.kanji_light")
+                .map(_parseKanjiEntry)
+                .whereSome()
+                .toList(),
+          ),
+        );
 
-  if (sentence == null) {
-    throw Exception("Sentence not found");
-  }
+Option<Sentence> _parseSentenceEntry(Element element) => Option.Do(($) {
+      final english = $(element.queryOption(".english")).text.trim();
+      final japanese = $(_parseSentenceFurigana(element));
 
-  final kanji = document
-      .querySelectorAll("div.kanji_light_block > div.entry.kanji_light")
-      .map(_parseKanjiEntry)
-      .toList();
+      final copyright = element.queryOption(".inline_copyright a").flatMap(
+            (element) => element.attributes.extract<String>("href").map(
+                  (url) => SentenceCopyright(
+                    name: element.text.trim(),
+                    url: url,
+                  ),
+                ),
+          );
 
-  return kanji.isNotEmpty ? sentence.copyWith(kanji: kanji) : sentence;
-}
+      final id = element
+          .queryOption(".light-details_link")
+          .flatMap((element) => element.attributes.extract<String>("href"))
+          .flatMap((url) => url.split("/").lastOption);
 
-Sentence _parseSentenceEntry(Element element) {
-  final english = element.querySelector("span.english")!.trimmedText;
-
-  final japanese = _parseSentenceFurigana(element);
-
-  final copyright = element.querySelector("span.inline_copyright a")?.transform(
-        (e) => SentenceCopyright(
-          name: e.trimmedText,
-          url: e.attributes["href"]!,
-        ),
+      return Sentence(
+        japanese: japanese,
+        english: english,
+        id: id.toNullable(),
+        copyright: copyright.toNullable(),
       );
-
-  final id = element
-      .querySelector("a.light-details_link")
-      ?.transform((e) => e.attributes["href"]!.split("/").last);
-
-  return Sentence(
-    japanese: japanese,
-    english: english,
-    id: id,
-    copyright: copyright,
-  );
-}
+    });

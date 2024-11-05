@@ -30,10 +30,8 @@ class WikipediaWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             children: [
-              if (wikipedia.textAbstract != null) ...[
-                SelectableText(wikipedia.textAbstract!),
-                const SizedBox(height: 12),
-              ],
+              SelectableText(wikipedia.textAbstract),
+              const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 children: [

@@ -1,116 +1,116 @@
 part of "parser.dart";
 
-Kanji parseKanjiDetails(Document document) {
-  final kanji = document
-      .querySelector("div.kanji.details")
-      ?.transform(_parseKanjiDetailsEntry);
+Option<Kanji> parseKanjiDetails(Document document) =>
+    document.queryOption(".kanji.details").flatMap(_parseKanjiDetailsEntry);
 
-  if (kanji == null) {
-    throw Exception("Kanji not found");
-  }
+Option<Kanji> _parseKanjiEntry(Element element) => Option.Do(($) {
+      final kanji = $(
+        element.queryOption(".literal_block > span > a"),
+      ).text.trim();
 
-  return kanji;
-}
+      final strokeCountElement = $(element.queryOption(".strokes"));
+      final strokeCountText = $(strokeCountElement.text.split(" ").firstOption);
+      final strokeCount = $(strokeCountText.toIntOption);
 
-Kanji _parseKanjiEntry(Element element) {
-  final kanji =
-      element.querySelector("div.literal_block > span > a")!.trimmedText;
+      final infoText = element.queryOption(".info").map((e) => e.text.trim());
 
-  final strokeCount = element
-      .querySelector(".strokes")!
-      .transform((e) => int.parse(e.text.split(" ").first));
+      final type = infoText.flatMap(_getKanjiType);
 
-  final type = element.querySelector("div.info")?.transform(_getKanjiType);
+      final jlptLevel = infoText.flatMap(_parseJlptLevelText);
 
-  final jlptLevel = element
-      .querySelector("div.info")
-      ?.trimmedText
-      .transform(JLPTLevel.fromText);
+      final meanings = element
+          .querySelectorAll(".meanings > span")
+          .allTrimmedText
+          .map((e) => e.replaceAll(",", ""))
+          .toList();
 
-  final meanings = element
-      .querySelectorAll("div.meanings > span")
-      .allTrimmedText
-      .map((e) => e.replaceAll(",", ""))
-      .toList();
+      final kunReadings = _findReadings(element, "kun");
+      final onReadings = _findReadings(element, "on");
 
-  final kunReadings = element
-      .querySelectorAll("div.kun > span.japanese_gothic > a")
-      .allTrimmedText;
+      return Kanji(
+        kanji: kanji,
+        strokeCount: strokeCount,
+        type: type.toNullable(),
+        jlptLevel: jlptLevel.toNullable(),
+        meanings: meanings,
+        kunReadings: kunReadings,
+        onReadings: onReadings,
+      );
+    });
 
-  final onReadings = element
-      .querySelectorAll("div.on > span.japanese_gothic > a")
-      .allTrimmedText;
+Option<Kanji> _parseKanjiDetailsEntry(Element element) => Option.Do(($) {
+      final kanji = $(element.queryOption(".character")).text.trim();
 
-  return Kanji(
-    kanji: kanji,
-    strokeCount: strokeCount,
-    type: type,
-    jlptLevel: jlptLevel,
-    meanings: meanings,
-    kunReadings: kunReadings,
-    onReadings: onReadings,
-  );
-}
+      final meanings = $(element.queryOption(".kanji-details__main-meanings"))
+          .text
+          .trim()
+          .split(", ");
 
-Kanji _parseKanjiDetailsEntry(Element element) {
-  final kanji = element.querySelector("h1.character")!.trimmedText;
+      final strokeCountElement = $(
+        element.queryOption(".kanji-details__stroke_count > strong"),
+      );
 
-  final meanings = element
-      .querySelector(".kanji-details__main-meanings")!
-      .trimmedText
-      .split(", ");
+      final strokeCount = $(strokeCountElement.text.trim().toIntOption);
 
-  final strokeCount = element
-      .querySelector(".kanji-details__stroke_count > strong")!
-      .trimmedText
-      .transform(int.parse);
+      final jlptLevel = element
+          .queryOption(".jlpt > strong")
+          .map((element) => element.text.trim())
+          .flatMap(_parseJlptLevel);
 
-  final jlptLevel = element
-      .querySelector("div.jlpt > strong")
-      ?.trimmedText
-      .transform(JLPTLevel.fromString);
+      final type = element
+          .queryOption(".grade")
+          .map((element) => element.text.trim())
+          .flatMap(_getKanjiType);
 
-  final type = element.querySelector("div.grade")?.transform(_getKanjiType);
+      final kunReadings = _findDetailReadings(element, "kun");
+      final onReadings = _findDetailReadings(element, "on");
 
-  final kunReadings = element
-      .querySelectorAll(
-        "div.kanji-details__main-readings > dl.kun_yomi > dd > a",
-      )
-      .allTrimmedText;
+      final details = _parseKanjiDetails(element);
 
-  final onReadings = element
-      .querySelectorAll(".kanji-details__main-readings > dl.on_yomi > dd > a")
-      .allTrimmedText;
+      return Kanji(
+        kanji: kanji,
+        strokeCount: strokeCount,
+        type: type.toNullable(),
+        jlptLevel: jlptLevel.toNullable(),
+        meanings: meanings,
+        kunReadings: kunReadings,
+        onReadings: onReadings,
+        details: details,
+      );
+    });
 
-  final details = _parseKanjiDetails(element);
+List<String> _findReadings(Element element, String type) =>
+    element.querySelectorAll(".$type > .japanese_gothic > a").allTrimmedText;
 
-  return Kanji(
-    kanji: kanji,
-    strokeCount: strokeCount,
-    type: type,
-    jlptLevel: jlptLevel,
-    meanings: meanings,
-    kunReadings: kunReadings,
-    onReadings: onReadings,
-    details: details,
-  );
-}
+List<String> _findDetailReadings(Element element, String type) => element
+    .querySelectorAll(".kanji-details__main-readings > .${type}_yomi > dd > a")
+    .allTrimmedText;
+
+Option<JLPTLevel> _parseJlptLevel(String text) =>
+    Option.fromNullable(JLPTLevel.fromString(text));
+
+Option<JLPTLevel> _parseJlptLevelText(String text) => RegExp(r"JLPT (N\d)")
+    .firstMatchOption(text.toUpperCase())
+    .flatMap((match) => match.groupOption(1))
+    .flatMap(_parseJlptLevel);
 
 KanjiDetails _parseKanjiDetails(Element element) {
   final parts =
-      element.querySelectorAll("div.radicals > dl > dd > a").allTrimmedText;
+      element.querySelectorAll(".radicals > dl > dd > a").allTrimmedText;
 
   final variants =
-      element.querySelectorAll("dl.variants > dd > a").allTrimmedText;
+      element.querySelectorAll(".variants > dd > a").allTrimmedText;
 
   final frequency = element
-      .querySelector("div.frequency > strong")
-      ?.trimmedText
-      .transform(int.parse);
+      .queryOption(".frequency > strong")
+      .map((element) => element.text.trim())
+      .flatMap((text) => text.toIntOption);
 
   final radical = element
-      .querySelector("div.radicals > dl > dd > span")
-      ?.transform(_parseRadical);
+      .queryOption(
+        ".radicals > dl > dd > span",
+      )
+      .flatMap(_parseRadical);
 
   final onCompounds = _findCompounds(element, "On");
   final kunCompounds = _findCompounds(element, "Kun");
@@ -118,60 +118,70 @@ KanjiDetails _parseKanjiDetails(Element element) {
   return KanjiDetails(
     parts: parts,
     variants: variants,
-    radical: radical,
-    frequency: frequency,
+    radical: radical.toNullable(),
+    frequency: frequency.toNullable(),
     onCompounds: onCompounds,
     kunCompounds: kunCompounds,
   );
 }
 
-Radical _parseRadical(Element element) => Radical(
-      character: element.nodes.allTrimmedText.firstWhere(
-        (text) => text.isNotEmpty,
+Option<Radical> _parseRadical(Element element) => Option.Do(
+      ($) => Radical(
+        character: $(
+          element.nodes
+              .where((node) => node.nodeType == Node.TEXT_NODE)
+              .map((node) => node.textOption.getOrElse(() => "").trim())
+              .where((text) => text.isNotEmpty)
+              .firstOption,
+        ),
+        meanings: $(
+          element.queryOption(".radical_meaning"),
+        ).text.trim().split(", "),
       ),
-      meanings: element
-          .querySelector("span.radical_meaning")!
-          .trimmedText
-          .split(", "),
     );
 
-KanjiType? _getKanjiType(Element element) {
-  final text = element.text;
+Option<KanjiType> _getKanjiType(String text) => text.contains("Jōyō")
+    ? text.contains("junior high")
+        ? some(const Jouyou.juniorHigh())
+        : RegExp(r"grade (\d+)")
+            .firstMatchOption(text)
+            .flatMap((match) => match.groupOption(1))
+            .flatMap((matchText) => matchText.toIntOption)
+            .map(Jouyou.new)
+    : text.contains("Jinmeiyō")
+        ? some(const Jinmeiyou())
+        : none();
 
-  if (text.contains("Jōyō")) {
-    if (text.contains("junior high")) {
-      return const Jouyou.juniorHigh();
-    }
+List<Compound> _findCompounds(Element element, String type) => element
+    .querySelectorAll(".row.compounds > .columns")
+    .where(
+      (columnElement) => columnElement
+          .queryOption("h2")
+          .map(
+            (headerElement) =>
+                headerElement.text.contains("$type reading compounds"),
+          )
+          .getOrElse(() => false),
+    )
+    .firstOption
+    .map(_parseCompounds)
+    .getOrElse(() => []);
 
-    final grade = RegExp(r"grade (\d+)").firstMatch(text)!.group(1)!;
-    return Jouyou(int.parse(grade));
-  }
+List<Compound> _parseCompounds(Element column) => column
+    .querySelectorAll("ul > li")
+    .map(
+      (element) => Option.Do(($) {
+        final lines = element.text.trim().split("\n");
 
-  if (text.contains("Jinmeiyō")) {
-    return const Jinmeiyou();
-  }
-
-  return null;
-}
-
-List<Compound> _findCompounds(Element element, String type) =>
-    element
-        .querySelectorAll("div.row.compounds > div.columns")
-        .firstWhereOrNull(
-          (e) =>
-              e.querySelector("h2")!.text.contains("$type reading compounds"),
-        )
-        ?.transform(_parseCompounds) ??
-    [];
-
-List<Compound> _parseCompounds(Element column) =>
-    column.querySelectorAll("ul > li").map((e) {
-      final lines = e.trimmedText.split("\n");
-      assert(lines.length == 3);
-
-      return Compound(
-        compound: lines[0].trim(),
-        reading: lines[1].trim().replaceAll("【", "").replaceAll("】", ""),
-        meanings: lines[2].trim().split(", "),
-      );
-    }).toList();
+        return Compound(
+          compound: $(lines.getOption(0)).trim(),
+          reading: $(lines.getOption(1))
+              .trim()
+              .replaceAll("【", "")
+              .replaceAll("】", ""),
+          meanings: $(lines.getOption(2)).trim().split(", "),
+        );
+      }),
+    )
+    .whereSome()
+    .toList();

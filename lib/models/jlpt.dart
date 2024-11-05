@@ -24,10 +24,4 @@ enum JLPTLevel {
         "n5" => n5,
         _ => null,
       };
-
-  static JLPTLevel? fromText(String text) {
-    final pattern = RegExp(r"JLPT (N\d)");
-    final match = pattern.firstMatch(text.toUpperCase());
-    return match != null ? JLPTLevel.fromString(match.group(1)!) : null;
-  }
 }

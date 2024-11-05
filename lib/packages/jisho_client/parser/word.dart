@@ -1,201 +1,237 @@
 part of "parser.dart";
 
-Word parseWordDetails(Document document) {
-  final word =
-      document.querySelector("div.concept_light")?.transform(_parseWordEntry);
+Option<Word> parseWordDetails(Document document) => document
+    .queryOption(".concept_light")
+    .flatMap(_parseWordEntry)
+    .map(
+      (word) => word.copyWith(
+        details: WordDetails(
+          kanji: document
+              .querySelectorAll(".kanji_light_block > .entry.kanji_light")
+              .map(_parseKanjiEntry)
+              .whereSome()
+              .toList(),
+          wikipedia: document
+              .querySelectorAll(".meaning-tags")
+              .where((element) => element.text.contains("Wikipedia definition"))
+              .firstOption
+              .flatMap((element) => element.nextElementSiblingOption)
+              .flatMap(_parseWikipediaInfo)
+              .toNullable(),
+        ),
+      ),
+    );
 
-  if (word == null) {
-    throw Exception("Word not found");
-  }
+Option<Word> _parseWordEntry(Element element) => Option.Do(($) {
+      final word = $(_parseWordFurigana(element));
 
-  final kanji = document
-      .querySelectorAll("div.kanji_light_block > div.entry.kanji_light")
-      .map(_parseKanjiEntry)
-      .toList();
+      final isCommon = element.hasElement(".concept_light-common");
 
-  final wikipedia = document
-      .querySelectorAll("div.meaning-tags")
-      .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"))
-      ?.transform((w) => _parseWikipediaInfo(w.nextElementSibling!));
+      final audioUrl = element
+          .queryOption("audio > source")
+          .flatMap((e) => e.attributes.extract<String>("src"))
+          .map((src) => "https:$src");
 
-  return word.copyWith(
-    details: WordDetails(kanji: kanji, wikipedia: wikipedia),
-  );
-}
+      final jlptLevel = element
+          .querySelectorAll(".concept_light-tag")
+          .where((e) => e.text.contains("JLPT"))
+          .firstOption
+          .flatMap((e) => e.text.trim().split(" ").lastOption)
+          .flatMap(_parseJlptLevel);
 
-Word _parseWordEntry(Element element) {
-  final word = _parseWordFurigana(element);
-
-  final isCommon = element.querySelector("span.concept_light-common") != null;
-
-  final audioUrl = element
-      .querySelector("audio > source")
-      ?.transform((e) => "https:${e.attributes["src"]!}");
-
-  final jlptLevel = element
-      .querySelectorAll("span.concept_light-tag")
-      .firstWhereOrNull((e) => e.text.contains("JLPT"))
-      ?.trimmedText
-      .transform((e) => e.split(" ")[1])
-      .transform(JLPTLevel.fromString);
-
-  final wanikaniLevels = element
-      .querySelectorAll("span.concept_light-tag")
-      .where((e) => e.text.contains("Wanikani"))
-      .map((e) => e.children.first.trimmedText.split(" ")[2])
-      .map(int.parse)
-      .toList();
-
-  final notes = element
-          .querySelector("div.meaning-representation_notes > span")
-          ?.transform((e) => e.trimmedText)
-          .transform(_parseNotes) ??
-      [];
-
-  final definitionElements = element.querySelectorAll("div.meaning-wrapper");
-
-  final otherForms = definitionElements
-          .firstWhereOrNull(
-            (e) => e.previousElementSibling?.text == "Other forms",
+      final wanikaniLevels = element
+          .querySelectorAll("a[href='http://wanikani.com/']")
+          .map(
+            (e) => e.text
+                .trim()
+                .split(" ")
+                .getOption(2)
+                .flatMap((text) => text.toIntOption),
           )
-          ?.transform(_parseOtherForms) ??
-      [];
+          .whereSome()
+          .toList();
 
-  final sourceDefinitions = definitionElements
-      .where(
-    (e) =>
-        e.previousElementSibling?.text != "Other forms" &&
-        e.previousElementSibling?.text != "Wikipedia definition" &&
-        e.querySelector(".meaning-representation_notes") == null,
-  )
-      .fold(<Definition>[], _parseDefinition).toList();
+      final notes = element
+          .queryOption(".meaning-representation_notes > span")
+          .map((e) => e.text.trim())
+          .map(_parseNotes)
+          .getOrElse(() => []);
 
-  final wikipediaElement = element
-      .querySelectorAll("div.meaning-tags")
-      .firstWhereOrNull((e) => e.text.contains("Wikipedia definition"))
-      ?.nextElementSibling;
+      final definitionElements = element.querySelectorAll(".meaning-wrapper");
 
-  final hasWikipedia =
-      wikipediaElement?.getElementsByTagName("a").isNotEmpty ?? false;
+      final otherForms = definitionElements
+          .where((e) => e.previousElementSibling?.text == "Other forms")
+          .firstOption
+          .flatMap(_parseOtherForms)
+          .getOrElse(() => []);
 
-  final definitions = sourceDefinitions.isEmpty && wikipediaElement != null
-      ? _parseWikipediaDefinition(wikipediaElement)
-      : sourceDefinitions;
+      final wikipediaElement = element
+          .querySelectorAll(".meaning-tags")
+          .where((e) => e.text.contains("Wikipedia definition"))
+          .firstOption
+          .flatMap((e) => e.nextElementSiblingOption);
 
-  final id = element
-      .querySelector("a.light-details_link")
-      ?.transform((e) => e.attributes["href"]!.split("/").last)
-      .transform(Uri.decodeComponent);
+      final hasWikipedia =
+          wikipediaElement.map((e) => e.hasElement("a")).getOrElse(() => false);
 
-  final inflectionCode = element
-      .querySelector("a.show_inflection_table")
-      ?.transform((e) => e.attributes["data-pos"]!);
+      final definitions = $(
+        definitionElements
+            .where(
+              (e) =>
+                  e.previousElementSiblingOption
+                      .map(
+                        (previousElement) => ![
+                          "Other forms",
+                          "Wikipedia definition",
+                        ].contains(previousElement.text),
+                      )
+                      .getOrElse(() => true) &&
+                  !e.hasElement(".meaning-representation_notes"),
+            )
+            .fold(some(<Definition>[]), _parseDefinition)
+            .flatMap((defs) => Option.fromPredicate(defs, (l) => l.isNotEmpty))
+            .alt(
+              () => wikipediaElement
+                  .flatMap((e) => _parseWikipediaDefinition(e).map((d) => [d])),
+            ),
+      );
 
-  final collocations = element
+      final id = element
+          .queryOption(".light-details_link")
+          .flatMap((e) => e.attributes.extract<String>("href"))
+          .flatMap((text) => text.split("/").lastOption)
+          .map(Uri.decodeComponent);
+
+      final inflectionCode = element
+          .queryOption(".show_inflection_table")
+          .flatMap((e) => e.attributes.extract<String>("data-pos"));
+
+      final collocations = element
           .querySelectorAll(".concept_light-status_link")
-          .firstWhereOrNull((e) => e.text.contains("collocation"))
-          ?.transform(
-            (e) => element
-                .querySelectorAll(
-                  "#${e.attributes["data-reveal-id"]!} > ul > li > a",
-                )
-                .map(
-                  (e2) => e2.text.trim().split(" - ").transform(
-                        (split) => Collocation(
-                          word: split[0],
-                          meaning: split[1],
-                        ),
-                      ),
-                )
-                .toList(),
-          ) ??
-      [];
+          .where((e) => e.text.contains("collocation"))
+          .firstOption
+          .flatMap((e) => e.attributes.extract<String>("data-reveal-id"))
+          .map(_parseCollocations.curry(element))
+          .getOrElse(() => []);
 
-  return Word(
-    word: word,
-    definitions: definitions,
-    otherForms: otherForms,
-    isCommon: isCommon,
-    wanikaniLevels: wanikaniLevels,
-    jlptLevel: jlptLevel,
-    audioUrl: audioUrl,
-    notes: notes,
-    collocations: collocations,
-    id: id,
-    inflectionCode: inflectionCode,
-    hasWikipedia: hasWikipedia,
-  );
-}
+      return Word(
+        word: word,
+        definitions: definitions,
+        otherForms: otherForms,
+        isCommon: isCommon,
+        wanikaniLevels: wanikaniLevels,
+        jlptLevel: jlptLevel.toNullable(),
+        audioUrl: audioUrl.toNullable(),
+        notes: notes,
+        collocations: collocations,
+        id: id.toNullable(),
+        inflectionCode: inflectionCode.toNullable(),
+        hasWikipedia: hasWikipedia,
+      );
+    });
+
+List<Collocation> _parseCollocations(Element element, String revealId) =>
+    element
+        .querySelectorAll("#$revealId > ul > li > a")
+        .map(
+          (e) => Option.Do(($) {
+            final split = e.text.trim().split(" - ");
+
+            return Collocation(
+              word: $(split.firstOption),
+              meaning: $(split.getOption(1)),
+            );
+          }),
+        )
+        .whereSome()
+        .toList();
 
 List<Note> _parseNotes(String text) => text
     .trim()
     .replaceFirst(RegExp(r"\.$"), "")
     .split(". ")
     .deduplicate<String>()
-    .map(Note.parse)
+    .map(_parseNote)
+    .whereSome()
     .toList();
 
-List<Definition> _parseWikipediaDefinition(Element e) => [
-      Definition(
-        meanings: [e.querySelector(".meaning-meaning")!.text],
-        types: ["Word"],
-      ),
-    ];
+Option<Note> _parseNote(String text) => Option.Do(($) {
+      final split = text.split(": ");
+      return Note(form: $(split.firstOption), note: $(split.lastOption));
+    });
 
-List<Definition> _parseDefinition(List<Definition> previous, Element element) {
-  final previousElement = element.previousElementSibling;
+Option<Definition> _parseWikipediaDefinition(Element element) => element
+    .queryOption(".meaning-meaning")
+    .map((e) => Definition(meanings: [e.text.trim()], types: ["Word"]));
 
-  final thisTypes = previousElement?.classes.contains("meaning-tags") ?? false
-      ? previousElement!.text
-          .split(", ")
-          .map((e) => e.trim())
-          .toList()
-          .deduplicate<String>()
-      : const <String>[];
+Option<List<Definition>> _parseDefinition(
+  Option<List<Definition>> previousOption,
+  Element element,
+) =>
+    previousOption.flatMap(
+      (previous) => Option.Do(($) {
+        final meanings = $(
+          element.queryOption(".meaning-meaning"),
+        ).text.trim().split("; ");
 
-  final types = thisTypes.isEmpty && previous.isNotEmpty
-      ? previous.last.types
-      : thisTypes;
+        final types = element.previousElementSiblingOption
+            .flatMap(
+              (previousElement) => Option.fromPredicate(
+                previousElement,
+                (e) => e.classes.contains("meaning-tags"),
+              ),
+            )
+            .map(
+              (previousElement) => previousElement.text
+                  .split(", ")
+                  .map((text) => text.trim())
+                  .toList()
+                  .deduplicate<String>(),
+            )
+            .alt(
+              () => previous.lastOption
+                  .map((previousDefinition) => previousDefinition.types),
+            )
+            .getOrElse(() => []);
 
-  final meanings = element
-      .querySelector("span.meaning-meaning")!
-      .trimmedText
-      .transform((e) => e.split("; "));
+        final tags = element
+            .querySelectorAll(".tag-tag, .tag-info, .tag-source")
+            .allTrimmedText;
 
-  final tags = element
-      .querySelectorAll("span.tag-tag, span.tag-info, span.tag-source")
-      .allTrimmedText;
+        final seeAlso = element
+            .querySelectorAll(".tag-see_also > a")
+            .allTrimmedText
+            .deduplicate<String>();
 
-  final seeAlso = element
-      .querySelectorAll("span.tag-see_also > a")
-      .allTrimmedText
-      .deduplicate<String>();
+        final exampleSentence = element.queryOption(".sentence").flatMap(
+              (e) => Option.Do(
+                ($) => Sentence(
+                  japanese: $(_parseSentenceFurigana(e)),
+                  english: $(e.queryOption(".english")).text.trim(),
+                ),
+              ),
+            );
 
-  final exampleSentence = element.querySelector("div.sentence")?.transform(
-        (e) => Sentence(
-          japanese: _parseSentenceFurigana(e),
-          english: e.querySelector("span.english")!.trimmedText,
-        ),
-      );
+        return [
+          ...previous,
+          Definition(
+            meanings: meanings,
+            types: types,
+            tags: tags,
+            seeAlso: seeAlso,
+            exampleSentence: exampleSentence.toNullable(),
+          ),
+        ];
+      }),
+    );
 
-  return [
-    ...previous,
-    Definition(
-      meanings: meanings,
-      types: types,
-      tags: tags,
-      seeAlso: seeAlso,
-      exampleSentence: exampleSentence,
-    ),
-  ];
-}
+Option<List<OtherForm>> _parseOtherForms(Element element) => Option.Do(
+      ($) => element.querySelectorAll(".break-unit").map((e) {
+        final split = e.text.trim().replaceFirst("】", "").split(" 【");
 
-List<OtherForm> _parseOtherForms(Element element) =>
-    element.querySelectorAll("span.break-unit").map((e) {
-      final split = e.trimmedText.replaceFirst("】", "").split(" 【");
-
-      return OtherForm(
-        form: split.first,
-        reading: split.length == 2 ? split.last : "",
-      );
-    }).toList();
+        return OtherForm(
+          form: $(split.firstOption),
+          reading: split.getOption(1).getOrElse(() => ""),
+        );
+      }).toList(),
+    );

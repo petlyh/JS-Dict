@@ -2,10 +2,12 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
 import "package:test/test.dart";
 
+import "util.dart";
+
 Future<void> Function() _furiganaTest(String wordId, Furigana furigana) =>
-    () async => expect(
+    () async => expectEquals(
           (await JishoClient().wordDetails(wordId)).word,
-          equals(furigana),
+          furigana,
         );
 
 void main() {

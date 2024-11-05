@@ -1,35 +1,50 @@
 part of "parser.dart";
 
-WikipediaInfo? _parseWikipediaInfo(Element element) {
-  if (element.querySelector("span.meaning-abstract") == null) {
-    return null;
-  }
+Option<WikipediaInfo> _parseWikipediaInfo(Element element) => Option.Do(($) {
+      final title = $(element.queryOption(".meaning-meaning")).text.trim();
 
-  final title = element.querySelector("span.meaning-meaning")!.trimmedText;
+      final text = $(
+        element
+            .queryOption(".meaning-abstract")
+            .flatMap((abstractElement) => abstractElement.nodes.firstOption)
+            .flatMap((node) => node.textOption),
+      );
 
-  final text = element
-      .querySelector("span.meaning-abstract")
-      ?.transform((e) => e.nodes.first.text!);
+      return WikipediaInfo(
+        title: title,
+        textAbstract: _parseWikipediaAbstract(title, text),
+        wikipediaEnglish: _parseWikipediaPage(
+          element,
+          "English Wikipedia",
+        ).toNullable(),
+        wikipediaJapanese: _parseWikipediaPage(
+          element,
+          "Japanese Wikipedia",
+        ).toNullable(),
+        dbpedia: _parseWikipediaPage(element, "DBpedia").toNullable(),
+      );
+    });
 
-  return WikipediaInfo(
-    title: title,
-    textAbstract: text != null ? _parseWikipediaAbstract(title, text) : null,
-    wikipediaEnglish: _parseWikipediaPage(element, "English Wikipedia"),
-    wikipediaJapanese: _parseWikipediaPage(element, "Japanese Wikipedia"),
-    dbpedia: _parseWikipediaPage(element, "DBpedia"),
-  );
-}
-
-WikipediaPage? _parseWikipediaPage(Element definitionElement, String name) =>
+Option<WikipediaPage> _parseWikipediaPage(
+  Element definitionElement,
+  String name,
+) =>
     definitionElement
-        .querySelectorAll("span.meaning-abstract > a")
-        .firstWhereOrNull((e) => e.text.contains(name))
-        ?.transform(
-          (e) => WikipediaPage(
-            title: RegExp("“(.+?)”").firstMatch(e.text)!.group(1)!,
-            url: Uri.parse(e.attributes["href"]!)
-                // Query parameter for page version is removed
-                .replace(queryParameters: {}).toString(),
+        .querySelectorAll(".meaning-abstract > a")
+        .where((element) => element.text.contains(name))
+        .firstOption
+        .flatMap(
+          (element) => Option.Do(
+            ($) => WikipediaPage(
+              title: $(
+                RegExp("“(.+?)”")
+                    .firstMatchOption(element.text)
+                    .flatMap((match) => match.groupOption(1)),
+              ),
+              url: $(element.attributes.extract<String>("href").map(Uri.parse))
+                  // Query parameter for page version is removed
+                  .replace(queryParameters: {}).toString(),
+            ),
           ),
         );
 

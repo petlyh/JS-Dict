@@ -1,23 +1,113 @@
 part of "parser.dart";
 
-Furigana _parseSentenceFurigana(Element element) => element
-    .querySelector("ul.japanese_sentence, ul.japanese")!
-    .nodes
-    .map((node) {
+Option<Furigana> _parseSentenceFurigana(Element element) => element
+    .queryOption("ul.japanese_sentence, ul.japanese")
+    .map((e) => e.nodes.map(_parseSentenceFuriganaPart).whereSome().toList());
+
+Option<FuriganaPart> _parseSentenceFuriganaPart(Node node) => Option.Do(($) {
       if (node.nodeType == Node.TEXT_NODE) {
-        final text = node.text!.trim();
-        return text.isNotEmpty ? FuriganaPart(text) : null;
+        final text = $(node.textOption).trim();
+
+        return FuriganaPart(
+          $(Option.fromPredicate(text, (t) => t.isNotEmpty)),
+        );
       }
 
       final element = node as Element;
-      final text =
-          element.querySelector("span.unlinked")!.firstChild!.text!.trim();
 
-      final furiganaElement = element.querySelector("span.furigana");
-      return FuriganaPart(text, furiganaElement?.trimmedText);
-    })
-    .nonNulls
-    .toList();
+      final unlinked = $(element.queryOption(".unlinked"));
+      final unlinkedChild = $(unlinked.firstChildOption);
+      final text = $(unlinkedChild.textOption).trim();
+
+      final furigana = element.queryOption(".furigana").map(
+            (e) => e.text.trim(),
+          );
+
+      return FuriganaPart(text, furigana.toNullable());
+    });
+
+Option<Furigana> _parseWordFurigana(Element element) => Option.Do(($) {
+      if (element.hasElement(".furigana > ruby")) {
+        return $(_parseRubyFurigana(element));
+      }
+
+      final furiganaParts = element
+          .querySelectorAll(".concept_light-representation > .furigana > span")
+          .allTrimmedText;
+
+      if (furiganaParts.length == 1) {
+        return [
+          FuriganaPart(
+            $(element.queryOption(".concept_light-representation > .text"))
+                .text
+                .trim(),
+            $(furiganaParts.firstOption),
+          ),
+        ];
+      }
+
+      final originalTextParts =
+          $(element.queryOption(".concept_light-representation > .text"))
+              .nodes
+              .map(
+                (node) => node.textOption.map(
+                  // split kanji if it's a text node
+                  (text) => node.nodeType == Node.TEXT_NODE
+                      ? text.trim().split("")
+                      : [text.trim()],
+                ),
+              )
+              .whereSome()
+              .flattened
+              .toList();
+
+      final textParts = originalTextParts.length > furiganaParts.length
+          ? _limitTextPartsSize(originalTextParts, furiganaParts.length)
+          : originalTextParts;
+
+      final text = textParts.join();
+
+      // kanji compounds that don't specify ruby locations
+      if (isKanji(text) && _hasEmpty(furiganaParts)) {
+        return [FuriganaPart(text, furiganaParts.join())];
+      }
+
+      return textParts
+          .zip(furiganaParts)
+          .map(
+            (record) => FuriganaPart(
+              record.$1,
+              record.$2.isNotEmpty ? record.$2 : null,
+            ),
+          )
+          .toList();
+    });
+
+Option<Furigana> _parseRubyFurigana(Element element) => Option.Do(($) {
+      final furiganaParts = element
+          .querySelectorAll(".concept_light-representation > .furigana > *")
+          .map(
+            (e) => e.localName == "ruby"
+                ? $(e.queryOption("rt")).text.trim()
+                : e.text.trim(),
+          )
+          .toList();
+
+      final textParts = $(
+        element.queryOption(".concept_light-representation > .text"),
+      )
+          .nodes
+          .map((node) => $(node.textOption).trim())
+          .where((text) => text.isNotEmpty)
+          .toList();
+
+      assert(furiganaParts.length == textParts.length);
+
+      return textParts
+          .zip(furiganaParts)
+          .map((record) => FuriganaPart(record.$1, record.$2))
+          .toList();
+    });
 
 List<String> _limitTextPartsSize(List<String> list, int size) => [
       ...list.sublist(0, size - 1),
@@ -25,80 +115,4 @@ List<String> _limitTextPartsSize(List<String> list, int size) => [
     ];
 
 bool _hasEmpty(List<String> list) =>
-    list.firstWhereOrNull((part) => part.isEmpty) != null;
-
-Furigana _parseWordFurigana(Element element) {
-  if (element.querySelector("span.furigana > ruby") != null) {
-    return _parseRubyFurigana(element);
-  }
-
-  final furiganaParts = element
-      .querySelectorAll(
-        "div.concept_light-representation > span.furigana > span",
-      )
-      .allTrimmedText;
-
-  if (furiganaParts.length == 1) {
-    return [
-      FuriganaPart(
-        element
-            .querySelector("div.concept_light-representation > span.text")!
-            .trimmedText,
-        furiganaParts.first,
-      ),
-    ];
-  }
-
-  var textParts = element
-      .querySelector("div.concept_light-representation > span.text")!
-      .nodes
-      .map((node) {
-        final text = node.text!.trim();
-        // split kanji if it's a text node
-        return node.nodeType == Node.TEXT_NODE ? text.split("") : [text];
-      })
-      .flattened
-      .toList();
-
-  if (textParts.length > furiganaParts.length) {
-    textParts = _limitTextPartsSize(textParts, furiganaParts.length);
-  }
-
-  assert(furiganaParts.length == textParts.length);
-
-  final text = textParts.join();
-
-  // kanji compounds that don't specify ruby locations
-  if (isKanji(text) && _hasEmpty(furiganaParts)) {
-    return [FuriganaPart(text, furiganaParts.join())];
-  }
-
-  return textParts.mapIndexed((index, text) {
-    final furigana = furiganaParts[index];
-    return FuriganaPart(text, furigana.isNotEmpty ? furigana : null);
-  }).toList();
-}
-
-Furigana _parseRubyFurigana(Element element) {
-  final furiganaParts = element
-      .querySelectorAll("div.concept_light-representation > span.furigana > *")
-      .map(
-        (e) => e.localName == "ruby"
-            ? e.querySelector("rt")!.trimmedText
-            : e.trimmedText,
-      )
-      .toList();
-
-  final textParts = element
-      .querySelector("div.concept_light-representation > span.text")!
-      .nodes
-      .map((node) => node.text!.trim())
-      .where((text) => text.isNotEmpty)
-      .toList();
-
-  assert(furiganaParts.length == textParts.length);
-
-  return textParts
-      .mapIndexed((index, text) => FuriganaPart(text, furiganaParts[index]))
-      .toList();
-}
+    list.where((part) => part.isEmpty).isNotEmpty;
