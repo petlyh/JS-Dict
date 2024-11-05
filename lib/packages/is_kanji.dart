@@ -3,8 +3,8 @@ import "package:collection/collection.dart";
 const _cjkUnifiedIdeographsStart = 0x4E00;
 const _cjkUnifiedIdeographsEnd = 0x9FFF;
 
-/// checks whether [text] only contains kanji characters.
-bool isKanji(String text) =>
+/// checks whether [text] only contains kanji characters.¨
+bool isKanjiOnly(String text) =>
     text.trim().codeUnits.firstWhereOrNull(
           (unit) => !(_cjkUnifiedIdeographsStart <= unit &&
               unit <= _cjkUnifiedIdeographsEnd),
