@@ -8,4 +8,11 @@ void main() {
     expect(isKanjiOnly("カラオケ"), isFalse);
     expect(isKanjiOnly("not kanji"), isFalse);
   });
+
+  test("isNonKanji", () {
+    expect(isNonKanji("悪因悪果"), isFalse);
+    expect(isNonKanji("見る"), isFalse);
+    expect(isNonKanji("カラオケ"), isTrue);
+    expect(isNonKanji("not kanji"), isTrue);
+  });
 }
