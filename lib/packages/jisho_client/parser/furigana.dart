@@ -68,7 +68,7 @@ Option<Furigana> _parseWordFurigana(Element element) => Option.Do(($) {
       final text = textParts.join();
 
       // kanji compounds that don't specify ruby locations
-      if (isKanji(text) && _hasEmpty(furiganaParts)) {
+      if (isKanjiOnly(text) && _hasEmpty(furiganaParts)) {
         return [FuriganaPart(text, furiganaParts.join())];
       }
 

@@ -79,7 +79,7 @@ class _IntentHandlerHookState extends HookState<void, _IntentHandlerHook> {
         // then it's a link to the details page for that kanji.
         if (_containsTag(data, "kanji") &&
             rawQuery.length == 1 &&
-            isKanji(rawQuery)) {
+            isKanjiOnly(rawQuery)) {
           return _push(KanjiDetailsScreen.id(rawQuery));
         }
 
