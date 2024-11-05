@@ -67,8 +67,8 @@ class _RadicalSelection extends StatelessWidget {
   final List<String> selected;
   final List<String> valid;
 
-  final Function(String radical) onSelect;
-  final Function(String radical) onDeselect;
+  final void Function(String radical) onSelect;
+  final void Function(String radical) onDeselect;
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +130,8 @@ class _KanjiSelection extends StatelessWidget {
   });
 
   final List<String> matches;
-  final Function(String kanji) onSelect;
-  final Function() onReset;
+  final void Function(String kanji) onSelect;
+  final void Function() onReset;
 
   static const displayLimit = 100;
 
@@ -195,7 +195,7 @@ class _CustomButton extends StatelessWidget {
         backgroundColor = null,
         padding = 0;
 
-  final Function()? onPressed;
+  final void Function()? onPressed;
   final Color? backgroundColor;
   final double padding;
 

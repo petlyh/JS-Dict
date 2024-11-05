@@ -6,7 +6,7 @@ class InfoChip extends StatelessWidget {
 
   final String text;
   final Color? color;
-  final Function()? onTap;
+  final void Function()? onTap;
   final IconData? icon;
 
   @override
