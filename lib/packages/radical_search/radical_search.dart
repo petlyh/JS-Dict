@@ -4,12 +4,11 @@ import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/radical_search/kanji_radicals.dart";
 
 List<String> kanjiByRadicals(List<String> radicals) => kanjiRadicals.entries
-    .where((entry) {
-      for (final radical in radicals) {
-        if (!entry.value.contains(radical)) return false;
-      }
-      return true;
-    })
+    .where(
+      (entry) => radicals
+          .where((radical) => !entry.value.contains(radical))
+          .isEmpty,
+    )
     .map((entry) => entry.key)
     .toList();
 
