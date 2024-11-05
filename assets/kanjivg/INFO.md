@@ -2,7 +2,7 @@
 
 Data from [KanjiVg](https://kanjivg.tagaini.net/index.html) is used to generate the kanji stroke order diagrams. While the generation is done at runtime, the following preprocessing is applied to reduce the file size impact of bundling this data.
 
-Currently used commit: [d642ea9](https://github.com/KanjiVG/kanjivg/tree/d642ea972efa70dc5155d7fb62b9a6eea92585d6)
+Currently used commit: [4c2b391](https://github.com/KanjiVG/kanjivg/tree/4c2b391f36f639002d1198a40a414e9c12bb3cff)
 
 ## Preprocessing
 
