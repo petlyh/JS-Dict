@@ -51,6 +51,7 @@ class FutureLoader<T> extends HookWidget {
       return builder(context, loadingIndicator, null);
     }
 
-    throw StateError("Unhandled async state");
+    // If it completed without data.
+    return const SizedBox.shrink();
   }
 }
