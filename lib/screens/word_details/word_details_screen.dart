@@ -12,7 +12,7 @@ import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/future_loader.dart";
-import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia.dart";

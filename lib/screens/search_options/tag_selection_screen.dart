@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:jsdict/packages/tags.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search_options/search_options_screen.dart";
-import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/info_chip.dart";
 
 class TagSelectionScreen extends SearchOptionsScreen {
   const TagSelectionScreen({super.key})

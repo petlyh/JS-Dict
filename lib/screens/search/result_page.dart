@@ -14,7 +14,7 @@ import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/error_indicator.dart";
 import "package:jsdict/widgets/future_loader.dart";
-import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";

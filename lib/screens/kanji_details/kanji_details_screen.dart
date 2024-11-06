@@ -15,7 +15,7 @@ import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/future_loader.dart";
-import "package:jsdict/widgets/info_chips.dart";
+import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/link_span.dart";
 
