@@ -1,5 +1,6 @@
 import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
@@ -25,113 +26,99 @@ class KanjiDetailsScreen extends StatelessWidget {
   final Kanji? kanji;
   final String? kanjiId;
 
-  String get _id => kanjiId ?? kanji!.kanji;
-
   @override
   Widget build(BuildContext context) {
+    final id = kanjiId ?? kanji!.kanji;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Kanji"),
         actions: [
           LinkPopupButton([
-            ("Open in Browser", "https://jisho.org/search/$_id %23kanji"),
+            ("Open in Browser", "https://jisho.org/search/$id %23kanji"),
             (
               "Unihan database",
-              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$_id&useutf8=true"
+              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$id&useutf8=true"
             ),
-            ("Wiktionary", "http://en.wiktionary.org/wiki/$_id"),
+            ("Wiktionary", "http://en.wiktionary.org/wiki/$id"),
           ]),
         ],
       ),
-      body: kanji != null
-          ? _KanjiContentWidget(kanji!)
-          : FutureLoader(
-              onLoad: () => getClient().kanjiDetails(kanjiId!),
-              handler: _KanjiContentWidget.new,
-            ),
+      body: FutureLoader(
+        onLoad: () => kanji != null
+            ? SynchronousFuture(kanji!) as Future<Kanji>
+            : getClient().kanjiDetails(kanjiId!),
+        handler: _KanjiContentWidget.new,
+      ),
     );
   }
 }
 
 class _KanjiContentWidget extends StatelessWidget {
-  _KanjiContentWidget(this.kanji);
+  const _KanjiContentWidget(this.kanji);
 
   final Kanji kanji;
 
-  final radicalValue = ValueNotifier<Radical?>(null);
-  Radical? get radical => kanji.details?.radical ?? radicalValue.value;
-
-  Future<Kanji> get _future =>
-      getClient().kanjiDetails(kanji.kanji).then((value) {
-        radicalValue.value = value.details!.radical;
-        return value;
-      });
-
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            GestureDetector(
-              onLongPress: () => copyText(context, kanji.kanji),
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(
-                  kanji.kanji,
-                  style: const TextStyle(fontSize: 40).jp(),
+    return FutureLoader(
+      onLoad: () => kanji.details != null
+          ? SynchronousFuture(kanji.details!) as Future<KanjiDetails>
+          : getClient()
+              .kanjiDetails(kanji.kanji)
+              .then((kanji) => kanji.details!),
+      handler: (details) => _KanjiDetailsWidget(kanji, details),
+      frameBuilder: (context, child, details) => SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              GestureDetector(
+                onLongPress: () => copyText(context, kanji.kanji),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    kanji.kanji,
+                    style: const TextStyle(fontSize: 40).jp(),
+                  ),
                 ),
               ),
-            ),
-            Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                InfoChip("${kanji.strokeCount} strokes", color: Colors.green),
-                if (kanji.jlptLevel != null)
-                  InfoChip(
-                    "JLPT ${kanji.jlptLevel}",
-                    color: Colors.blue,
-                  ),
-                if (kanji.type != null)
-                  InfoChip(kanji.type!.name, color: Colors.blue),
-              ],
-            ),
-            const Divider(),
-            ListTile(
-              title: SelectableText(kanji.meanings.join(", ")),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              Wrap(
+                alignment: WrapAlignment.center,
                 children: [
-                  if (kanji.kunReadings.isNotEmpty)
-                    _ReadingsWidget("Kun", kanji.kanji, kanji.kunReadings),
-                  if (kanji.onReadings.isNotEmpty)
-                    _ReadingsWidget("On", kanji.kanji, kanji.onReadings),
-                  ValueListenableBuilder(
-                    valueListenable: radicalValue,
-                    builder: (_, __, ___) => radical != null
-                        ? JpText(
-                            "Radical: ${radical!.meanings.join(', ')} ${radical!.character}",
-                          )
-                        : const SizedBox(),
-                  ),
+                  InfoChip("${kanji.strokeCount} strokes", color: Colors.green),
+                  if (kanji.jlptLevel != null)
+                    InfoChip(
+                      "JLPT ${kanji.jlptLevel}",
+                      color: Colors.blue,
+                    ),
+                  if (kanji.type != null)
+                    InfoChip(kanji.type!.name, color: Colors.blue),
                 ],
               ),
-            ),
-            const Divider(),
-            if (kanji.details != null)
-              _KanjiDetailsWidget(kanji, kanji.details!)
-            else
-              FutureLoader(
-                onLoad: () => _future,
-                handler: (kanjiDetails) => _KanjiDetailsWidget(
-                  kanji,
-                  kanjiDetails.details!,
+              const Divider(),
+              ListTile(
+                title: SelectableText(kanji.meanings.join(", ")),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (kanji.kunReadings.isNotEmpty)
+                      _ReadingsWidget("Kun", kanji.kanji, kanji.kunReadings),
+                    if (kanji.onReadings.isNotEmpty)
+                      _ReadingsWidget("On", kanji.kanji, kanji.onReadings),
+                    if (details?.radical != null)
+                      JpText(
+                        "Radical: ${details?.radical!.meanings.join(', ')} ${details?.radical!.character}",
+                      ),
+                  ],
                 ),
               ),
-          ],
+              const Divider(),
+              child,
+            ],
+          ),
         ),
       ),
     );
@@ -145,7 +132,7 @@ class _ReadingsWidget extends StatelessWidget {
   final String kanji;
   final List<String> readings;
 
-  String _query(String reading) =>
+  String _createQuery(String reading) =>
       "$kanji ${convertKatakana(reading.replaceAll(RegExp(r"[\.-]"), ""))}";
 
   @override
@@ -155,29 +142,29 @@ class _ReadingsWidget extends StatelessWidget {
     return RichText(
       text: TextSpan(
         children: [
-              TextSpan(
-                text: "$name: ",
-                style: TextStyle(color: textColor).jp(),
-              ),
-            ] +
-            readings
-                .map(
-                  (reading) => LinkSpan(
+          TextSpan(
+            text: "$name: ",
+            style: TextStyle(color: textColor).jp(),
+          ),
+          ...readings
+              .map(
+                (reading) => LinkSpan(
+                  context,
+                  text: reading.noBreak,
+                  onTap: pushScreen(
                     context,
-                    text: reading.noBreak,
-                    onTap: pushScreen(
-                      context,
-                      ResultPageScreen<Word>(query: _query(reading)),
-                    ),
-                  ),
-                )
-                .toList()
-                .intersperce(
-                  TextSpan(
-                    text: "、 ",
-                    style: TextStyle(color: textColor).jp(),
+                    ResultPageScreen<Word>(query: _createQuery(reading)),
                   ),
                 ),
+              )
+              .toList()
+              .intersperce(
+                TextSpan(
+                  text: "、 ",
+                  style: TextStyle(color: textColor).jp(),
+                ),
+              ),
+        ],
         style: TextStyle(color: textColor, height: 1.5).jp(),
       ),
     );
