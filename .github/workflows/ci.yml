@@ -1,0 +1,42 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+        paths-ignore:
+            - ".github/**"
+            - "android/**"
+            - "assets/**"
+            - "metadata/**"
+            - "README.md"
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                flutter-version: "3.24.3"
+                channel: "stable"
+
+            - name: Checkout source code
+              uses: actions/checkout@v4
+            
+            - name: Get dependencies
+              run: flutter pub get
+
+            - name: Format
+              run: dart format --set-exit-if-changed -o none lib test
+
+            - name: Analyze
+              run: flutter analyze --no-fatal-infos
+
+            - name: Test
+              run: flutter test
