@@ -20,42 +20,42 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/link_span.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
-  const KanjiDetailsScreen(Kanji this.kanji) : kanjiId = null;
-  const KanjiDetailsScreen.id(String this.kanjiId) : kanji = null;
+  const KanjiDetailsScreen({required Kanji this.kanji}) : id = null;
+  const KanjiDetailsScreen.id({required String this.id}) : kanji = null;
 
   final Kanji? kanji;
-  final String? kanjiId;
+  final String? id;
 
   @override
   Widget build(BuildContext context) {
-    final id = kanjiId ?? kanji!.kanji;
+    final kanjiId = id ?? kanji?.kanji;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Kanji"),
         actions: [
           LinkPopupButton([
-            ("Open in Browser", "https://jisho.org/search/$id %23kanji"),
+            ("Open in Browser", "https://jisho.org/search/$kanjiId %23kanji"),
             (
               "Unihan database",
-              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$id&useutf8=true"
+              "http://www.unicode.org/cgi-bin/GetUnihanData.pl?codepoint=$kanjiId&useutf8=true"
             ),
-            ("Wiktionary", "http://en.wiktionary.org/wiki/$id"),
+            ("Wiktionary", "http://en.wiktionary.org/wiki/$kanjiId"),
           ]),
         ],
       ),
       body: FutureLoader(
         onLoad: () => kanji != null
             ? SynchronousFuture(kanji!) as Future<Kanji>
-            : getClient().kanjiDetails(kanjiId!),
-        handler: _KanjiContentWidget.new,
+            : getClient().kanjiDetails(id!),
+        handler: (data) => _KanjiContentWidget(kanji: data),
       ),
     );
   }
 }
 
 class _KanjiContentWidget extends StatelessWidget {
-  const _KanjiContentWidget(this.kanji);
+  const _KanjiContentWidget({required this.kanji});
 
   final Kanji kanji;
 
@@ -67,7 +67,7 @@ class _KanjiContentWidget extends StatelessWidget {
           : getClient()
               .kanjiDetails(kanji.kanji)
               .then((kanji) => kanji.details!),
-      handler: (details) => _KanjiDetailsWidget(kanji, details),
+      handler: (details) => _KanjiDetailsWidget(kanji: kanji, details: details),
       frameBuilder: (context, child, details) => SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(8),
@@ -102,9 +102,17 @@ class _KanjiContentWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (kanji.kunReadings.isNotEmpty)
-                      _ReadingsWidget("Kun", kanji.kanji, kanji.kunReadings),
+                      _ReadingsWidget(
+                        name: "Kun",
+                        kanji: kanji.kanji,
+                        readings: kanji.kunReadings,
+                      ),
                     if (kanji.onReadings.isNotEmpty)
-                      _ReadingsWidget("On", kanji.kanji, kanji.onReadings),
+                      _ReadingsWidget(
+                        name: "On",
+                        kanji: kanji.kanji,
+                        readings: kanji.onReadings,
+                      ),
                     if (details?.radical case final radical?)
                       JpText(
                         "Radical: ${radical.meanings.join(', ')} ${radical.character}",
@@ -123,7 +131,11 @@ class _KanjiContentWidget extends StatelessWidget {
 }
 
 class _ReadingsWidget extends StatelessWidget {
-  const _ReadingsWidget(this.name, this.kanji, this.readings);
+  const _ReadingsWidget({
+    required this.name,
+    required this.kanji,
+    required this.readings,
+  });
 
   final String name;
   final String kanji;
@@ -146,7 +158,7 @@ class _ReadingsWidget extends StatelessWidget {
           ...readings
               .map(
                 (reading) => LinkSpan(
-                  context,
+                  context: context,
                   text: reading.noBreak,
                   onTap: pushScreen(
                     context,
@@ -169,19 +181,19 @@ class _ReadingsWidget extends StatelessWidget {
 }
 
 class _KanjiDetailsWidget extends StatelessWidget {
-  const _KanjiDetailsWidget(this.kanji, this.kanjiDetails);
+  const _KanjiDetailsWidget({required this.kanji, required this.details});
 
   final Kanji kanji;
-  final KanjiDetails kanjiDetails;
+  final KanjiDetails details;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (kanjiDetails.parts.length > 1) ...[
+        if (details.parts.length > 1) ...[
           Wrap(
             alignment: WrapAlignment.center,
-            children: kanjiDetails.parts
+            children: details.parts
                 .whereNot((part) => part == kanji.kanji)
                 .map(
                   (part) => Card(
@@ -190,10 +202,13 @@ class _KanjiDetailsWidget extends StatelessWidget {
                     ),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(4),
-                      onTap: pushScreen(context, KanjiDetailsScreen.id(part)),
+                      onTap: pushScreen(
+                        context,
+                        KanjiDetailsScreen.id(id: part),
+                      ),
                       onLongPress: () => showActionDialog(context, [
-                        ActionTile.url(Kanji.createUrl(part)),
-                        ActionTile.text("Kanji", part),
+                        ActionTile.url(url: Kanji.createUrl(part)),
+                        ActionTile.text(name: "Kanji", text: part),
                       ]),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
@@ -209,21 +224,21 @@ class _KanjiDetailsWidget extends StatelessWidget {
           ),
           const Divider(),
         ],
-        if (kanjiDetails.variants.isNotEmpty)
-          _VariantsWidget(kanjiDetails.variants),
-        StrokeDiagramWidget(kanji.code),
-        if (kanjiDetails.onCompounds.isNotEmpty)
-          CompoundList("On", kanjiDetails.onCompounds),
+        if (details.variants.isNotEmpty)
+          _VariantsWidget(variants: details.variants),
+        StrokeDiagramWidget(kanjiCode: kanji.code),
+        if (details.onCompounds.isNotEmpty)
+          CompoundList(type: "On", compounds: details.onCompounds),
         const SizedBox(height: 4),
-        if (kanjiDetails.kunCompounds.isNotEmpty)
-          CompoundList("Kun", kanjiDetails.kunCompounds),
+        if (details.kunCompounds.isNotEmpty)
+          CompoundList(type: "Kun", compounds: details.kunCompounds),
       ],
     );
   }
 }
 
 class _VariantsWidget extends StatelessWidget {
-  const _VariantsWidget(this.variants);
+  const _VariantsWidget({required this.variants});
 
   final List<String> variants;
 
@@ -248,11 +263,11 @@ class _VariantsWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                           onTap: pushScreen(
                             context,
-                            KanjiDetailsScreen.id(variant),
+                            KanjiDetailsScreen.id(id: variant),
                           ),
                           onLongPress: () => showActionDialog(context, [
-                            ActionTile.url(Kanji.createUrl(variant)),
-                            ActionTile.text("Kanji", variant),
+                            ActionTile.url(url: Kanji.createUrl(variant)),
+                            ActionTile.text(name: "Kanji", text: variant),
                           ]),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(

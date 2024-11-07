@@ -19,12 +19,12 @@ class WordItem extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodyMedium!;
 
     return ItemCard(
-      onTap: pushScreen(context, WordDetailsScreen.preload(word)),
+      onTap: pushScreen(context, WordDetailsScreen.preload(word: word)),
       onLongPress: () => showActionDialog(context, [
-        ActionTile.url(word.url),
-        ActionTile.text("Word", word.word.text),
+        ActionTile.url(url: word.url),
+        ActionTile.text(name: "Word", text: word.word.text),
         if (word.word.hasFurigana)
-          ActionTile.text("Reading", word.word.reading),
+          ActionTile.text(name: "Reading", text: word.word.reading),
       ]),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),

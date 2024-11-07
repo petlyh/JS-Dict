@@ -38,7 +38,7 @@ class FutureLoader<T> extends HookWidget {
       return builder(
         context,
         ErrorIndicator(
-          snapshot.error!,
+          error: snapshot.error!,
           stackTrace: snapshot.stackTrace,
           onRetry: () => future.value = onLoad(),
         ),

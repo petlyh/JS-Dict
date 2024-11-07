@@ -18,38 +18,40 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia.dart";
 
 class WordDetailsScreen extends StatelessWidget {
-  const WordDetailsScreen(String this.wordInput)
+  const WordDetailsScreen({required String this.word})
       : preloadedWord = null,
         isSearch = false;
 
-  const WordDetailsScreen.preload(Word this.preloadedWord)
-      : wordInput = null,
+  const WordDetailsScreen.preload({required Word word})
+      : preloadedWord = word,
+        word = null,
         isSearch = false;
 
-  const WordDetailsScreen.search(String this.wordInput)
-      : preloadedWord = null,
+  const WordDetailsScreen.search({required String query})
+      : word = query,
+        preloadedWord = null,
         isSearch = true;
 
   final Word? preloadedWord;
-  final String? wordInput;
+  final String? word;
   final bool isSearch;
 
   Future<Word> _createFuture() => preloadedWord != null
       ? SynchronousFuture(preloadedWord!)
       : isSearch
-          ? getClient().search<Word>(wordInput!).then((r) => r.results.first)
-          : getClient().wordDetails(wordInput!);
+          ? getClient().search<Word>(word!).then((r) => r.results.first)
+          : getClient().wordDetails(word!);
 
   @override
   Widget build(BuildContext context) {
     return FutureLoader<Word>(
       onLoad: _createFuture,
-      handler: _WordContentWidget.new,
-      frameBuilder: (_, child, data) => Scaffold(
+      handler: (wordData) => _WordContentWidget(word: wordData),
+      frameBuilder: (_, child, wordData) => Scaffold(
         appBar: AppBar(
           title: const Text("Word"),
           actions: [
-            if (data?.audioUrl case final audioUrl?)
+            if (wordData?.audioUrl case final audioUrl?)
               IconButton(
                 tooltip: "Play Audio",
                 onPressed: () => AudioPlayer().play(
@@ -61,7 +63,7 @@ class WordDetailsScreen extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.play_arrow),
               ),
-            if (data?.id case final id?)
+            if (wordData?.id case final id?)
               LinkPopupButton(
                 [("Open in Browser", "https://jisho.org/word/$id")],
               ),
@@ -74,7 +76,7 @@ class WordDetailsScreen extends StatelessWidget {
 }
 
 class _WordContentWidget extends StatelessWidget {
-  const _WordContentWidget(this.word);
+  const _WordContentWidget({required this.word});
 
   final Word word;
 
@@ -92,7 +94,7 @@ class _WordContentWidget extends StatelessWidget {
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: CopyableFuriganaText(
-                word.word,
+                furigana: word.word,
                 style: const TextStyle(fontSize: 28).jp(),
                 rubyStyle: const TextStyle(fontSize: 14).jp(),
               ),
@@ -124,7 +126,7 @@ class _WordContentWidget extends StatelessWidget {
                       children: word.definitions
                           .map(
                             (definition) => DefinitionTile(
-                              definition,
+                              definition: definition,
                               textColor: textColor,
                               isLast: definition == word.definitions.last,
                             ),
@@ -139,7 +141,7 @@ class _WordContentWidget extends StatelessWidget {
                 ExpansionTileCard(
                   shadowColor: shadowColor,
                   title: const Text("Inflections"),
-                  children: [InflectionTable(inflectionData)],
+                  children: [InflectionTable(data: inflectionData)],
                 ),
               if (word.collocations.isNotEmpty)
                 ExpansionTileCard(
@@ -155,7 +157,7 @@ class _WordContentWidget extends StatelessWidget {
                           subtitle: Text(collocation.meaning),
                           onTap: pushScreen(
                             context,
-                            WordDetailsScreen.search(collocation.word),
+                            WordDetailsScreen.search(query: collocation.word),
                           ),
                           trailing: const Icon(Icons.keyboard_arrow_right),
                         ),
@@ -184,7 +186,7 @@ class _WordContentWidget extends StatelessWidget {
                                   horizontal: 6,
                                 ),
                                 child: CopyableFuriganaText(
-                                  [
+                                  furigana: [
                                     FuriganaPart(
                                       otherForm.form,
                                       otherForm.reading,
@@ -227,13 +229,13 @@ class _WordContentWidget extends StatelessWidget {
             ].intersperce(const SizedBox(height: 8)),
             const SizedBox(height: 8),
             if (word.details case final details?)
-              _WordDetailsWidget(details)
+              _WordDetailsWidget(details: details)
             else ...[
               if (word.shouldLoadDetails)
                 FutureLoader(
                   onLoad: () => getClient().wordDetails(word.id!),
                   handler: (loadedWord) =>
-                      _WordDetailsWidget(loadedWord.details!),
+                      _WordDetailsWidget(details: loadedWord.details!),
                 ),
             ],
           ],
@@ -244,19 +246,19 @@ class _WordContentWidget extends StatelessWidget {
 }
 
 class _WordDetailsWidget extends StatelessWidget {
-  const _WordDetailsWidget(this.wordDetails);
+  const _WordDetailsWidget({required this.details});
 
-  final WordDetails wordDetails;
+  final WordDetails details;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (wordDetails.wikipedia case final wikipedia?) ...[
-          WikipediaWidget(wikipedia),
+        if (details.wikipedia case final wikipedia?) ...[
+          WikipediaWidget(info: wikipedia),
           const SizedBox(height: 8),
         ],
-        KanjiItemList(wordDetails.kanji),
+        KanjiItemList(items: details.kanji),
       ],
     );
   }

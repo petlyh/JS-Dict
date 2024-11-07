@@ -17,11 +17,11 @@ class SentenceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-      onTap: pushScreen(context, SentenceDetailsScreen(sentence)),
+      onTap: pushScreen(context, SentenceDetailsScreen(sentence: sentence)),
       onLongPress: () => showActionDialog(context, [
-        ActionTile.url(sentence.url),
-        ActionTile.text("Japanese", sentence.japanese.text),
-        ActionTile.text("English", sentence.english),
+        ActionTile.url(url: sentence.url),
+        ActionTile.text(name: "Japanese", text: sentence.japanese.text),
+        ActionTile.text(name: "English", text: sentence.english),
       ]),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),
@@ -38,7 +38,7 @@ class SentenceItem extends StatelessWidget {
             Text(sentence.english),
             if (sentence.copyright case final copyright?) ...[
               const SizedBox(height: 4),
-              CopyrightText(copyright),
+              CopyrightText(copyright: copyright),
             ],
           ],
         ),

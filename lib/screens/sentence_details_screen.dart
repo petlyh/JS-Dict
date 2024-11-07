@@ -9,38 +9,38 @@ import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
-  const SentenceDetailsScreen(Sentence this.sentence) : sentenceId = null;
-  const SentenceDetailsScreen.id(String this.sentenceId) : sentence = null;
+  const SentenceDetailsScreen({required Sentence this.sentence}) : id = null;
+  const SentenceDetailsScreen.id({required String this.id}) : sentence = null;
 
   final Sentence? sentence;
-  final String? sentenceId;
+  final String? id;
 
   @override
   Widget build(BuildContext context) {
-    final id = sentence?.id ?? sentenceId;
+    final sentenceId = sentence?.id ?? id;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(id == null ? "Example Sentence" : "Sentence"),
+        title: Text(sentenceId == null ? "Example Sentence" : "Sentence"),
         actions: [
-          if (id case final id?)
+          if (sentenceId case final sentenceId?)
             LinkPopupButton([
-              ("Open in Browser", "https://jisho.org/sentences/$id"),
+              ("Open in Browser", "https://jisho.org/sentences/$sentenceId"),
             ]),
         ],
       ),
-      body: sentenceId == null
-          ? _SentenceDetails(sentence!)
+      body: id == null
+          ? _SentenceDetails(sentence: sentence!)
           : FutureLoader(
-              onLoad: () => getClient().sentenceDetails(sentenceId!),
-              handler: _SentenceDetails.new,
+              onLoad: () => getClient().sentenceDetails(id!),
+              handler: (data) => _SentenceDetails(sentence: data),
             ),
     );
   }
 }
 
 class _SentenceDetails extends StatelessWidget {
-  const _SentenceDetails(this.sentence);
+  const _SentenceDetails({required this.sentence});
 
   final Sentence sentence;
 
@@ -57,7 +57,7 @@ class _SentenceDetails extends StatelessWidget {
               child: Column(
                 children: [
                   CopyableFuriganaText(
-                    sentence.japanese,
+                    furigana: sentence.japanese,
                     style: const TextStyle(fontSize: 18).jp(),
                     rubyAlign: CrossAxisAlignment.start,
                     wrapAlign: TextAlign.start,
@@ -69,16 +69,16 @@ class _SentenceDetails extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   if (sentence.copyright case final copyright?)
-                    CopyrightText(copyright),
+                    CopyrightText(copyright: copyright),
                 ],
               ),
             ),
             if (sentence.kanji case final kanji?)
-              KanjiItemList(kanji)
+              KanjiItemList(items: kanji)
             else
               FutureLoader(
                 onLoad: () => getClient().search<Kanji>(sentence.japanese.text),
-                handler: (response) => KanjiItemList(response.results),
+                handler: (response) => KanjiItemList(items: response.results),
               ),
           ],
         ),

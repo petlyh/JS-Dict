@@ -69,9 +69,9 @@ class _IntentHandlerHookState extends HookState<void, _IntentHandlerHook> {
 
     switch (url.pathSegments.first) {
       case "word":
-        _push(WordDetailsScreen(data));
+        _push(WordDetailsScreen(word: data));
       case "sentences":
-        _push(SentenceDetailsScreen.id(data));
+        _push(SentenceDetailsScreen.id(id: data));
       case "search":
         final rawQuery = removeTags(data).trim();
 
@@ -80,7 +80,7 @@ class _IntentHandlerHookState extends HookState<void, _IntentHandlerHook> {
         if (_containsTag(data, "kanji") &&
             rawQuery.length == 1 &&
             isKanjiOnly(rawQuery)) {
-          return _push(KanjiDetailsScreen.id(rawQuery));
+          return _push(KanjiDetailsScreen.id(id: rawQuery));
         }
 
         _search(data);

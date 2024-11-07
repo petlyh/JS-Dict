@@ -10,7 +10,7 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia.dart";
 
 class NameDetailsScreen extends StatelessWidget {
-  const NameDetailsScreen(this.name);
+  const NameDetailsScreen({required this.name});
 
   final Name name;
 
@@ -62,16 +62,16 @@ class NameDetailsScreen extends StatelessWidget {
                   onLoad: () => getClient().wordDetails(wordId),
                   handler: (word) => Column(
                     children: [
-                      WikipediaWidget(word.details!.wikipedia!),
+                      WikipediaWidget(info: word.details!.wikipedia!),
                       const SizedBox(height: 8),
-                      KanjiItemList(word.details!.kanji),
+                      KanjiItemList(items: word.details!.kanji),
                     ],
                   ),
                 )
               else if (!isNonKanji(name.japanese))
                 FutureLoader(
                   onLoad: () => getClient().search<Kanji>(name.japanese),
-                  handler: (response) => KanjiItemList(response.results),
+                  handler: (response) => KanjiItemList(items: response.results),
                 ),
             ],
           ),

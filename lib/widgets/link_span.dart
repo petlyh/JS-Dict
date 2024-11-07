@@ -3,8 +3,8 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 
 class LinkSpan extends TextSpan {
-  LinkSpan(
-    BuildContext context, {
+  LinkSpan({
+    required BuildContext context,
     required String text,
     required Function() onTap,
     bool bold = false,

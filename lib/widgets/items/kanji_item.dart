@@ -15,11 +15,11 @@ class KanjiItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ItemCard(
-      onTap: pushScreen(context, KanjiDetailsScreen(kanji)),
+      onTap: pushScreen(context, KanjiDetailsScreen(kanji: kanji)),
       onLongPress: () => showActionDialog(context, [
-        ActionTile.url(kanji.url),
-        ActionTile.text("Kanji", kanji.kanji),
-        ActionTile.text("Meanings", kanji.meanings.join(", ")),
+        ActionTile.url(url: kanji.url),
+        ActionTile.text(name: "Kanji", text: kanji.kanji),
+        ActionTile.text(name: "Meanings", text: kanji.meanings.join(", ")),
       ]),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),
@@ -55,17 +55,17 @@ class KanjiItem extends StatelessWidget {
 }
 
 class KanjiItemList extends StatelessWidget {
-  const KanjiItemList(this.kanjiList);
+  const KanjiItemList({required this.items});
 
-  final List<Kanji> kanjiList;
+  final List<Kanji> items;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: kanjiList.length,
-      itemBuilder: (_, index) => KanjiItem(kanji: kanjiList[index]),
+      itemCount: items.length,
+      itemBuilder: (_, index) => KanjiItem(kanji: items[index]),
     );
   }
 }

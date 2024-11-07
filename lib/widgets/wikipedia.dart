@@ -4,9 +4,9 @@ import "package:jsdict/models/models.dart";
 import "package:url_launcher/url_launcher.dart";
 
 class WikipediaWidget extends StatelessWidget {
-  const WikipediaWidget(this.wikipedia);
+  const WikipediaWidget({required this.info});
 
-  final WikipediaInfo wikipedia;
+  final WikipediaInfo info;
 
   Widget _createButton(WikipediaPage page, String wikiName, String id) =>
       Tooltip(
@@ -30,16 +30,16 @@ class WikipediaWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             children: [
-              SelectableText(wikipedia.textAbstract),
+              SelectableText(info.textAbstract),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 children: [
-                  if (wikipedia.wikipediaEnglish case final english?)
+                  if (info.wikipediaEnglish case final english?)
                     _createButton(english, "Wikipedia English", "EN"),
-                  if (wikipedia.wikipediaJapanese case final japanese?)
+                  if (info.wikipediaJapanese case final japanese?)
                     _createButton(japanese, "Wikipedia Japanese", "JP"),
-                  if (wikipedia.dbpedia case final dbpedia?)
+                  if (info.dbpedia case final dbpedia?)
                     _createButton(dbpedia, "DBpedia", "DB"),
                 ],
               ),

@@ -4,8 +4,8 @@ import "package:flutter/services.dart";
 import "package:jsdict/packages/jisho_client/failures.dart";
 
 class ErrorIndicator extends StatelessWidget {
-  const ErrorIndicator(
-    this.error, {
+  const ErrorIndicator({
+    required this.error,
     this.stackTrace,
     this.onRetry,
     this.isCompact = false,
@@ -75,11 +75,12 @@ void showErrorInfoDialog({
 }) =>
     showDialog(
       context: context,
-      builder: (context) => ErrorInfoDialog(error, stackTrace: stackTrace),
+      builder: (context) =>
+          ErrorInfoDialog(error: error, stackTrace: stackTrace),
     );
 
 class ErrorInfoDialog extends StatelessWidget {
-  const ErrorInfoDialog(this.error, {this.stackTrace});
+  const ErrorInfoDialog({required this.error, this.stackTrace});
 
   final Object error;
   final StackTrace? stackTrace;

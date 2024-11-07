@@ -120,7 +120,7 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
         else if (snapshot.hasError)
           _paddedSliverAdapter(
             child: ErrorIndicator(
-              snapshot.error!,
+              error: snapshot.error!,
               stackTrace: snapshot.stackTrace,
               onRetry: () => future.value =
                   getClient().search<T>(zenEntries[zenIndex.value]),
@@ -179,7 +179,7 @@ class _PagedResultList<T extends ResultType> extends HookWidget {
             final error = controller.error as (Object, StackTrace);
 
             return ErrorIndicator(
-              error.$1,
+              error: error.$1,
               stackTrace: error.$2,
               onRetry: controller.retryLastFailedRequest,
               isCompact: true,
@@ -263,7 +263,7 @@ class _CorrectionText extends StatelessWidget {
             else ...[
               const TextSpan(text: "Try searching for "),
               LinkSpan(
-                context,
+                context: context,
                 text: correction.original,
                 bold: true,
                 onTap: () => Provider.of<QueryProvider>(context, listen: false)
@@ -318,11 +318,11 @@ class _GrammarInfoText extends StatelessWidget {
           children: [
             TextSpan(text: "${info.word} could be an inflection of "),
             LinkSpan(
-              context,
+              context: context,
               text: info.possibleInflectionOf,
               onTap: pushScreen(
                 context,
-                WordDetailsScreen.search(info.possibleInflectionOf),
+                WordDetailsScreen.search(query: info.possibleInflectionOf),
               ),
             ),
           ],

@@ -6,8 +6,8 @@ import "package:jsdict/widgets/action_dialog.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class CopyableFuriganaText extends StatelessWidget {
-  const CopyableFuriganaText(
-    this.furigana, {
+  const CopyableFuriganaText({
+    required this.furigana,
     this.spacing = 0.0,
     this.style,
     this.rubyStyle,
@@ -36,8 +36,9 @@ class CopyableFuriganaText extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () => showActionDialog(context, [
-        ActionTile.text("Text", furigana.text),
-        if (furigana.hasFurigana) ActionTile.text("Reading", furigana.reading),
+        ActionTile.text(name: "Text", text: furigana.text),
+        if (furigana.hasFurigana)
+          ActionTile.text(name: "Reading", text: furigana.reading),
       ]),
       child: RubyText(
         furigana.rubyData,

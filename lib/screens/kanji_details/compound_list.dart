@@ -9,7 +9,7 @@ import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 
 class CompoundList extends StatelessWidget {
-  const CompoundList(this.type, this.compounds);
+  const CompoundList({required this.type, required this.compounds});
 
   final String type;
   final List<Compound> compounds;
@@ -31,7 +31,8 @@ class CompoundList extends StatelessWidget {
               onTap: pushScreen(
                 context,
                 WordDetailsScreen.search(
-                  "${compound.compound} ${convertKatakana(compound.reading)}",
+                  query:
+                      "${compound.compound} ${convertKatakana(compound.reading)}",
                 ),
               ),
             ),

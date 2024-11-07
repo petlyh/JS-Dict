@@ -6,7 +6,7 @@ import "package:jsdict/packages/inflection.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class InflectionTable extends StatelessWidget {
-  const InflectionTable(this.data);
+  const InflectionTable({required this.data});
 
   final InflectionData data;
 

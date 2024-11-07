@@ -66,7 +66,6 @@ class _RadicalSelection extends StatelessWidget {
 
   final List<String> selected;
   final List<String> valid;
-
   final void Function(String radical) onSelect;
   final void Function(String radical) onDeselect;
 
@@ -85,7 +84,7 @@ class _RadicalSelection extends StatelessWidget {
               .map(
                 (entry) => [
                   _CustomButton(
-                    entry.key.toString(),
+                    text: entry.key.toString(),
                     backgroundColor: theme.highlightColor,
                     textStyle: TextStyle(
                       fontSize: 16,
@@ -99,7 +98,7 @@ class _RadicalSelection extends StatelessWidget {
                     final isValid = valid.isEmpty || valid.contains(radical);
 
                     return _CustomButton(
-                      radical,
+                      text: radical,
                       onPressed: isSelected
                           ? () => onDeselect(radical)
                           : isValid
@@ -151,14 +150,14 @@ class _KanjiSelection extends StatelessWidget {
                 child: Wrap(
                   children: [
                     _CustomButton.icon(
-                      Icons.refresh,
+                      iconData: Icons.refresh,
                       iconSize: 20,
                       iconColor: textColor,
                       onPressed: onReset,
                     ),
                     ...matches.take(displayLimit).map(
                           (kanji) => _CustomButton(
-                            kanji,
+                            text: kanji,
                             onPressed: () => onSelect(kanji),
                             backgroundColor: backgroundColor,
                             textStyle:
@@ -175,8 +174,8 @@ class _KanjiSelection extends StatelessWidget {
 }
 
 class _CustomButton extends StatelessWidget {
-  const _CustomButton(
-    this.text, {
+  const _CustomButton({
+    required this.text,
     this.onPressed,
     this.textStyle,
     this.backgroundColor,
@@ -185,8 +184,8 @@ class _CustomButton extends StatelessWidget {
         iconColor = null,
         iconSize = 0;
 
-  const _CustomButton.icon(
-    this.iconData, {
+  const _CustomButton.icon({
+    required this.iconData,
     this.onPressed,
     this.iconSize = 16,
     this.iconColor,

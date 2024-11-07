@@ -17,10 +17,13 @@ void showActionDialog(BuildContext context, List<ActionTile> actions) =>
     );
 
 class ActionTile extends StatelessWidget {
-  const ActionTile.text(this.name, this.data) : isURL = false;
+  const ActionTile.text({required this.name, required String text})
+      : data = text,
+        isURL = false;
 
-  const ActionTile.url(this.data)
-      : isURL = true,
+  const ActionTile.url({required String url})
+      : data = url,
+        isURL = true,
         name = "Link";
 
   final String name;

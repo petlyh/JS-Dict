@@ -9,8 +9,8 @@ import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/link_span.dart";
 
 class DefinitionTile extends StatelessWidget {
-  const DefinitionTile(
-    this.definition, {
+  const DefinitionTile({
+    required this.definition,
     this.textColor,
     this.isLast = false,
   });
@@ -30,7 +30,7 @@ class DefinitionTile extends StatelessWidget {
       onTap: definition.exampleSentence != null
           ? pushScreen(
               context,
-              SentenceDetailsScreen(definition.exampleSentence!),
+              SentenceDetailsScreen(sentence: definition.exampleSentence!),
             )
           : null,
       title: Text(definition.meanings.join("; ")),
@@ -54,12 +54,12 @@ class DefinitionTile extends StatelessWidget {
           ...words
               .map(
                 (word) => LinkSpan(
-                  context,
+                  context: context,
                   // remove reading
                   text: word.split(" ").first,
                   onTap: pushScreen(
                     context,
-                    WordDetailsScreen.search(word),
+                    WordDetailsScreen.search(query: word),
                   ),
                 ),
               )
