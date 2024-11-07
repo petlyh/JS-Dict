@@ -176,11 +176,12 @@ class _PagedResultList<T extends ResultType> extends HookWidget {
             final Name name => NameItem(name: name),
           },
           newPageErrorIndicatorBuilder: (context) {
-            final error = controller.error as (Object, StackTrace);
+            final (error, stackTrace) =
+                controller.error as (Object, StackTrace);
 
             return ErrorIndicator(
-              error: error.$1,
-              stackTrace: error.$2,
+              error: error,
+              stackTrace: stackTrace,
               onRetry: controller.retryLastFailedRequest,
               isCompact: true,
             );
