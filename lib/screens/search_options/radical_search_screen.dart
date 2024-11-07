@@ -94,7 +94,7 @@ class _RadicalSelection extends StatelessWidget {
                     ),
                     padding: 3,
                   ),
-                  ...entry.value.map((radical) {
+                  ...entry.value.split("").map((radical) {
                     final isSelected = selected.contains(radical);
                     final isValid = valid.isEmpty || valid.contains(radical);
 
