@@ -17,15 +17,15 @@ class SentenceDetailsScreen extends StatelessWidget {
   final Sentence? sentence;
   final String? sentenceId;
 
-  String? get _id => sentence?.id ?? sentenceId;
-
   @override
   Widget build(BuildContext context) {
+    final id = sentence?.id ?? sentenceId;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_id == null ? "Example Sentence" : "Sentence"),
+        title: Text(id == null ? "Example Sentence" : "Sentence"),
         actions: [
-          if (_id case final id?)
+          if (id case final id?)
             LinkPopupButton([
               ("Open in Browser", "https://jisho.org/sentences/$id"),
             ]),
