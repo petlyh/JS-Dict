@@ -9,14 +9,9 @@ import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/link_span.dart";
 
 class DefinitionTile extends StatelessWidget {
-  const DefinitionTile({
-    required this.definition,
-    this.textColor,
-    this.isLast = false,
-  });
+  const DefinitionTile({required this.definition, this.isLast = false});
 
   final Definition definition;
-  final Color? textColor;
   final bool isLast;
 
   @override
@@ -40,13 +35,22 @@ class DefinitionTile extends StatelessWidget {
           Text(definition.types.join(", ")),
           if (definition.tags.isNotEmpty) JpText(definition.tags.join(", ")),
           if (definition.seeAlso.isNotEmpty)
-            seeAlsoText(context, definition.seeAlso),
+            _SeeAlsoText(words: definition.seeAlso),
         ],
       ),
     );
   }
+}
 
-  Widget seeAlsoText(BuildContext context, List<String> words) {
+class _SeeAlsoText extends StatelessWidget {
+  const _SeeAlsoText({required this.words});
+
+  final List<String> words;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
+
     return SelectableText.rich(
       TextSpan(
         children: [

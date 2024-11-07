@@ -82,7 +82,6 @@ class _WordContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Theme.of(context).textTheme.bodyLarge!.color;
     final shadowColor = Theme.of(context).colorScheme.shadow;
 
     return SingleChildScrollView(
@@ -127,7 +126,6 @@ class _WordContentWidget extends StatelessWidget {
                           .map(
                             (definition) => DefinitionTile(
                               definition: definition,
-                              textColor: textColor,
                               isLast: definition == word.definitions.last,
                             ),
                           )
