@@ -30,15 +30,15 @@ class FutureLoader<T> extends HookWidget {
 
     final builder = frameBuilder ?? (_, child, __) => child;
 
-    if (snapshot.hasData) {
-      return builder(context, handler(snapshot.data as T), snapshot.data as T);
+    if (snapshot.data case final data?) {
+      return builder(context, handler(data), data);
     }
 
-    if (snapshot.hasError) {
+    if (snapshot.error case final error?) {
       return builder(
         context,
         ErrorIndicator(
-          error: snapshot.error!,
+          error: error,
           stackTrace: snapshot.stackTrace,
           onRetry: () => future.value = onLoad(),
         ),

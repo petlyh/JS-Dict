@@ -115,12 +115,12 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
                   : getClient().search<T>(zenEntries[index]);
             },
           ),
-        if (snapshot.hasData)
-          ..._onReponse(snapshot.requireData, key: zenIndex.value)
-        else if (snapshot.hasError)
+        if (snapshot.data case final data?)
+          ..._onReponse(data, key: zenIndex.value)
+        else if (snapshot.error case final error?)
           _paddedSliverAdapter(
             child: ErrorIndicator(
-              error: snapshot.error!,
+              error: error,
               stackTrace: snapshot.stackTrace,
               onRetry: () => future.value =
                   getClient().search<T>(zenEntries[zenIndex.value]),
