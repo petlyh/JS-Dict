@@ -20,26 +20,25 @@ import "package:jsdict/widgets/wikipedia.dart";
 class WordDetailsScreen extends StatelessWidget {
   const WordDetailsScreen({required String this.word})
       : preloadedWord = null,
-        isSearch = false;
+        query = null;
 
   const WordDetailsScreen.preload({required Word word})
       : preloadedWord = word,
         word = null,
-        isSearch = false;
+        query = null;
 
-  const WordDetailsScreen.search({required String query})
-      : word = query,
-        preloadedWord = null,
-        isSearch = true;
+  const WordDetailsScreen.search({required String this.query})
+      : preloadedWord = null,
+        word = null;
 
   final Word? preloadedWord;
   final String? word;
-  final bool isSearch;
+  final String? query;
 
   Future<Word> _createFuture() => preloadedWord != null
       ? SynchronousFuture(preloadedWord!)
-      : isSearch
-          ? getClient().search<Word>(word!).then((r) => r.results.first)
+      : query != null
+          ? getClient().search<Word>(query!).then((r) => r.results.first)
           : getClient().wordDetails(word!);
 
   @override
