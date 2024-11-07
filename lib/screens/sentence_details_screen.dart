@@ -25,9 +25,9 @@ class SentenceDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(_id == null ? "Example Sentence" : "Sentence"),
         actions: [
-          if (_id != null)
+          if (_id case final id?)
             LinkPopupButton([
-              ("Open in Browser", "https://jisho.org/sentences/$_id"),
+              ("Open in Browser", "https://jisho.org/sentences/$id"),
             ]),
         ],
       ),
@@ -70,13 +70,13 @@ class _SentenceDetails extends StatelessWidget {
                     style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 20),
-                  if (sentence.copyright != null)
-                    CopyrightText(sentence.copyright!),
+                  if (sentence.copyright case final copyright?)
+                    CopyrightText(copyright),
                 ],
               ),
             ),
-            if (sentence.kanji != null)
-              KanjiItemList(sentence.kanji!)
+            if (sentence.kanji case final kanji?)
+              KanjiItemList(kanji)
             else
               FutureLoader(
                 onLoad: () => getClient().search<Kanji>(sentence.japanese.text),

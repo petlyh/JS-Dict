@@ -49,11 +49,11 @@ class WordDetailsScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Word"),
           actions: [
-            if (data?.audioUrl != null)
+            if (data?.audioUrl case final audioUrl?)
               IconButton(
                 tooltip: "Play Audio",
                 onPressed: () => AudioPlayer().play(
-                  UrlSource(data!.audioUrl!),
+                  UrlSource(audioUrl),
                   mode: PlayerMode.lowLatency,
                   ctx: AudioContextConfig(
                     focus: AudioContextConfigFocus.duckOthers,
@@ -61,10 +61,10 @@ class WordDetailsScreen extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.play_arrow),
               ),
-            if (data?.id != null)
-              LinkPopupButton([
-                ("Open in Browser", "https://jisho.org/word/${data?.id}"),
-              ]),
+            if (data?.id case final id?)
+              LinkPopupButton(
+                [("Open in Browser", "https://jisho.org/word/$id")],
+              ),
           ],
         ),
         body: child,
@@ -102,8 +102,8 @@ class _WordContentWidget extends StatelessWidget {
               children: [
                 if (word.isCommon)
                   const InfoChip("Common", color: Colors.green),
-                if (word.jlptLevel != null)
-                  InfoChip("JLPT ${word.jlptLevel}", color: Colors.blue),
+                if (word.jlptLevel case final jlptLevel?)
+                  InfoChip("JLPT $jlptLevel", color: Colors.blue),
                 ...word.wanikaniLevels.map(
                   (level) => InfoChip(
                     "WaniKani Lv. $level",
@@ -135,11 +135,11 @@ class _WordContentWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              if (word.inflectionData != null)
+              if (word.inflectionData case final inflectionData?)
                 ExpansionTileCard(
                   shadowColor: shadowColor,
                   title: const Text("Inflections"),
-                  children: [InflectionTable(word.inflectionData!)],
+                  children: [InflectionTable(inflectionData)],
                 ),
               if (word.collocations.isNotEmpty)
                 ExpansionTileCard(
@@ -226,9 +226,9 @@ class _WordContentWidget extends StatelessWidget {
                 ),
             ].intersperce(const SizedBox(height: 8)),
             const SizedBox(height: 8),
-            if (word.details != null) ...[
-              _WordDetailsWidget(word.details!),
-            ] else ...[
+            if (word.details case final details?)
+              _WordDetailsWidget(details)
+            else ...[
               if (word.shouldLoadDetails)
                 FutureLoader(
                   onLoad: () => getClient().wordDetails(word.id!),
@@ -252,8 +252,8 @@ class _WordDetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (wordDetails.wikipedia != null) ...[
-          WikipediaWidget(wordDetails.wikipedia!),
+        if (wordDetails.wikipedia case final wikipedia?) ...[
+          WikipediaWidget(wikipedia),
           const SizedBox(height: 8),
         ],
         KanjiItemList(wordDetails.kanji),

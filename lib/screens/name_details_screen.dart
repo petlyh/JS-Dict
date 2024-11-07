@@ -20,9 +20,9 @@ class NameDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Name"),
         actions: [
-          if (name.wordId != null)
+          if (name.wordId case final wordId?)
             LinkPopupButton([
-              ("Open in Browser", "https://jisho.org/word/${name.wordId}"),
+              ("Open in Browser", "https://jisho.org/word/$wordId"),
             ]),
         ],
       ),
@@ -53,13 +53,13 @@ class NameDetailsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              if (name.type != null) ...[
-                InfoChip(name.type!),
+              if (name.type case final type?) ...[
+                InfoChip(type),
                 const SizedBox(height: 10),
               ],
-              if (name.wordId != null)
+              if (name.wordId case final wordId?)
                 FutureLoader(
-                  onLoad: () => getClient().wordDetails(name.wordId!),
+                  onLoad: () => getClient().wordDetails(wordId),
                   handler: (word) => Column(
                     children: [
                       WikipediaWidget(word.details!.wikipedia!),

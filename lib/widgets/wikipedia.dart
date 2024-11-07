@@ -35,20 +35,12 @@ class WikipediaWidget extends StatelessWidget {
               Wrap(
                 spacing: 8,
                 children: [
-                  if (wikipedia.wikipediaEnglish != null)
-                    _createButton(
-                      wikipedia.wikipediaEnglish!,
-                      "Wikipedia English",
-                      "EN",
-                    ),
-                  if (wikipedia.wikipediaJapanese != null)
-                    _createButton(
-                      wikipedia.wikipediaJapanese!,
-                      "Wikipedia Japanese",
-                      "JP",
-                    ),
-                  if (wikipedia.dbpedia != null)
-                    _createButton(wikipedia.dbpedia!, "DBpedia", "DB"),
+                  if (wikipedia.wikipediaEnglish case final english?)
+                    _createButton(english, "Wikipedia English", "EN"),
+                  if (wikipedia.wikipediaJapanese case final japanese?)
+                    _createButton(japanese, "Wikipedia Japanese", "JP"),
+                  if (wikipedia.dbpedia case final dbpedia?)
+                    _createButton(dbpedia, "DBpedia", "DB"),
                 ],
               ),
             ],

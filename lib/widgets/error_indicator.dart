@@ -58,7 +58,7 @@ class ErrorIndicator extends StatelessWidget {
                 stackTrace: stackTrace,
               ),
             ),
-            if (onRetry != null) ...[
+            if (onRetry case final onRetry?) ...[
               const SizedBox(height: 2, width: 2),
               _createButton(name: "Retry", icon: Icons.refresh, onTap: onRetry),
             ],
@@ -134,7 +134,7 @@ class ErrorInfoDialog extends StatelessWidget {
           children: [
             _infoText("Type: ", _errorType),
             _infoText("Message: ", _errorMessage),
-            if (stackTrace != null) ...[
+            if (stackTrace case final stackTrace?) ...[
               _infoText("Stack trace: ", ""),
               ExpandableText(
                 stackTrace.toString(),

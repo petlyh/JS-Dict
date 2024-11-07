@@ -67,12 +67,12 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
   List<Widget> _onReponse(SearchResponse<T> response, {required int key}) => [
         if (response.results.isEmpty)
           _NoResultsText(noMatchesFor: response.noMatchesFor),
-        if (response.conversion != null)
-          _ConversionText(conversion: response.conversion!),
-        if (response.grammarInfo != null)
-          _GrammarInfoText(info: response.grammarInfo!),
-        if (response.correction != null)
-          _CorrectionText(correction: response.correction!),
+        if (response.conversion case final conversion?)
+          _ConversionText(conversion: conversion),
+        if (response.grammarInfo case final grammarInfo?)
+          _GrammarInfoText(info: grammarInfo),
+        if (response.correction case final correction?)
+          _CorrectionText(correction: correction),
         if (response.results.isNotEmpty)
           _PagedResultList(
             key: ValueKey(key),

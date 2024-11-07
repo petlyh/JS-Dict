@@ -88,13 +88,10 @@ class _KanjiContentWidget extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 children: [
                   InfoChip("${kanji.strokeCount} strokes", color: Colors.green),
-                  if (kanji.jlptLevel != null)
-                    InfoChip(
-                      "JLPT ${kanji.jlptLevel}",
-                      color: Colors.blue,
-                    ),
-                  if (kanji.type != null)
-                    InfoChip(kanji.type!.name, color: Colors.blue),
+                  if (kanji.jlptLevel case final jlptLevel?)
+                    InfoChip("JLPT $jlptLevel", color: Colors.blue),
+                  if (kanji.type case final type?)
+                    InfoChip(type.name, color: Colors.blue),
                 ],
               ),
               const Divider(),
@@ -108,9 +105,9 @@ class _KanjiContentWidget extends StatelessWidget {
                       _ReadingsWidget("Kun", kanji.kanji, kanji.kunReadings),
                     if (kanji.onReadings.isNotEmpty)
                       _ReadingsWidget("On", kanji.kanji, kanji.onReadings),
-                    if (details?.radical != null)
+                    if (details?.radical case final radical?)
                       JpText(
-                        "Radical: ${details?.radical!.meanings.join(', ')} ${details?.radical!.character}",
+                        "Radical: ${radical.meanings.join(', ')} ${radical.character}",
                       ),
                   ],
                 ),
