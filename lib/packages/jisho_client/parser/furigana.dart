@@ -13,8 +13,7 @@ Option<FuriganaPart> _parseSentenceFuriganaPart(Node node) => Option.Do(($) {
         );
       }
 
-      final element = node as Element;
-
+      final element = $(Option<Element>.safeCast(node));
       final unlinked = $(element.queryOption(".unlinked"));
       final unlinkedChild = $(unlinked.firstChildOption);
       final text = $(unlinkedChild.textOption).trim();
