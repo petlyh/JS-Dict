@@ -6,11 +6,11 @@ import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/screens/word_details/definition_tile.dart";
 import "package:jsdict/screens/word_details/inflection_table.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/copyable_furigana_text.dart";
-import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
@@ -147,14 +147,17 @@ class _WordContentWidget extends StatelessWidget {
                   title: const Text("Collocations"),
                   children: word.collocations
                       .map(
-                        (collocation) => EntryTile(
-                          isLast: collocation == word.collocations.last,
+                        (collocation) => ListTile(
+                          shape: collocation == word.collocations.last
+                              ? RoundedBottomBorder()
+                              : null,
                           title: JpText(collocation.word),
                           subtitle: Text(collocation.meaning),
                           onTap: pushScreen(
                             context,
                             WordDetailsScreen.search(collocation.word),
                           ),
+                          trailing: const Icon(Icons.keyboard_arrow_right),
                         ),
                       )
                       .toList()

@@ -3,9 +3,9 @@ import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
-import "package:jsdict/widgets/entry_tile.dart";
 import "package:jsdict/widgets/link_span.dart";
 
 class DefinitionTile extends StatelessWidget {
@@ -22,9 +22,12 @@ class DefinitionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EntryTile(
+    return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      isLast: isLast,
+      trailing: definition.exampleSentence != null
+          ? const Icon(Icons.keyboard_arrow_right)
+          : null,
+      shape: isLast ? RoundedBottomBorder() : null,
       onTap: definition.exampleSentence != null
           ? pushScreen(
               context,
