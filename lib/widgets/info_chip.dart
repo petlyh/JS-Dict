@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 
 class InfoChip extends StatelessWidget {
-  const InfoChip(this.text, {super.key, this.color, this.onTap, this.icon});
+  const InfoChip(this.text, {this.color, this.onTap, this.icon});
 
   final String text;
   final Color? color;

@@ -17,9 +17,9 @@ void showActionDialog(BuildContext context, List<ActionTile> actions) =>
     );
 
 class ActionTile extends StatelessWidget {
-  const ActionTile.text(this.name, this.data, {super.key}) : isURL = false;
+  const ActionTile.text(this.name, this.data) : isURL = false;
 
-  const ActionTile.url(this.data, {super.key})
+  const ActionTile.url(this.data)
       : isURL = true,
         name = "Link";
 

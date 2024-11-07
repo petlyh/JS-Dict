@@ -8,7 +8,7 @@ import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/items/item_card.dart";
 
 class KanjiItem extends StatelessWidget {
-  const KanjiItem({super.key, required this.kanji});
+  const KanjiItem({required this.kanji});
 
   final Kanji kanji;
 
@@ -55,7 +55,7 @@ class KanjiItem extends StatelessWidget {
 }
 
 class KanjiItemList extends StatelessWidget {
-  const KanjiItemList(this.kanjiList, {super.key});
+  const KanjiItemList(this.kanjiList);
 
   final List<Kanji> kanjiList;
 

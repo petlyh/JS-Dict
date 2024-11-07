@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 
 class ItemCard extends StatelessWidget {
   const ItemCard({
-    super.key,
     required this.child,
     required this.onTap,
     required this.onLongPress,

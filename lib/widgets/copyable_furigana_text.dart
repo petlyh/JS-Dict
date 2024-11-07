@@ -8,7 +8,6 @@ import "package:ruby_text/ruby_text.dart";
 class CopyableFuriganaText extends StatelessWidget {
   const CopyableFuriganaText(
     this.furigana, {
-    super.key,
     this.spacing = 0.0,
     this.style,
     this.rubyStyle,

@@ -7,7 +7,7 @@ import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/items/item_card.dart";
 
 class NameItem extends StatelessWidget {
-  const NameItem({super.key, required this.name});
+  const NameItem({required this.name});
 
   final Name name;
 

@@ -6,7 +6,7 @@ import "package:jsdict/packages/stroke_order_diagram.dart";
 import "package:jsdict/widgets/future_loader.dart";
 
 class StrokeDiagramWidget extends StatelessWidget {
-  const StrokeDiagramWidget(this.kanjiCode, {super.key});
+  const StrokeDiagramWidget(this.kanjiCode);
 
   final String kanjiCode;
 

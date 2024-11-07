@@ -23,7 +23,7 @@ import "package:jsdict/widgets/link_span.dart";
 import "package:provider/provider.dart";
 
 class ResultPageScreen<T extends ResultType> extends StatelessWidget {
-  const ResultPageScreen({super.key, required this.query});
+  const ResultPageScreen({required this.query});
 
   final String query;
 

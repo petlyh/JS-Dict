@@ -22,7 +22,7 @@ void registerKanjivgLicense() => LicenseRegistry.addLicense(() async* {
     });
 
 class JsDictApp extends StatelessWidget {
-  const JsDictApp({super.key});
+  const JsDictApp();
 
   static const _mainColor = Color(0xFF27CA27);
 

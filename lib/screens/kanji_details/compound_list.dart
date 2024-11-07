@@ -9,7 +9,7 @@ import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 
 class CompoundList extends StatelessWidget {
-  const CompoundList(this.type, this.compounds, {super.key});
+  const CompoundList(this.type, this.compounds);
 
   final String type;
   final List<Compound> compounds;

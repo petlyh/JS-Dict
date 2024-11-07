@@ -10,7 +10,7 @@ import "package:jsdict/widgets/items/item_card.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class WordItem extends StatelessWidget {
-  const WordItem({super.key, required this.word});
+  const WordItem({required this.word});
 
   final Word word;
 

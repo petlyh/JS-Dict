@@ -20,8 +20,8 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/link_span.dart";
 
 class KanjiDetailsScreen extends StatelessWidget {
-  const KanjiDetailsScreen(Kanji this.kanji, {super.key}) : kanjiId = null;
-  const KanjiDetailsScreen.id(String this.kanjiId, {super.key}) : kanji = null;
+  const KanjiDetailsScreen(Kanji this.kanji) : kanjiId = null;
+  const KanjiDetailsScreen.id(String this.kanjiId) : kanji = null;
 
   final Kanji? kanji;
   final String? kanjiId;

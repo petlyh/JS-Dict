@@ -10,7 +10,7 @@ import "package:jsdict/widgets/items/item_card.dart";
 import "package:ruby_text/ruby_text.dart";
 
 class SentenceItem extends StatelessWidget {
-  const SentenceItem({super.key, required this.sentence});
+  const SentenceItem({required this.sentence});
 
   final Sentence sentence;
 

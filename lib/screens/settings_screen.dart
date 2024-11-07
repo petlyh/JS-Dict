@@ -5,7 +5,7 @@ import "package:package_info_plus/package_info_plus.dart";
 import "package:provider/provider.dart";
 
 class SettingScreen extends StatelessWidget {
-  const SettingScreen({super.key});
+  const SettingScreen();
 
   @override
   Widget build(BuildContext context) {

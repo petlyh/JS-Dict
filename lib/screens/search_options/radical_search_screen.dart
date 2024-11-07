@@ -7,7 +7,7 @@ import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search_options/search_options_screen.dart";
 
 class RadicalSearchScreen extends SearchOptionsScreen {
-  const RadicalSearchScreen({super.key}) : super(body: const _RadicalSearch());
+  const RadicalSearchScreen() : super(body: const _RadicalSearch());
 }
 
 class _RadicalSearch extends HookWidget {

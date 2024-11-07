@@ -12,7 +12,7 @@ import "package:jsdict/screens/settings_screen.dart";
 import "package:provider/provider.dart";
 
 class SearchScreen extends HookWidget {
-  const SearchScreen({super.key});
+  const SearchScreen();
 
   static const _placeholder = Center(
     child: Text("JS-Dict", style: TextStyle(fontSize: 32)),

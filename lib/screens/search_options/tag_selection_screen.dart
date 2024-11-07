@@ -5,7 +5,7 @@ import "package:jsdict/screens/search_options/search_options_screen.dart";
 import "package:jsdict/widgets/info_chip.dart";
 
 class TagSelectionScreen extends SearchOptionsScreen {
-  const TagSelectionScreen({super.key})
+  const TagSelectionScreen()
       : super(
           body: const _TagSelection(),
           floatingActionButton: const _TagFAB(),

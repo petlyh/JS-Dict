@@ -18,15 +18,15 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia.dart";
 
 class WordDetailsScreen extends StatelessWidget {
-  const WordDetailsScreen(String this.wordInput, {super.key})
+  const WordDetailsScreen(String this.wordInput)
       : preloadedWord = null,
         isSearch = false;
 
-  const WordDetailsScreen.preload(Word this.preloadedWord, {super.key})
+  const WordDetailsScreen.preload(Word this.preloadedWord)
       : wordInput = null,
         isSearch = false;
 
-  const WordDetailsScreen.search(String this.wordInput, {super.key})
+  const WordDetailsScreen.search(String this.wordInput)
       : preloadedWord = null,
         isSearch = true;
 

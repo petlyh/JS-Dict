@@ -9,10 +9,8 @@ import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 
 class SentenceDetailsScreen extends StatelessWidget {
-  const SentenceDetailsScreen(Sentence this.sentence, {super.key})
-      : sentenceId = null;
-  const SentenceDetailsScreen.id(String this.sentenceId, {super.key})
-      : sentence = null;
+  const SentenceDetailsScreen(Sentence this.sentence) : sentenceId = null;
+  const SentenceDetailsScreen.id(String this.sentenceId) : sentence = null;
 
   final Sentence? sentence;
   final String? sentenceId;

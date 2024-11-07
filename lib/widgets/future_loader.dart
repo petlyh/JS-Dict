@@ -12,7 +12,6 @@ final loadingIndicator = Center(
 
 class FutureLoader<T> extends HookWidget {
   const FutureLoader({
-    super.key,
     required this.onLoad,
     required this.handler,
     this.frameBuilder,

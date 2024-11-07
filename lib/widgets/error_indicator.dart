@@ -6,7 +6,6 @@ import "package:jsdict/packages/jisho_client/failures.dart";
 class ErrorIndicator extends StatelessWidget {
   const ErrorIndicator(
     this.error, {
-    super.key,
     this.stackTrace,
     this.onRetry,
     this.isCompact = false,
@@ -80,7 +79,7 @@ void showErrorInfoDialog({
     );
 
 class ErrorInfoDialog extends StatelessWidget {
-  const ErrorInfoDialog(this.error, {super.key, this.stackTrace});
+  const ErrorInfoDialog(this.error, {this.stackTrace});
 
   final Object error;
   final StackTrace? stackTrace;

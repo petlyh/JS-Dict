@@ -3,11 +3,7 @@ import "package:jsdict/jp_text.dart";
 import "package:jsdict/providers/query_provider.dart";
 
 class SearchOptionsScreen extends StatelessWidget {
-  const SearchOptionsScreen({
-    super.key,
-    required this.body,
-    this.floatingActionButton,
-  });
+  const SearchOptionsScreen({required this.body, this.floatingActionButton});
 
   final Widget body;
   final Widget? floatingActionButton;

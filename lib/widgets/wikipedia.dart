@@ -4,7 +4,7 @@ import "package:jsdict/models/models.dart";
 import "package:url_launcher/url_launcher.dart";
 
 class WikipediaWidget extends StatelessWidget {
-  const WikipediaWidget(this.wikipedia, {super.key});
+  const WikipediaWidget(this.wikipedia);
 
   final WikipediaInfo wikipedia;
 

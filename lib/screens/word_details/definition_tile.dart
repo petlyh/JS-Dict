@@ -11,7 +11,6 @@ import "package:jsdict/widgets/link_span.dart";
 class DefinitionTile extends StatelessWidget {
   const DefinitionTile(
     this.definition, {
-    super.key,
     this.textColor,
     this.isLast = false,
   });

@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:url_launcher/url_launcher.dart";
 
 class LinkPopupButton extends StatelessWidget {
-  const LinkPopupButton(this.data, {super.key});
+  const LinkPopupButton(this.data);
 
   final List<(String text, String url)> data;
 

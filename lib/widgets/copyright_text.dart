@@ -4,7 +4,7 @@ import "package:jsdict/widgets/link_span.dart";
 import "package:url_launcher/url_launcher.dart";
 
 class CopyrightText extends StatelessWidget {
-  const CopyrightText(this.copyright, {super.key});
+  const CopyrightText(this.copyright);
 
   final SentenceCopyright copyright;
 

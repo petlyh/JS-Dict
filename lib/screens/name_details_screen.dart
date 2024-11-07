@@ -10,7 +10,7 @@ import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia.dart";
 
 class NameDetailsScreen extends StatelessWidget {
-  const NameDetailsScreen(this.name, {super.key});
+  const NameDetailsScreen(this.name);
 
   final Name name;
 
