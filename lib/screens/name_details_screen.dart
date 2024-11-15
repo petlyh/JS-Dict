@@ -7,7 +7,7 @@ import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
-import "package:jsdict/widgets/wikipedia.dart";
+import "package:jsdict/widgets/wikipedia_card.dart";
 
 class NameDetailsScreen extends StatelessWidget {
   const NameDetailsScreen({required this.name});
@@ -62,7 +62,7 @@ class NameDetailsScreen extends StatelessWidget {
                   onLoad: () => getClient().wordDetails(wordId),
                   handler: (word) => Column(
                     children: [
-                      WikipediaWidget(info: word.details!.wikipedia!),
+                      WikipediaCard(info: word.details!.wikipedia!),
                       const SizedBox(height: 8),
                       KanjiItemList(items: word.details!.kanji),
                     ],

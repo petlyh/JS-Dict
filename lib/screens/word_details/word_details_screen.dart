@@ -15,7 +15,7 @@ import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
-import "package:jsdict/widgets/wikipedia.dart";
+import "package:jsdict/widgets/wikipedia_card.dart";
 
 class WordDetailsScreen extends StatelessWidget {
   const WordDetailsScreen({required String this.word})
@@ -45,7 +45,7 @@ class WordDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureLoader<Word>(
       onLoad: _createFuture,
-      handler: (wordData) => _WordContentWidget(word: wordData),
+      handler: (wordData) => _WordContent(word: wordData),
       frameBuilder: (_, child, wordData) => Scaffold(
         appBar: AppBar(
           title: const Text("Word"),
@@ -74,8 +74,8 @@ class WordDetailsScreen extends StatelessWidget {
   }
 }
 
-class _WordContentWidget extends StatelessWidget {
-  const _WordContentWidget({required this.word});
+class _WordContent extends StatelessWidget {
+  const _WordContent({required this.word});
 
   final Word word;
 
@@ -226,13 +226,13 @@ class _WordContentWidget extends StatelessWidget {
             ].intersperce(const SizedBox(height: 8)),
             const SizedBox(height: 8),
             if (word.details case final details?)
-              _WordDetailsWidget(details: details)
+              _WordDetailsContent(details: details)
             else ...[
               if (word.shouldLoadDetails)
                 FutureLoader(
                   onLoad: () => getClient().wordDetails(word.id!),
                   handler: (loadedWord) =>
-                      _WordDetailsWidget(details: loadedWord.details!),
+                      _WordDetailsContent(details: loadedWord.details!),
                 ),
             ],
           ],
@@ -242,8 +242,8 @@ class _WordContentWidget extends StatelessWidget {
   }
 }
 
-class _WordDetailsWidget extends StatelessWidget {
-  const _WordDetailsWidget({required this.details});
+class _WordDetailsContent extends StatelessWidget {
+  const _WordDetailsContent({required this.details});
 
   final WordDetails details;
 
@@ -252,7 +252,7 @@ class _WordDetailsWidget extends StatelessWidget {
     return Column(
       children: [
         if (details.wikipedia case final wikipedia?) ...[
-          WikipediaWidget(info: wikipedia),
+          WikipediaCard(info: wikipedia),
           const SizedBox(height: 8),
         ],
         KanjiItemList(items: details.kanji),

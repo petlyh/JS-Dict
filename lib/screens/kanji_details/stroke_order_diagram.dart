@@ -5,8 +5,8 @@ import "package:flutter_svg/flutter_svg.dart";
 import "package:jsdict/packages/stroke_order_diagram.dart";
 import "package:jsdict/widgets/future_loader.dart";
 
-class StrokeDiagramWidget extends StatelessWidget {
-  const StrokeDiagramWidget({required this.kanjiCode});
+class StrokeOrderDiagram extends StatelessWidget {
+  const StrokeOrderDiagram({required this.kanjiCode});
 
   final String kanjiCode;
 

@@ -10,7 +10,7 @@ import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
 import "package:jsdict/screens/kanji_details/compound_list.dart";
-import "package:jsdict/screens/kanji_details/stroke_diagram.dart";
+import "package:jsdict/screens/kanji_details/stroke_order_diagram.dart";
 import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/action_dialog.dart";
@@ -48,14 +48,14 @@ class KanjiDetailsScreen extends StatelessWidget {
         onLoad: () => kanji != null
             ? SynchronousFuture(kanji!) as Future<Kanji>
             : getClient().kanjiDetails(id!),
-        handler: (data) => _KanjiContentWidget(kanji: data),
+        handler: (data) => _KanjiContent(kanji: data),
       ),
     );
   }
 }
 
-class _KanjiContentWidget extends StatelessWidget {
-  const _KanjiContentWidget({required this.kanji});
+class _KanjiContent extends StatelessWidget {
+  const _KanjiContent({required this.kanji});
 
   final Kanji kanji;
 
@@ -67,7 +67,10 @@ class _KanjiContentWidget extends StatelessWidget {
           : getClient()
               .kanjiDetails(kanji.kanji)
               .then((kanji) => kanji.details!),
-      handler: (details) => _KanjiDetailsWidget(kanji: kanji, details: details),
+      handler: (details) => _KanjiDetailsContent(
+        kanji: kanji,
+        details: details,
+      ),
       frameBuilder: (context, child, details) => SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(8),
@@ -102,13 +105,13 @@ class _KanjiContentWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (kanji.kunReadings.isNotEmpty)
-                      _ReadingsWidget(
+                      _ReadingsText(
                         name: "Kun",
                         kanji: kanji.kanji,
                         readings: kanji.kunReadings,
                       ),
                     if (kanji.onReadings.isNotEmpty)
-                      _ReadingsWidget(
+                      _ReadingsText(
                         name: "On",
                         kanji: kanji.kanji,
                         readings: kanji.onReadings,
@@ -130,8 +133,8 @@ class _KanjiContentWidget extends StatelessWidget {
   }
 }
 
-class _ReadingsWidget extends StatelessWidget {
-  const _ReadingsWidget({
+class _ReadingsText extends StatelessWidget {
+  const _ReadingsText({
     required this.name,
     required this.kanji,
     required this.readings,
@@ -180,8 +183,8 @@ class _ReadingsWidget extends StatelessWidget {
   }
 }
 
-class _KanjiDetailsWidget extends StatelessWidget {
-  const _KanjiDetailsWidget({required this.kanji, required this.details});
+class _KanjiDetailsContent extends StatelessWidget {
+  const _KanjiDetailsContent({required this.kanji, required this.details});
 
   final Kanji kanji;
   final KanjiDetails details;
@@ -225,8 +228,8 @@ class _KanjiDetailsWidget extends StatelessWidget {
           const Divider(),
         ],
         if (details.variants.isNotEmpty)
-          _VariantsWidget(variants: details.variants),
-        StrokeDiagramWidget(kanjiCode: kanji.code),
+          _VariantsCard(variants: details.variants),
+        StrokeOrderDiagram(kanjiCode: kanji.code),
         if (details.onCompounds.isNotEmpty)
           CompoundList(type: "On", compounds: details.onCompounds),
         const SizedBox(height: 4),
@@ -237,8 +240,8 @@ class _KanjiDetailsWidget extends StatelessWidget {
   }
 }
 
-class _VariantsWidget extends StatelessWidget {
-  const _VariantsWidget({required this.variants});
+class _VariantsCard extends StatelessWidget {
+  const _VariantsCard({required this.variants});
 
   final List<String> variants;
 

@@ -3,8 +3,8 @@ import "package:flutter/material.dart";
 import "package:jsdict/models/models.dart";
 import "package:url_launcher/url_launcher.dart";
 
-class WikipediaWidget extends StatelessWidget {
-  const WikipediaWidget({required this.info});
+class WikipediaCard extends StatelessWidget {
+  const WikipediaCard({required this.info});
 
   final WikipediaInfo info;
 
