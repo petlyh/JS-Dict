@@ -37,9 +37,10 @@ class JsDictApp extends StatelessWidget {
   }
 
   /// Modifies [scheme] to account for dynamic_color not supporting tone-based colors yet.
+  /// Also needed to fix surfaceContainerLow for schemes created with [ColorScheme.fromSeed].
   ///
   /// See https://github.com/material-foundation/flutter-packages/issues/582
-  ColorScheme? _fixDynamicScheme(ColorScheme? scheme) => scheme?.copyWith(
+  ColorScheme _fixScheme(ColorScheme scheme) => scheme.copyWith(
         // Color used for cards, apply tint manually.
         surfaceContainerLow: ElevationOverlay.applySurfaceTint(
           scheme.surface,
@@ -53,6 +54,23 @@ class JsDictApp extends StatelessWidget {
         ),
         // ignore: deprecated_member_use
         surfaceContainerHighest: scheme.surfaceVariant,
+      );
+
+  ThemeData _createThemeData({
+    required ColorScheme? dynamicColorScheme,
+    required bool isDynamicColorsEnabled,
+    Brightness brightness = Brightness.light,
+  }) =>
+      ThemeData(
+        brightness: brightness,
+        colorScheme: _fixScheme(
+          isDynamicColorsEnabled && dynamicColorScheme != null
+              ? dynamicColorScheme
+              : ColorScheme.fromSeed(
+                  seedColor: _mainColor,
+                  brightness: brightness,
+                ),
+        ),
       );
 
   @override
@@ -70,26 +88,14 @@ class JsDictApp extends StatelessWidget {
             return MaterialApp(
               title: _createTitle("JS-Dict"),
               themeMode: themeProvider.currentTheme,
-              theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: themeProvider.dynamicColors
-                    ? _fixDynamicScheme(lightDynamic)
-                    : null,
-                colorSchemeSeed:
-                    (lightDynamic == null || !themeProvider.dynamicColors)
-                        ? _mainColor
-                        : null,
+              theme: _createThemeData(
+                dynamicColorScheme: lightDynamic,
+                isDynamicColorsEnabled: themeProvider.dynamicColors,
               ),
-              darkTheme: ThemeData(
+              darkTheme: _createThemeData(
+                dynamicColorScheme: darkDynamic,
+                isDynamicColorsEnabled: themeProvider.dynamicColors,
                 brightness: Brightness.dark,
-                useMaterial3: true,
-                colorScheme: themeProvider.dynamicColors
-                    ? _fixDynamicScheme(darkDynamic)
-                    : null,
-                colorSchemeSeed:
-                    (darkDynamic == null || !themeProvider.dynamicColors)
-                        ? _mainColor
-                        : null,
               ),
               home: const SearchScreen(),
             );
