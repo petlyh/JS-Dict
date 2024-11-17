@@ -2,7 +2,8 @@ import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:jsdict/providers/query_provider.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart"
+    hide ChangeNotifierProvider, Provider;
 import "package:jsdict/providers/theme_provider.dart";
 import "package:jsdict/screens/search/search_screen.dart";
 import "package:jsdict/singletons.dart";
@@ -76,12 +77,9 @@ class JsDictApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => QueryProvider()),
-            ChangeNotifierProvider(create: (_) => ThemeProvider()),
-          ],
+      builder: (lightDynamic, darkDynamic) => ProviderScope(
+        child: MultiProvider(
+          providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
           builder: (context, _) {
             final themeProvider = Provider.of<ThemeProvider>(context);
 
@@ -100,8 +98,8 @@ class JsDictApp extends StatelessWidget {
               home: const SearchScreen(),
             );
           },
-        );
-      },
+        ),
+      ),
     );
   }
 }

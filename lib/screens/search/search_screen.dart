@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:jsdict/jp_text.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/intent_handler.dart";
 import "package:jsdict/packages/navigation.dart";
@@ -9,56 +9,46 @@ import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/screens/search_options/radical_search_screen.dart";
 import "package:jsdict/screens/search_options/tag_selection_screen.dart";
 import "package:jsdict/screens/settings_screen.dart";
-import "package:provider/provider.dart";
+import "package:jsdict/widgets/search_field.dart";
 
-class SearchScreen extends HookWidget {
+class SearchScreen extends HookConsumerWidget {
   const SearchScreen();
 
-  static const _placeholder = Center(
-    child: Text("JS-Dict", style: TextStyle(fontSize: 32)),
-  );
-
   @override
-  Widget build(BuildContext context) {
-    final queryProvider = QueryProvider.of(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final searchController = useTextEditingController(text: "");
 
-    final searchController = queryProvider.searchController;
-    final searchFocusNode = useFocusNode();
+    // Update search field text when query is changed from somewhere else.
+    ref.listen(queryProvider, (_, query) => searchController.text = query);
 
     final tabController = useTabController(initialLength: 4);
 
-    useIntentHandler(tabController: tabController);
+    useIntentHandler(
+      tabController: tabController,
+      queryController: ref.read(queryProvider.notifier),
+    );
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
-        onPressed: pushScreen(context, const RadicalSearchScreen()),
+        onPressed: () =>
+            pushScreen(context, RadicalSearchScreen(searchController.text))
+                .call(),
         tooltip: "Radicals",
         child: const Text("部", style: TextStyle(fontSize: 20)),
       ),
       appBar: AppBar(
-        title: TextField(
-          style: jpTextStyle,
-          focusNode: searchFocusNode,
+        title: SearchField(
           controller: searchController,
-          onSubmitted: (_) => queryProvider.updateQuery(),
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.search),
-            border: InputBorder.none,
-            hintText: "Search...",
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                searchFocusNode.requestFocus();
-                searchController.clear();
-              },
-              tooltip: "Clear",
-            ),
-          ),
+          onSubmitted: ref.read(queryProvider.notifier).update,
+          showSearchIcon: true,
+          focusOnClear: true,
         ),
         actions: [
           IconButton(
-            onPressed: pushScreen(context, const TagSelectionScreen()),
+            onPressed: () =>
+                pushScreen(context, TagSelectionScreen(searchController.text))
+                    .call(),
             icon: const Icon(Icons.tag),
             tooltip: "Tags",
           ),
@@ -80,19 +70,36 @@ class SearchScreen extends HookWidget {
           ],
         ),
       ),
-      body: Consumer<QueryProvider>(
-        builder: (_, provider, __) => provider.query.isEmpty
-            ? _placeholder
-            : TabBarView(
-                controller: tabController,
-                children: [
-                  ResultPage<Word>(query: provider.query, key: UniqueKey()),
-                  ResultPage<Kanji>(query: provider.query, key: UniqueKey()),
-                  ResultPage<Name>(query: provider.query, key: UniqueKey()),
-                  ResultPage<Sentence>(query: provider.query, key: UniqueKey()),
-                ],
-              ),
-      ),
+      body: _SearchScreenContent(tabController: tabController),
+    );
+  }
+}
+
+class _SearchScreenContent extends ConsumerWidget {
+  const _SearchScreenContent({required this.tabController});
+
+  final TabController tabController;
+
+  static const _placeholder = Center(
+    child: Text("JS-Dict", style: TextStyle(fontSize: 32)),
+  );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = ref.watch(queryProvider);
+
+    if (query.isEmpty) {
+      return _placeholder;
+    }
+
+    return TabBarView(
+      controller: tabController,
+      children: [
+        ResultPage<Word>(query: query, key: ValueKey((query, Word))),
+        ResultPage<Kanji>(query: query, key: ValueKey((query, Kanji))),
+        ResultPage<Name>(query: query, key: ValueKey((query, Name))),
+        ResultPage<Sentence>(query: query, key: ValueKey((query, Sentence))),
+      ],
     );
   }
 }

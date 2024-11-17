@@ -4,6 +4,7 @@ import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
@@ -20,7 +21,6 @@ import "package:jsdict/widgets/items/name_item.dart";
 import "package:jsdict/widgets/items/sentence_item.dart";
 import "package:jsdict/widgets/items/word_item.dart";
 import "package:jsdict/widgets/link_span.dart";
-import "package:provider/provider.dart";
 
 class ResultPageScreen<T extends ResultType> extends StatelessWidget {
   const ResultPageScreen({required this.query});
@@ -239,13 +239,13 @@ class _ConversionText extends StatelessWidget {
   }
 }
 
-class _CorrectionText extends StatelessWidget {
+class _CorrectionText extends ConsumerWidget {
   const _CorrectionText({required this.correction});
 
   final Correction correction;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textColor = Theme.of(context).textTheme.bodyLarge!.color;
 
     return _paddedSliverAdapter(
@@ -267,9 +267,9 @@ class _CorrectionText extends StatelessWidget {
                 context: context,
                 text: correction.original,
                 bold: true,
-                onTap: () => Provider.of<QueryProvider>(context, listen: false)
-                  ..searchController.text = correction.original
-                  ..updateQuery(),
+                onTap: () => ref
+                    .read(queryProvider.notifier)
+                    .update(correction.original),
               ),
             ],
           ],

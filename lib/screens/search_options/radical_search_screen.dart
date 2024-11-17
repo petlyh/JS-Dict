@@ -1,22 +1,59 @@
 import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/radical_search/radical_search.dart";
 import "package:jsdict/providers/query_provider.dart";
-import "package:jsdict/screens/search_options/search_options_screen.dart";
+import "package:jsdict/widgets/search_field.dart";
 
-class RadicalSearchScreen extends SearchOptionsScreen {
-  const RadicalSearchScreen() : super(body: const _RadicalSearch());
+class RadicalSearchScreen extends HookConsumerWidget {
+  const RadicalSearchScreen(this.initialQuery);
+
+  final String initialQuery;
+
+  void _insertText(TextEditingController controller, String text) {
+    final selection = controller.selection;
+    final selectionStart = selection.baseOffset;
+
+    if (selectionStart == -1) {
+      controller.text += text;
+      return;
+    }
+
+    final newText = controller.text
+        .replaceRange(selectionStart, selection.extentOffset, text);
+    controller.text = newText;
+    controller.selection = TextSelection.collapsed(offset: selectionStart + 1);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController(text: initialQuery);
+
+    return PopScope(
+      onPopInvokedWithResult: (_, __) =>
+          ref.read(queryProvider.notifier).update(controller.text),
+      child: Scaffold(
+        appBar: AppBar(
+          title: SearchField(controller: controller),
+          scrolledUnderElevation: 0,
+        ),
+        body: _RadicalSearch(
+          onSelectKanji: (kanji) => _insertText(controller, kanji),
+        ),
+      ),
+    );
+  }
 }
 
 class _RadicalSearch extends HookWidget {
-  const _RadicalSearch();
+  const _RadicalSearch({required this.onSelectKanji});
+
+  final void Function(String kanji) onSelectKanji;
 
   @override
   Widget build(BuildContext context) {
-    final queryProvider = QueryProvider.of(context);
-
     final selectedRadicals = useState(<String>[]);
 
     final matchingKanji = selectedRadicals.value.isNotEmpty
@@ -30,7 +67,7 @@ class _RadicalSearch extends HookWidget {
             matches: matchingKanji,
             onSelect: (kanji) {
               selectedRadicals.value = [];
-              queryProvider.insertText(kanji);
+              onSelectKanji(kanji);
             },
             onReset: () => selectedRadicals.value = [],
           ),

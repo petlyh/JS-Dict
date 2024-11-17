@@ -14,14 +14,19 @@ import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/error_indicator.dart";
 import "package:receive_sharing_intent/receive_sharing_intent.dart";
 
-void useIntentHandler({required TabController tabController}) => use(
-      _IntentHandlerHook(tabController),
+void useIntentHandler({
+  required TabController tabController,
+  required QueryController queryController,
+}) =>
+    use(
+      _IntentHandlerHook(tabController, queryController),
     );
 
 class _IntentHandlerHook extends Hook<void> {
-  const _IntentHandlerHook(this.tabController);
+  const _IntentHandlerHook(this.tabController, this.queryController);
 
   final TabController tabController;
+  final QueryController queryController;
 
   @override
   HookState<void, _IntentHandlerHook> createState() =>
@@ -100,7 +105,7 @@ class _IntentHandlerHookState extends HookState<void, _IntentHandlerHook> {
     }
 
     hook.tabController.index = _tabIndex(query);
-    QueryProvider.of(context).query = removeTags(query);
+    hook.queryController.update(removeTags(query));
     popAll(context);
   }
 
