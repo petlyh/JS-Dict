@@ -1,5 +1,5 @@
 import "package:collection/collection.dart";
-import "package:jsdict/packages/list_extensions.dart";
+import "package:jsdict/packages/deduplicate.dart";
 
 import "package:jsdict/packages/radical_search/kanji_radicals.dart";
 
@@ -16,10 +16,9 @@ List<String> kanjiByRadicals(List<String> radicals) => kanjiRadicals.entries
 
 List<String> findValidRadicals(List<String> kanjiList) => kanjiList
     .map((kanji) => kanjiRadicals[kanji]!)
-    .toList()
     .flattened
-    .toList()
-    .deduplicate();
+    .deduplicated
+    .toList();
 
 const Map<int, String> radicalsByStrokeCount = {
   1: "一｜丶ノ乙亅",

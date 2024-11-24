@@ -3,11 +3,11 @@ import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fpdart/fpdart.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/copy.dart";
 import "package:jsdict/packages/katakana_convert.dart";
-import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
 import "package:jsdict/providers/client.dart";
@@ -161,7 +161,7 @@ class _ReadingsText extends StatelessWidget {
             style: TextStyle(color: textColor).jp(),
           ),
           ...readings
-              .map(
+              .map<InlineSpan>(
                 (reading) => LinkSpan(
                   context: context,
                   text: reading.noBreak,
@@ -171,12 +171,8 @@ class _ReadingsText extends StatelessWidget {
                   ),
                 ),
               )
-              .toList()
-              .intersperce(
-                TextSpan(
-                  text: "、 ",
-                  style: TextStyle(color: textColor).jp(),
-                ),
+              .intersperse(
+                TextSpan(text: "、 ", style: TextStyle(color: textColor).jp()),
               ),
         ],
         style: TextStyle(color: textColor, height: 1.5).jp(),

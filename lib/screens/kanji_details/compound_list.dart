@@ -1,9 +1,9 @@
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/material.dart";
+import "package:fpdart/fpdart.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/katakana_convert.dart";
-import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
@@ -20,7 +20,7 @@ class CompoundList extends StatelessWidget {
       shadowColor: Theme.of(context).colorScheme.shadow,
       title: Text("$type reading compounds"),
       children: compounds
-          .map(
+          .map<Widget>(
             (compound) => ListTile(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
@@ -37,8 +37,8 @@ class CompoundList extends StatelessWidget {
               ),
             ),
           )
-          .toList()
-          .intersperce(const Divider(height: 0)),
+          .intersperse(const Divider(height: 0))
+          .toList(),
     );
   }
 }

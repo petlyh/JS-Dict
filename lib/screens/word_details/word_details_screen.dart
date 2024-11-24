@@ -3,10 +3,11 @@ import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fpdart/fpdart.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/deduplicate.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
-import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/providers/client.dart";
@@ -116,7 +117,7 @@ class _WordContent extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
-            ...[
+            ...<Widget>[
               ExpansionTileCard(
                 shadowColor: shadowColor,
                 initiallyExpanded: true,
@@ -125,14 +126,14 @@ class _WordContent extends ConsumerWidget {
                   SelectionArea(
                     child: Column(
                       children: word.definitions
-                          .map(
+                          .map<Widget>(
                             (definition) => DefinitionTile(
                               definition: definition,
                               isLast: definition == word.definitions.last,
                             ),
                           )
-                          .toList()
-                          .intersperce(const Divider(height: 0)),
+                          .intersperse(const Divider(height: 0))
+                          .toList(),
                     ),
                   ),
                 ],
@@ -148,7 +149,7 @@ class _WordContent extends ConsumerWidget {
                   shadowColor: shadowColor,
                   title: const Text("Collocations"),
                   children: word.collocations
-                      .map(
+                      .map<Widget>(
                         (collocation) => ListTile(
                           shape: collocation == word.collocations.last
                               ? RoundedBottomBorder()
@@ -162,8 +163,8 @@ class _WordContent extends ConsumerWidget {
                           trailing: const Icon(Icons.keyboard_arrow_right),
                         ),
                       )
-                      .toList()
-                      .intersperce(const Divider(height: 0)),
+                      .intersperse(const Divider(height: 0))
+                      .toList(),
                 ),
               if (word.otherForms.isNotEmpty)
                 ExpansionTileCard(
@@ -215,8 +216,7 @@ class _WordContent extends ConsumerWidget {
                               vertical: 8,
                             ),
                             child: JpText(
-                              word.notes
-                                  .deduplicate<Note>()
+                              word.notes.deduplicated
                                   .map((note) => "${note.form}: ${note.note}")
                                   .join("\n"),
                             ),
@@ -226,7 +226,7 @@ class _WordContent extends ConsumerWidget {
                     ),
                   ],
                 ),
-            ].intersperce(const SizedBox(height: 8)),
+            ].intersperse(const SizedBox(height: 8)),
             const SizedBox(height: 8),
             if (word.details case final details?)
               _WordDetailsContent(details: details)

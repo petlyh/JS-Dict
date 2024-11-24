@@ -150,7 +150,7 @@ List<Note> _parseNotes(String text) => text
     .trim()
     .replaceFirst(RegExp(r"\.$"), "")
     .split(". ")
-    .deduplicate<String>()
+    .deduplicated
     .map(_parseNote)
     .whereSome()
     .toList();
@@ -186,7 +186,7 @@ Option<List<Definition>> _parseDefinition(
                   .split(", ")
                   .map((text) => text.trim())
                   .toList()
-                  .deduplicate<String>(),
+                  .deduplicated,
             )
             .alt(
               () => previous.lastOption
@@ -201,7 +201,7 @@ Option<List<Definition>> _parseDefinition(
         final seeAlso = element
             .querySelectorAll(".tag-see_also > a")
             .allTrimmedText
-            .deduplicate<String>();
+            .deduplicated;
 
         final exampleSentence = element.queryOption(".sentence").flatMap(
               (e) => Option.Do(
@@ -216,9 +216,9 @@ Option<List<Definition>> _parseDefinition(
           ...previous,
           Definition(
             meanings: meanings,
-            types: types,
+            types: types.toList(),
             tags: tags,
-            seeAlso: seeAlso,
+            seeAlso: seeAlso.toList(),
             exampleSentence: exampleSentence.toNullable(),
           ),
         ];

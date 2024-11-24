@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
+import "package:fpdart/fpdart.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
-import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/rounded_bottom_border.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
@@ -56,7 +56,7 @@ class _SeeAlsoText extends StatelessWidget {
         children: [
           TextSpan(text: "See also ", style: TextStyle(color: textColor)),
           ...words
-              .map(
+              .map<InlineSpan>(
                 (word) => LinkSpan(
                   context: context,
                   // remove reading
@@ -67,8 +67,7 @@ class _SeeAlsoText extends StatelessWidget {
                   ),
                 ),
               )
-              .toList()
-              .intersperce(
+              .intersperse(
                 TextSpan(text: ", ", style: TextStyle(color: textColor)),
               ),
         ],

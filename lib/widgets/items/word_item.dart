@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/deduplicate.dart";
 import "package:jsdict/packages/furigana_ruby.dart";
-import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/action_dialog.dart";
@@ -40,17 +40,16 @@ class WordItem extends StatelessWidget {
               .map((e) => e.meanings.join("; "))
               .toList()
               .deduplicateCaseInsensitive()
-              .asMap()
-              .entries
+              .indexed
               .map(
                 (entry) => RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "${entry.key + 1}. ",
+                        text: "${entry.$1 + 1}. ",
                         style: textStyle.copyWith(fontWeight: FontWeight.w300),
                       ),
-                      TextSpan(text: entry.value, style: textStyle),
+                      TextSpan(text: entry.$2, style: textStyle),
                     ],
                   ),
                 ),
