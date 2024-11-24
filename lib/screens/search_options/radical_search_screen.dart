@@ -130,7 +130,8 @@ class _RadicalSelection extends StatelessWidget {
                     ),
                     padding: 3,
                   ),
-                  ...entry.value.split("").map((radical) {
+                  ...entry.value.runes.map((rune) {
+                    final radical = String.fromCharCode(rune);
                     final isSelected = selected.contains(radical);
                     final isValid = valid.isEmpty || valid.contains(radical);
 
