@@ -97,8 +97,8 @@ class _WordContent extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: CopyableFuriganaText(
                 furigana: word.word,
-                style: const TextStyle(fontSize: 28).jp(),
-                rubyStyle: const TextStyle(fontSize: 14).jp(),
+                style: const TextStyle(fontSize: 28),
+                rubyStyle: const TextStyle(fontSize: 14),
               ),
             ),
             Wrap(

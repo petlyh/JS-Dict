@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/providers/client.dart";
 import "package:jsdict/widgets/copyable_furigana_text.dart";
@@ -59,7 +58,7 @@ class _SentenceDetails extends ConsumerWidget {
                 children: [
                   CopyableFuriganaText(
                     furigana: sentence.japanese,
-                    style: const TextStyle(fontSize: 18).jp(),
+                    style: const TextStyle(fontSize: 18),
                     rubyAlign: CrossAxisAlignment.start,
                     wrapAlign: TextAlign.start,
                   ),
