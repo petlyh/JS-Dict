@@ -17,9 +17,9 @@ class KanjiItem extends StatelessWidget {
     return ItemCard(
       onTap: pushScreen(context, KanjiDetailsScreen(kanji: kanji)),
       onLongPress: () => showActionDialog(context, [
-        ActionTile.url(url: kanji.url),
-        ActionTile.text(name: "Kanji", text: kanji.kanji),
-        ActionTile.text(name: "Meanings", text: kanji.meanings.join(", ")),
+        ActionTile.url(kanji.url),
+        ActionTile.text(kanji.kanji, name: "Kanji"),
+        ActionTile.text(kanji.meanings.join(", "), name: "Meanings"),
       ]),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),

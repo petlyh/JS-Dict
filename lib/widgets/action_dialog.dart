@@ -17,27 +17,24 @@ void showActionDialog(BuildContext context, List<ActionTile> actions) =>
     );
 
 class ActionTile extends StatelessWidget {
-  const ActionTile.text({required this.name, required String text})
-      : data = text,
-        isURL = false;
+  const ActionTile.text(this.text, {this.name = "Text"}) : url = null;
 
-  const ActionTile.url({required String url})
-      : data = url,
-        isURL = true,
-        name = "Link";
+  const ActionTile.url(this.url)
+      : name = "Link",
+        text = null;
 
   final String name;
-  final String data;
-  final bool isURL;
+  final String? text;
+  final String? url;
 
   void _onCopy(BuildContext context) =>
-      copyText(context, data, name: name.toLowerCase());
+      copyText(context, url ?? text!, name: name.toLowerCase());
 
   void _onShare(BuildContext context) =>
-      isURL ? Share.shareUri(Uri.parse(data)) : Share.share(data);
+      url != null ? Share.shareUri(Uri.parse(url!)) : Share.share(text!);
 
   void _onOpenBrowser(BuildContext context) =>
-      launchUrl(Uri.parse(data), mode: LaunchMode.externalApplication);
+      launchUrl(Uri.parse(url!), mode: LaunchMode.externalApplication);
 
   void _pop(BuildContext context, void Function(BuildContext) callback) {
     Navigator.of(context).pop();
@@ -55,7 +52,7 @@ class ActionTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (isURL)
+          if (url != null)
             IconButton(
               tooltip: "Open in Browser",
               onPressed: () => _pop(context, _onOpenBrowser),

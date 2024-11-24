@@ -18,12 +18,12 @@ class NameItem extends StatelessWidget {
       onLongPress: () => showActionDialog(context, [
         if (name.wordId case final wordId?)
           ActionTile.url(
-            url: "https://jisho.org/word/${Uri.encodeComponent(wordId)}",
+            "https://jisho.org/word/${Uri.encodeComponent(wordId)}",
           ),
-        ActionTile.text(name: "Name", text: name.japanese),
+        ActionTile.text(name.japanese, name: "Name"),
         if (name.reading case final reading?)
-          ActionTile.text(name: "Reading", text: reading),
-        ActionTile.text(name: "English", text: name.english),
+          ActionTile.text(reading, name: "Reading"),
+        ActionTile.text(name.english, name: "English"),
       ]),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),

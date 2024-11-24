@@ -19,9 +19,9 @@ class SentenceItem extends StatelessWidget {
     return ItemCard(
       onTap: pushScreen(context, SentenceDetailsScreen(sentence: sentence)),
       onLongPress: () => showActionDialog(context, [
-        ActionTile.url(url: sentence.url),
-        ActionTile.text(name: "Japanese", text: sentence.japanese.text),
-        ActionTile.text(name: "English", text: sentence.english),
+        ActionTile.url(sentence.url),
+        ActionTile.text(sentence.japanese.text, name: "Japanese"),
+        ActionTile.text(sentence.english, name: "English"),
       ]),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 22),

@@ -208,8 +208,8 @@ class _KanjiDetailsContent extends StatelessWidget {
                         KanjiDetailsScreen.id(id: part),
                       ),
                       onLongPress: () => showActionDialog(context, [
-                        ActionTile.url(url: Kanji.createUrl(part)),
-                        ActionTile.text(name: "Kanji", text: part),
+                        ActionTile.url(Kanji.createUrl(part)),
+                        ActionTile.text(part, name: "Kanji"),
                       ]),
                       child: Padding(
                         padding: const EdgeInsets.all(8),
@@ -267,8 +267,8 @@ class _VariantsCard extends StatelessWidget {
                             KanjiDetailsScreen.id(id: variant),
                           ),
                           onLongPress: () => showActionDialog(context, [
-                            ActionTile.url(url: Kanji.createUrl(variant)),
-                            ActionTile.text(name: "Kanji", text: variant),
+                            ActionTile.url(Kanji.createUrl(variant)),
+                            ActionTile.text(variant, name: "Kanji"),
                           ]),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(

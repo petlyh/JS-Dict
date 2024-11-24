@@ -36,9 +36,9 @@ class CopyableFuriganaText extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () => showActionDialog(context, [
-        ActionTile.text(name: "Text", text: furigana.text),
+        ActionTile.text(furigana.text),
         if (furigana.hasFurigana)
-          ActionTile.text(name: "Reading", text: furigana.reading),
+          ActionTile.text(furigana.reading, name: "Reading"),
       ]),
       child: RubyText(
         furigana.rubyData,
