@@ -1,14 +1,15 @@
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
-import "package:jsdict/singletons.dart";
+import "package:jsdict/providers/client.dart";
 import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/copyright_text.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 
-class SentenceDetailsScreen extends StatelessWidget {
+class SentenceDetailsScreen extends ConsumerWidget {
   const SentenceDetailsScreen({required Sentence this.sentence}) : id = null;
   const SentenceDetailsScreen.id({required String this.id}) : sentence = null;
 
@@ -16,7 +17,7 @@ class SentenceDetailsScreen extends StatelessWidget {
   final String? id;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final sentenceId = sentence?.id ?? id;
 
     return Scaffold(
@@ -32,20 +33,20 @@ class SentenceDetailsScreen extends StatelessWidget {
       body: id == null
           ? _SentenceDetails(sentence: sentence!)
           : FutureLoader(
-              onLoad: () => getClient().sentenceDetails(id!),
+              onLoad: () => ref.read(clientProvider).sentenceDetails(id!),
               handler: (data) => _SentenceDetails(sentence: data),
             ),
     );
   }
 }
 
-class _SentenceDetails extends StatelessWidget {
+class _SentenceDetails extends ConsumerWidget {
   const _SentenceDetails({required this.sentence});
 
   final Sentence sentence;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       child: Container(
         margin: const EdgeInsets.all(8),
@@ -77,7 +78,9 @@ class _SentenceDetails extends StatelessWidget {
               KanjiItemList(items: kanji)
             else
               FutureLoader(
-                onLoad: () => getClient().search<Kanji>(sentence.japanese.text),
+                onLoad: () => ref
+                    .read(clientProvider)
+                    .search<Kanji>(sentence.japanese.text),
                 handler: (response) => KanjiItemList(items: response.results),
               ),
           ],

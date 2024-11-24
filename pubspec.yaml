@@ -21,7 +21,6 @@ dependencies:
   flutter_svg: ^2.0.9
   fpdart: ^1.1.0
   freezed_annotation: ^2.4.4
-  get_it: ^8.0.0
   hooks_riverpod: ^2.6.1
   html: ^0.15.3
   http: ^1.0.0

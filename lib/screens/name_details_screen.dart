@@ -1,21 +1,24 @@
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/is_kanji.dart";
-import "package:jsdict/singletons.dart";
+import "package:jsdict/providers/client.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia_card.dart";
 
-class NameDetailsScreen extends StatelessWidget {
+class NameDetailsScreen extends ConsumerWidget {
   const NameDetailsScreen({required this.name});
 
   final Name name;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final client = ref.read(clientProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Name"),
@@ -59,7 +62,7 @@ class NameDetailsScreen extends StatelessWidget {
               ],
               if (name.wordId case final wordId?)
                 FutureLoader(
-                  onLoad: () => getClient().wordDetails(wordId),
+                  onLoad: () => client.wordDetails(wordId),
                   handler: (word) => Column(
                     children: [
                       WikipediaCard(info: word.details!.wikipedia!),
@@ -70,7 +73,7 @@ class NameDetailsScreen extends StatelessWidget {
                 )
               else if (!isNonKanji(name.japanese))
                 FutureLoader(
-                  onLoad: () => getClient().search<Kanji>(name.japanese),
+                  onLoad: () => client.search<Kanji>(name.japanese),
                   handler: (response) => KanjiItemList(items: response.results),
                 ),
             ],

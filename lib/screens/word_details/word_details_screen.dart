@@ -2,14 +2,16 @@ import "package:audioplayers/audioplayers.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/jisho_client/jisho_client.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/rounded_bottom_border.dart";
+import "package:jsdict/providers/client.dart";
 import "package:jsdict/screens/word_details/definition_tile.dart";
 import "package:jsdict/screens/word_details/inflection_table.dart";
-import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/copyable_furigana_text.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
@@ -17,7 +19,7 @@ import "package:jsdict/widgets/items/kanji_item.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/wikipedia_card.dart";
 
-class WordDetailsScreen extends StatelessWidget {
+class WordDetailsScreen extends ConsumerWidget {
   const WordDetailsScreen({required String this.word})
       : preloadedWord = null,
         query = null;
@@ -35,16 +37,17 @@ class WordDetailsScreen extends StatelessWidget {
   final String? word;
   final String? query;
 
-  Future<Word> _createFuture() => preloadedWord != null
-      ? SynchronousFuture(preloadedWord!)
-      : query != null
-          ? getClient().search<Word>(query!).then((r) => r.results.first)
-          : getClient().wordDetails(word!);
+  Future<Word> Function() _createFuture(JishoClient client) =>
+      () => preloadedWord != null
+          ? SynchronousFuture(preloadedWord!)
+          : query != null
+              ? client.search<Word>(query!).then((r) => r.results.first)
+              : client.wordDetails(word!);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FutureLoader<Word>(
-      onLoad: _createFuture,
+      onLoad: _createFuture(ref.read(clientProvider)),
       handler: (wordData) => _WordContent(word: wordData),
       frameBuilder: (_, child, wordData) => Scaffold(
         appBar: AppBar(
@@ -74,13 +77,13 @@ class WordDetailsScreen extends StatelessWidget {
   }
 }
 
-class _WordContent extends StatelessWidget {
+class _WordContent extends ConsumerWidget {
   const _WordContent({required this.word});
 
   final Word word;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final shadowColor = Theme.of(context).colorScheme.shadow;
 
     return SingleChildScrollView(
@@ -230,7 +233,7 @@ class _WordContent extends StatelessWidget {
             else ...[
               if (word.shouldLoadDetails)
                 FutureLoader(
-                  onLoad: () => getClient().wordDetails(word.id!),
+                  onLoad: () => ref.read(clientProvider).wordDetails(word.id!),
                   handler: (loadedWord) =>
                       _WordDetailsContent(details: loadedWord.details!),
                 ),

@@ -4,15 +4,17 @@ import "package:collection/collection.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
-import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fpdart/fpdart.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/jisho_client/jisho_client.dart";
 import "package:jsdict/packages/navigation.dart";
+import "package:jsdict/providers/client.dart";
 import "package:jsdict/providers/query_provider.dart";
 import "package:jsdict/screens/search/paging_hook.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
-import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/error_indicator.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
@@ -36,17 +38,17 @@ class ResultPageScreen<T extends ResultType> extends StatelessWidget {
   }
 }
 
-class ResultPage<T extends ResultType> extends HookWidget {
+class ResultPage<T extends ResultType> extends HookConsumerWidget {
   const ResultPage({super.key, required this.query});
 
   final String query;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     useAutomaticKeepAlive();
 
     return FutureLoader(
-      onLoad: () => getClient().search<T>(query),
+      onLoad: () => ref.read(clientProvider).search<T>(query),
       handler: (response) => _ResultPageContent(
         query: query,
         initialResponse: response,
@@ -55,7 +57,7 @@ class ResultPage<T extends ResultType> extends HookWidget {
   }
 }
 
-class _ResultPageContent<T extends ResultType> extends HookWidget {
+class _ResultPageContent<T extends ResultType> extends HookConsumerWidget {
   const _ResultPageContent({
     required this.query,
     required this.initialResponse,
@@ -85,7 +87,7 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
       ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final zenIndex = useRef(0);
     final zenEntries = initialResponse.zenEntries;
 
@@ -101,6 +103,8 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
       cache.value[zenIndex.value] = snapshot.requireData;
     }
 
+    final client = ref.read(clientProvider);
+
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [
@@ -112,7 +116,7 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
               zenIndex.value = index;
               future.value = cache.value.containsKey(index)
                   ? SynchronousFuture(cache.value[index]!)
-                  : getClient().search<T>(zenEntries[index]);
+                  : client.search<T>(zenEntries[index]);
             },
           ),
         if (snapshot.data case final data?)
@@ -122,8 +126,9 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
             child: ErrorIndicator(
               error: error,
               stackTrace: snapshot.stackTrace,
-              onRetry: () => future.value =
-                  getClient().search<T>(zenEntries[zenIndex.value]),
+              onRetry: () => future.value = client.search<T>(
+                zenEntries[zenIndex.value],
+              ),
             ),
           )
         else if (snapshot.connectionState == ConnectionState.waiting)
@@ -133,7 +138,7 @@ class _ResultPageContent<T extends ResultType> extends HookWidget {
   }
 }
 
-class _PagedResultList<T extends ResultType> extends HookWidget {
+class _PagedResultList<T extends ResultType> extends HookConsumerWidget {
   const _PagedResultList({
     super.key,
     required this.query,
@@ -143,9 +148,13 @@ class _PagedResultList<T extends ResultType> extends HookWidget {
   final String query;
   final PagingState<int, T> initialState;
 
-  Future<void> _onRequest(PagingController<int, T> controller, int key) async {
+  Future<void> _onRequest(
+    JishoClient client,
+    PagingController<int, T> controller,
+    int key,
+  ) async {
     try {
-      final response = await getClient().search<T>(query, page: key);
+      final response = await client.search<T>(query, page: key);
 
       controller.appendPage(
         response.results,
@@ -157,10 +166,10 @@ class _PagedResultList<T extends ResultType> extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final controller = usePagingController(
       firstPageKey: 1,
-      requestListener: _onRequest,
+      requestListener: _onRequest.curry(ref.read(clientProvider)),
       initialState: initialState,
     );
 

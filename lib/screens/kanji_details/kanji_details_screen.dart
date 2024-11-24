@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import "package:expansion_tile_card/expansion_tile_card.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/copy.dart";
@@ -9,17 +10,17 @@ import "package:jsdict/packages/katakana_convert.dart";
 import "package:jsdict/packages/list_extensions.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/string_util.dart";
+import "package:jsdict/providers/client.dart";
 import "package:jsdict/screens/kanji_details/compound_list.dart";
 import "package:jsdict/screens/kanji_details/stroke_order_diagram.dart";
 import "package:jsdict/screens/search/result_page.dart";
-import "package:jsdict/singletons.dart";
 import "package:jsdict/widgets/action_dialog.dart";
 import "package:jsdict/widgets/future_loader.dart";
 import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/link_popup.dart";
 import "package:jsdict/widgets/link_span.dart";
 
-class KanjiDetailsScreen extends StatelessWidget {
+class KanjiDetailsScreen extends ConsumerWidget {
   const KanjiDetailsScreen({required Kanji this.kanji}) : id = null;
   const KanjiDetailsScreen.id({required String this.id}) : kanji = null;
 
@@ -27,7 +28,7 @@ class KanjiDetailsScreen extends StatelessWidget {
   final String? id;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final kanjiId = id ?? kanji?.kanji;
 
     return Scaffold(
@@ -47,24 +48,25 @@ class KanjiDetailsScreen extends StatelessWidget {
       body: FutureLoader(
         onLoad: () => kanji != null
             ? SynchronousFuture(kanji!) as Future<Kanji>
-            : getClient().kanjiDetails(id!),
+            : ref.read(clientProvider).kanjiDetails(id!),
         handler: (data) => _KanjiContent(kanji: data),
       ),
     );
   }
 }
 
-class _KanjiContent extends StatelessWidget {
+class _KanjiContent extends ConsumerWidget {
   const _KanjiContent({required this.kanji});
 
   final Kanji kanji;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FutureLoader(
       onLoad: () => kanji.details != null
           ? SynchronousFuture(kanji.details!) as Future<KanjiDetails>
-          : getClient()
+          : ref
+              .read(clientProvider)
               .kanjiDetails(kanji.kanji)
               .then((kanji) => kanji.details!),
       handler: (details) => _KanjiDetailsContent(

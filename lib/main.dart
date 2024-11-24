@@ -5,11 +5,11 @@ import "package:flutter/services.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:jsdict/providers/prefs.dart";
 import "package:jsdict/screens/search/search_screen.dart";
-import "package:jsdict/singletons.dart";
 import "package:podprefs/podprefs.dart";
 
 void main() async {
-  await registerSingletons();
+  WidgetsFlutterBinding.ensureInitialized();
+
   registerKanjivgLicense();
 
   runApp(
