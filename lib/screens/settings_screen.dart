@@ -1,8 +1,9 @@
 import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/material.dart";
-import "package:jsdict/providers/theme_provider.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:jsdict/providers/prefs.dart";
 import "package:package_info_plus/package_info_plus.dart";
-import "package:provider/provider.dart";
+import "package:podprefs/podprefs.dart";
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen();
@@ -17,20 +18,12 @@ class SettingScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.water_drop, size: 32),
               title: const Text("Theme"),
-              trailing: Consumer<ThemeProvider>(
-                builder: (context, provider, _) {
-                  return DropdownButton(
-                    value: provider.currentThemeString,
-                    items: ThemeProvider.themes
-                        .map(
-                          (theme) => DropdownMenuItem(
-                            value: theme,
-                            child: Text(theme),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) => provider.setTheme(value!),
-                  );
+              trailing: _EnumPref(
+                preference: prefThemeMode,
+                stringMap: const {
+                  ThemeMode.system: "System",
+                  ThemeMode.light: "Light",
+                  ThemeMode.dark: "Dark",
                 },
               ),
             ),
@@ -38,12 +31,7 @@ class SettingScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.format_color_fill, size: 32),
                 title: const Text("Dynamic Colors"),
-                trailing: Consumer<ThemeProvider>(
-                  builder: (context, provider, _) => Switch(
-                    value: provider.dynamicColors,
-                    onChanged: provider.setDynamicColors,
-                  ),
-                ),
+                trailing: _BoolPref(preference: prefDynamicColors),
               ),
             const Divider(),
             ListTile(
@@ -64,6 +52,43 @@ class SettingScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _EnumPref<T> extends ConsumerWidget {
+  const _EnumPref({required this.preference, required this.stringMap});
+
+  final Preference<T> preference;
+  final Map<T, String> stringMap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DropdownButton(
+      value: ref.watch(preference),
+      items: stringMap.entries
+          .map(
+            (entry) => DropdownMenuItem(
+              value: entry.key,
+              child: Text(entry.value),
+            ),
+          )
+          .toList(),
+      onChanged: (value) => ref.read(preference.notifier).update(value as T),
+    );
+  }
+}
+
+class _BoolPref extends ConsumerWidget {
+  const _BoolPref({required this.preference});
+
+  final Preference<bool> preference;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Switch(
+      value: ref.watch(preference),
+      onChanged: ref.read(preference.notifier).update,
     );
   }
 }

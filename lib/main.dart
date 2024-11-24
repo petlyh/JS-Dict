@@ -2,17 +2,22 @@ import "package:dynamic_color/dynamic_color.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:flutter_riverpod/flutter_riverpod.dart"
-    hide ChangeNotifierProvider, Provider;
-import "package:jsdict/providers/theme_provider.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:jsdict/providers/prefs.dart";
 import "package:jsdict/screens/search/search_screen.dart";
 import "package:jsdict/singletons.dart";
-import "package:provider/provider.dart";
+import "package:podprefs/podprefs.dart";
 
 void main() async {
   await registerSingletons();
   registerKanjivgLicense();
-  runApp(const JsDictApp());
+
+  runApp(
+    ProviderScope(
+      overrides: [await initializePreferences()],
+      child: const JsDictApp(),
+    ),
+  );
 }
 
 void registerKanjivgLicense() => LicenseRegistry.addLicense(() async* {
@@ -22,7 +27,7 @@ void registerKanjivgLicense() => LicenseRegistry.addLicense(() async* {
       );
     });
 
-class JsDictApp extends StatelessWidget {
+class JsDictApp extends ConsumerWidget {
   const JsDictApp();
 
   static const _mainColor = Color(0xFF27CA27);
@@ -75,30 +80,23 @@ class JsDictApp extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) {
-    return DynamicColorBuilder(
-      builder: (lightDynamic, darkDynamic) => ProviderScope(
-        child: MultiProvider(
-          providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
-          builder: (context, _) {
-            final themeProvider = Provider.of<ThemeProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDynamicColorsEnabled = ref.watch(prefDynamicColors);
 
-            return MaterialApp(
-              title: _createTitle("JS-Dict"),
-              themeMode: themeProvider.currentTheme,
-              theme: _createThemeData(
-                dynamicColorScheme: lightDynamic,
-                isDynamicColorsEnabled: themeProvider.dynamicColors,
-              ),
-              darkTheme: _createThemeData(
-                dynamicColorScheme: darkDynamic,
-                isDynamicColorsEnabled: themeProvider.dynamicColors,
-                brightness: Brightness.dark,
-              ),
-              home: const SearchScreen(),
-            );
-          },
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) => MaterialApp(
+        title: _createTitle("JS-Dict"),
+        themeMode: ref.watch(prefThemeMode),
+        theme: _createThemeData(
+          dynamicColorScheme: lightDynamic,
+          isDynamicColorsEnabled: isDynamicColorsEnabled,
         ),
+        darkTheme: _createThemeData(
+          dynamicColorScheme: darkDynamic,
+          isDynamicColorsEnabled: isDynamicColorsEnabled,
+          brightness: Brightness.dark,
+        ),
+        home: const SearchScreen(),
       ),
     );
   }

@@ -27,7 +27,10 @@ dependencies:
   http: ^1.0.0
   infinite_scroll_pagination: ^4.0.0
   package_info_plus: ^8.0.2
-  provider: ^6.0.5
+  podprefs:
+    git:
+      url: https://github.com/petlyh/podprefs
+      ref: 0.1.0
   receive_sharing_intent: ^1.6.8
   ruby_text:
     git: # fork adds extra alignment options
