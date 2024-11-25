@@ -83,6 +83,15 @@ class _WordContent extends ConsumerWidget {
 
   final Word word;
 
+  List<Widget> get _infoChips => [
+        if (word.isCommon) const InfoChip("Common", color: Colors.green),
+        if (word.jlptLevel case final jlptLevel?)
+          InfoChip("JLPT $jlptLevel", color: Colors.blue),
+        ...word.wanikaniLevels.map(
+          (level) => InfoChip("WaniKani Lv. $level", color: Colors.blue),
+        ),
+      ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shadowColor = Theme.of(context).colorScheme.shadow;
@@ -101,43 +110,10 @@ class _WordContent extends ConsumerWidget {
                 rubyStyle: const TextStyle(fontSize: 14),
               ),
             ),
-            Wrap(
-              alignment: WrapAlignment.center,
-              children: [
-                if (word.isCommon)
-                  const InfoChip("Common", color: Colors.green),
-                if (word.jlptLevel case final jlptLevel?)
-                  InfoChip("JLPT $jlptLevel", color: Colors.blue),
-                ...word.wanikaniLevels.map(
-                  (level) => InfoChip(
-                    "WaniKani Lv. $level",
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
-            ),
+            Wrap(alignment: WrapAlignment.center, children: _infoChips),
             const SizedBox(height: 16),
             ...<Widget>[
-              ExpansionTileCard(
-                shadowColor: shadowColor,
-                initiallyExpanded: true,
-                title: const Text("Definitions"),
-                children: [
-                  SelectionArea(
-                    child: Column(
-                      children: word.definitions
-                          .map<Widget>(
-                            (definition) => DefinitionTile(
-                              definition: definition,
-                              isLast: definition == word.definitions.last,
-                            ),
-                          )
-                          .intersperse(const Divider(height: 0))
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ),
+              _DefinitionsCard(word.definitions),
               if (word.inflectionData case final inflectionData?)
                 ExpansionTileCard(
                   shadowColor: shadowColor,
@@ -145,87 +121,9 @@ class _WordContent extends ConsumerWidget {
                   children: [InflectionTable(data: inflectionData)],
                 ),
               if (word.collocations.isNotEmpty)
-                ExpansionTileCard(
-                  shadowColor: shadowColor,
-                  title: const Text("Collocations"),
-                  children: word.collocations
-                      .map<Widget>(
-                        (collocation) => ListTile(
-                          shape: collocation == word.collocations.last
-                              ? RoundedBottomBorder()
-                              : null,
-                          title: JpText(collocation.word),
-                          subtitle: Text(collocation.meaning),
-                          onTap: pushScreen(
-                            context,
-                            WordDetailsScreen.search(query: collocation.word),
-                          ),
-                          trailing: const Icon(Icons.keyboard_arrow_right),
-                        ),
-                      )
-                      .intersperse(const Divider(height: 0))
-                      .toList(),
-                ),
-              if (word.otherForms.isNotEmpty)
-                ExpansionTileCard(
-                  shadowColor: shadowColor,
-                  title: const Text("Other forms"),
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Wrap(
-                        spacing: 2,
-                        runSpacing: 8,
-                        children: word.otherForms
-                            .map(
-                              (otherForm) => Container(
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                ),
-                                child: CopyableFuriganaText(
-                                  furigana: [
-                                    FuriganaPart(
-                                      otherForm.form,
-                                      otherForm.reading,
-                                    ),
-                                  ],
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              if (word.notes.isNotEmpty)
-                ExpansionTileCard(
-                  shadowColor: shadowColor,
-                  title: const Text("Notes"),
-                  children: [
-                    SelectionArea(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            child: JpText(
-                              word.notes.deduplicated
-                                  .map((note) => "${note.form}: ${note.note}")
-                                  .join("\n"),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                _CollocationsCard(word.collocations),
+              if (word.otherForms.isNotEmpty) _OtherFormsCard(word.otherForms),
+              if (word.notes.isNotEmpty) _NotesCard(word.notes),
             ].intersperse(const SizedBox(height: 8)),
             const SizedBox(height: 8),
             if (word.details case final details?)
@@ -234,13 +132,143 @@ class _WordContent extends ConsumerWidget {
               if (word.shouldLoadDetails)
                 FutureLoader(
                   onLoad: () => ref.read(clientProvider).wordDetails(word.id!),
-                  handler: (loadedWord) =>
-                      _WordDetailsContent(details: loadedWord.details!),
+                  handler: (loadedWord) => _WordDetailsContent(
+                    details: loadedWord.details!,
+                  ),
                 ),
             ],
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DefinitionsCard extends StatelessWidget {
+  const _DefinitionsCard(this.definitions);
+
+  final List<Definition> definitions;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTileCard(
+      shadowColor: Theme.of(context).colorScheme.shadow,
+      initiallyExpanded: true,
+      title: const Text("Definitions"),
+      children: [
+        SelectionArea(
+          child: Column(
+            children: definitions
+                .map<Widget>(
+                  (definition) => DefinitionTile(
+                    definition: definition,
+                    isLast: definition == definitions.last,
+                  ),
+                )
+                .intersperse(const Divider(height: 0))
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CollocationsCard extends StatelessWidget {
+  const _CollocationsCard(this.collocations);
+
+  final List<Collocation> collocations;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTileCard(
+      shadowColor: Theme.of(context).colorScheme.shadow,
+      title: const Text("Collocations"),
+      children: collocations
+          .map<Widget>(
+            (collocation) => ListTile(
+              shape: collocation == collocations.last
+                  ? RoundedBottomBorder()
+                  : null,
+              title: JpText(collocation.word),
+              subtitle: Text(collocation.meaning),
+              onTap: pushScreen(
+                context,
+                WordDetailsScreen.search(query: collocation.word),
+              ),
+              trailing: const Icon(Icons.keyboard_arrow_right),
+            ),
+          )
+          .intersperse(const Divider(height: 0))
+          .toList(),
+    );
+  }
+}
+
+class _OtherFormsCard extends StatelessWidget {
+  const _OtherFormsCard(this.otherForms);
+
+  final List<OtherForm> otherForms;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTileCard(
+      shadowColor: Theme.of(context).colorScheme.shadow,
+      title: const Text("Other forms"),
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          alignment: Alignment.centerLeft,
+          child: Wrap(
+            spacing: 2,
+            runSpacing: 8,
+            children: otherForms
+                .map(
+                  (form) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 6),
+                    child: CopyableFuriganaText(
+                      furigana: [FuriganaPart(form.form, form.reading)],
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NotesCard extends StatelessWidget {
+  const _NotesCard(this.notes);
+
+  final List<Note> notes;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTileCard(
+      shadowColor: Theme.of(context).colorScheme.shadow,
+      title: const Text("Notes"),
+      children: [
+        SelectionArea(
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: JpText(
+                  notes.deduplicated
+                      .map((note) => "${note.form}: ${note.note}")
+                      .join("\n"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
