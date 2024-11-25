@@ -22,7 +22,7 @@ void main() {
   );
 
   test(
-    "nname (kanjiless, no reading)",
+    "name (kanjiless, no reading)",
     () async => expectEquals(
       (await client.search<Name>("ashita")).results.firstOrNull,
       const Name(
