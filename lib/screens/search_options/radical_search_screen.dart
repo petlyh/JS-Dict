@@ -12,20 +12,19 @@ class RadicalSearchScreen extends HookConsumerWidget {
 
   final String initialQuery;
 
-  void _insertText(TextEditingController controller, String text) {
-    final selection = controller.selection;
-    final selectionStart = selection.baseOffset;
-
-    if (selectionStart == -1) {
-      controller.text += text;
-      return;
-    }
-
-    final newText = controller.text
-        .replaceRange(selectionStart, selection.extentOffset, text);
-    controller.text = newText;
-    controller.selection = TextSelection.collapsed(offset: selectionStart + 1);
-  }
+  TextEditingValue _insertText(TextEditingValue value, String newText) =>
+      value.selection.baseOffset == -1
+          ? TextEditingValue(text: value.text + newText)
+          : TextEditingValue(
+              text: value.text.replaceRange(
+                value.selection.baseOffset,
+                value.selection.extentOffset,
+                newText,
+              ),
+              selection: TextSelection.collapsed(
+                offset: value.selection.baseOffset + 1,
+              ),
+            );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +39,10 @@ class RadicalSearchScreen extends HookConsumerWidget {
           scrolledUnderElevation: 0,
         ),
         body: _RadicalSearch(
-          onSelectKanji: (kanji) => _insertText(controller, kanji),
+          onSelectKanji: (kanji) => controller.value = _insertText(
+            controller.value,
+            kanji,
+          ),
         ),
       ),
     );
