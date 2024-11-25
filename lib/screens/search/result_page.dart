@@ -13,7 +13,7 @@ import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/jisho_client/jisho_client.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/client.dart";
-import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/providers/query.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";
 import "package:jsdict/widgets/error_indicator.dart";
 import "package:jsdict/widgets/future_loader.dart";

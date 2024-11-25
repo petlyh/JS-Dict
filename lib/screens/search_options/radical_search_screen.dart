@@ -4,7 +4,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:jsdict/jp_text.dart";
 import "package:jsdict/packages/radical_search/radical_search.dart";
-import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/providers/query.dart";
 import "package:jsdict/widgets/search_field.dart";
 
 class RadicalSearchScreen extends HookConsumerWidget {

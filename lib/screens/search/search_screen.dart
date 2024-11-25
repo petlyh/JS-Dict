@@ -4,7 +4,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:jsdict/hooks/intent_handler.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
-import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/providers/query.dart";
 import "package:jsdict/screens/search/result_page.dart";
 import "package:jsdict/screens/search_options/radical_search_screen.dart";
 import "package:jsdict/screens/search_options/tag_selection_screen.dart";

@@ -7,7 +7,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:jsdict/packages/is_kanji.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/packages/remove_tags.dart";
-import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/providers/query.dart";
 import "package:jsdict/screens/kanji_details/kanji_details_screen.dart";
 import "package:jsdict/screens/sentence_details_screen.dart";
 import "package:jsdict/screens/word_details/word_details_screen.dart";

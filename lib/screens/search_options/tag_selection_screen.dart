@@ -3,7 +3,7 @@ import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:jsdict/packages/remove_tags.dart";
 import "package:jsdict/packages/tags.dart";
-import "package:jsdict/providers/query_provider.dart";
+import "package:jsdict/providers/query.dart";
 import "package:jsdict/widgets/info_chip.dart";
 import "package:jsdict/widgets/search_field.dart";
 
