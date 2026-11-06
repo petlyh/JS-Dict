@@ -11,10 +11,9 @@ void useAutoFocus(FocusNode node, TextEditingController controller) {
   Future<void> show() async {
     // Don't steal focus if another screen or dialog is on top.
     // Don't request focus if we already searched for something.
-    if (
-      !context.mounted
-      || ModalRoute.of(context)?.isCurrent != true
-      || controller.text.isNotEmpty) {
+    if (!context.mounted ||
+        ModalRoute.of(context)?.isCurrent != true ||
+        controller.text.isNotEmpty) {
       return;
     }
 
@@ -25,9 +24,7 @@ void useAutoFocus(FocusNode node, TextEditingController controller) {
     // Give the window a moment to finish taking input focus.
     await Future<void>.delayed(const Duration(milliseconds: 100));
 
-    if (
-      !context.mounted
-      || controller.text.isNotEmpty) {
+    if (!context.mounted || controller.text.isNotEmpty) {
       return;
     }
 
