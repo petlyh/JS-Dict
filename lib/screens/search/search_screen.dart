@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:jsdict/hooks/intent_handler.dart";
+import "package:jsdict/hooks/use_autofocus.dart";
 import "package:jsdict/models/models.dart";
 import "package:jsdict/packages/navigation.dart";
 import "package:jsdict/providers/query.dart";
@@ -17,6 +18,9 @@ class SearchScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchController = useTextEditingController(text: "");
+
+    final searchFocusNode = useFocusNode();
+    useAutoFocus(searchFocusNode, searchController);
 
     // Update search field text when query is changed from somewhere else.
     ref.listen(queryProvider, (_, query) => searchController.text = query);
@@ -40,6 +44,7 @@ class SearchScreen extends HookConsumerWidget {
       appBar: AppBar(
         title: SearchField(
           controller: searchController,
+          focusNode: searchFocusNode,
           onSubmitted: ref.read(queryProvider.notifier).update,
           showSearchIcon: true,
           focusOnClear: true,
