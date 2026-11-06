@@ -34,7 +34,7 @@ dependencies:
   ruby_text:
     git: # fork adds extra alignment options
       url: https://github.com/petlyh/RubyText
-      ref: 492b148c9fddfbbc03658063efc76f51d1e851c1 
+      ref: 492b148c9fddfbbc03658063efc76f51d1e851c1
   share_plus: ^10.0.2
   shared_preferences: ^2.1.2
   url_launcher: ^6.1.10
@@ -46,7 +46,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
-  freezed: ^2.5.7
+  # freezed: ^2.5.7
   lint: ^2.3.0
   test: ^1.24.9
 
