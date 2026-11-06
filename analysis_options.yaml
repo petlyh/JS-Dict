@@ -21,6 +21,7 @@ analyzer:
     strict-raw-types: true
   errors:
     todo: info
-  exclude: [
-    lib/**.g.dart,
-  ]
+  exclude:
+    - lib/**.g.dart
+    - build/**
+    - android/**
