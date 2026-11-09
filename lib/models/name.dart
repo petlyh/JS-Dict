@@ -1,7 +1,7 @@
 part of "models.dart";
 
 @freezed
-class Name with _$Name implements ResultType {
+sealed class Name with _$Name implements ResultType {
   const factory Name({
     required String japanese,
     required String english,

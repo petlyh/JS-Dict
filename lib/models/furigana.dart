@@ -3,7 +3,7 @@ part of "models.dart";
 typedef Furigana = List<FuriganaPart>;
 
 @freezed
-class FuriganaPart with _$FuriganaPart {
+sealed class FuriganaPart with _$FuriganaPart {
   const factory FuriganaPart(String text, [String? furigana]) = _FuriganaPart;
 
   const FuriganaPart._();

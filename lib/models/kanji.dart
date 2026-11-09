@@ -1,7 +1,7 @@
 part of "models.dart";
 
 @freezed
-class Kanji with _$Kanji implements ResultType {
+sealed class Kanji with _$Kanji implements ResultType {
   const factory Kanji({
     required String kanji,
     required int strokeCount,
@@ -24,7 +24,7 @@ class Kanji with _$Kanji implements ResultType {
 }
 
 @freezed
-class KanjiDetails with _$KanjiDetails {
+sealed class KanjiDetails with _$KanjiDetails {
   const factory KanjiDetails({
     required List<String> parts,
     required List<String> variants,
@@ -36,7 +36,7 @@ class KanjiDetails with _$KanjiDetails {
 }
 
 @freezed
-class Radical with _$Radical {
+sealed class Radical with _$Radical {
   const factory Radical({
     required String character,
     required List<String> meanings,
@@ -44,7 +44,7 @@ class Radical with _$Radical {
 }
 
 @freezed
-class Compound with _$Compound {
+sealed class Compound with _$Compound {
   const factory Compound({
     required String compound,
     required String reading,
