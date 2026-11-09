@@ -1,7 +1,7 @@
 part of "models.dart";
 
 @freezed
-class Word with _$Word implements ResultType {
+sealed class Word with _$Word implements ResultType {
   const factory Word({
     required Furigana word,
     required List<Definition> definitions,
@@ -32,7 +32,7 @@ class Word with _$Word implements ResultType {
 }
 
 @freezed
-class WordDetails with _$WordDetails {
+sealed class WordDetails with _$WordDetails {
   const factory WordDetails({
     @Default([]) List<Kanji> kanji,
     WikipediaInfo? wikipedia,
@@ -40,7 +40,7 @@ class WordDetails with _$WordDetails {
 }
 
 @freezed
-class Definition with _$Definition {
+sealed class Definition with _$Definition {
   const factory Definition({
     required List<String> meanings,
     @Default([]) List<String> types,
@@ -51,7 +51,7 @@ class Definition with _$Definition {
 }
 
 @freezed
-class WikipediaInfo with _$WikipediaInfo {
+sealed class WikipediaInfo with _$WikipediaInfo {
   const factory WikipediaInfo({
     required String title,
     required String textAbstract,
@@ -62,7 +62,7 @@ class WikipediaInfo with _$WikipediaInfo {
 }
 
 @freezed
-class WikipediaPage with _$WikipediaPage {
+sealed class WikipediaPage with _$WikipediaPage {
   const factory WikipediaPage({
     required String title,
     required String url,
@@ -70,7 +70,7 @@ class WikipediaPage with _$WikipediaPage {
 }
 
 @freezed
-class OtherForm with _$OtherForm {
+sealed class OtherForm with _$OtherForm {
   const factory OtherForm({
     required String form,
     required String reading,
@@ -78,7 +78,7 @@ class OtherForm with _$OtherForm {
 }
 
 @freezed
-class Collocation with _$Collocation {
+sealed class Collocation with _$Collocation {
   const factory Collocation({
     required String word,
     required String meaning,
@@ -86,7 +86,7 @@ class Collocation with _$Collocation {
 }
 
 @freezed
-class Note with _$Note {
+sealed class Note with _$Note {
   const factory Note({
     required String form,
     required String note,

@@ -5,7 +5,6 @@ on:
         branches:
             - main
         paths-ignore:
-            - ".github/**"
             - "android/**"
             - "assets/**"
             - "metadata/**"
@@ -23,12 +22,12 @@ jobs:
             - name: Setup Flutter
               uses: subosito/flutter-action@v2
               with:
-                flutter-version: "3.24.3"
+                flutter-version: "3.47.9"
                 channel: "stable"
 
             - name: Checkout source code
               uses: actions/checkout@v4
-            
+
             - name: Get dependencies
               run: flutter pub get
 

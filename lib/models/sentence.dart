@@ -1,7 +1,7 @@
 part of "models.dart";
 
 @freezed
-class Sentence with _$Sentence implements ResultType {
+sealed class Sentence with _$Sentence implements ResultType {
   const factory Sentence({
     required Furigana japanese,
     required String english,
@@ -16,7 +16,7 @@ class Sentence with _$Sentence implements ResultType {
 }
 
 @freezed
-class SentenceCopyright with _$SentenceCopyright {
+sealed class SentenceCopyright with _$SentenceCopyright {
   const factory SentenceCopyright({
     required String name,
     required String url,

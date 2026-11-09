@@ -5,23 +5,25 @@ import "package:jsdict/jp_text.dart";
 class SearchField extends HookWidget {
   const SearchField({
     required this.controller,
+    this.focusNode,
     this.onSubmitted,
     this.focusOnClear = false,
     this.showSearchIcon = false,
   });
 
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final bool focusOnClear;
   final bool showSearchIcon;
   final void Function(String)? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
-    final focusNode = useFocusNode();
+    final resultingFocusNode = focusNode ?? useFocusNode();
 
     return TextField(
       style: jpTextStyle,
-      focusNode: focusNode,
+      focusNode: resultingFocusNode,
       controller: controller,
       onSubmitted: onSubmitted,
       decoration: InputDecoration(
@@ -32,7 +34,7 @@ class SearchField extends HookWidget {
           icon: const Icon(Icons.clear),
           onPressed: () {
             if (focusOnClear) {
-              focusNode.requestFocus();
+              resultingFocusNode.requestFocus();
             }
 
             controller.clear();

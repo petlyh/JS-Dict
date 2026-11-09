@@ -3,11 +3,11 @@ part of "models.dart";
 sealed class ResultType {}
 
 @freezed
-class SearchResponse<T extends ResultType> with _$SearchResponse<T> {
+sealed class SearchResponse<T extends ResultType> with _$SearchResponse<T> {
   const factory SearchResponse({
     required List<T> results,
     @Default(false) bool hasNextPage,
-    @Default([]) List<String> zenEntries,
+    @Default([]) List<Furigana> zenEntries,
     @Default([]) List<String> noMatchesFor,
     Correction? correction,
     GrammarInfo? grammarInfo,
@@ -16,7 +16,7 @@ class SearchResponse<T extends ResultType> with _$SearchResponse<T> {
 }
 
 @freezed
-class Correction with _$Correction {
+sealed class Correction with _$Correction {
   const factory Correction({
     required String effective,
     required String original,
@@ -25,7 +25,7 @@ class Correction with _$Correction {
 }
 
 @freezed
-class GrammarInfo with _$GrammarInfo {
+sealed class GrammarInfo with _$GrammarInfo {
   const factory GrammarInfo({
     required String word,
     required String possibleInflectionOf,
@@ -34,7 +34,7 @@ class GrammarInfo with _$GrammarInfo {
 }
 
 @freezed
-class Conversion with _$Conversion {
+sealed class Conversion with _$Conversion {
   const factory Conversion({
     required String original,
     required String converted,
