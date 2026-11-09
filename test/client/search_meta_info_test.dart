@@ -62,7 +62,10 @@ void main() {
   test(
     "zen",
     () async => expectEquals(
-      (await client.search<Word>("ありふれた世界")).zenEntries.map((e) => e.text).toList(),
+      (await client.search<Word>("ありふれた世界"))
+          .zenEntries
+          .map((e) => e.text)
+          .toList(),
       const ["ありふれた", "世界"],
     ),
   );
@@ -70,7 +73,10 @@ void main() {
   test(
     "zen ignored parts",
     () async => expectEquals(
-      (await client.search<Word>("三十kmと言った")).zenEntries.map((e) => e.text).toList(),
+      (await client.search<Word>("三十kmと言った"))
+          .zenEntries
+          .map((e) => e.text)
+          .toList(),
       const ["三十", "と", "言った"],
     ),
   );
@@ -78,7 +84,10 @@ void main() {
   test(
     "zen duplicates",
     () async => expectEquals(
-      (await client.search<Word>("灰は灰に")).zenEntries.map((e) => e.text).toList(),
+      (await client.search<Word>("灰は灰に"))
+          .zenEntries
+          .map((e) => e.text)
+          .toList(),
       const ["灰", "は", "灰", "に"],
     ),
   );

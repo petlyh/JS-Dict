@@ -83,15 +83,15 @@ List<T> _collectResults<T extends ResultType>(
     document.querySelectorAll(selector).map(handler).whereSome().toList();
 
 Option<Furigana> _parseZenEntry(Element link) => Option.Do(($) {
-    final word = $(link.attributes.extract<String>("data-word"));
+      final word = $(link.attributes.extract<String>("data-word"));
 
-    final reading = Option.fromNullable(link.parent?.parent)
-        .flatMap((e) => e.queryOption(".japanese_word__furigana"))
-        .map((e) => e.text.trim())
-        .flatMap((text) => Option.fromPredicate(text, (t) => t.isNotEmpty));
+      final reading = Option.fromNullable(link.parent?.parent)
+          .flatMap((e) => e.queryOption(".japanese_word__furigana"))
+          .map((e) => e.text.trim())
+          .flatMap((text) => Option.fromPredicate(text, (t) => t.isNotEmpty));
 
-    return [FuriganaPart(word, reading.toNullable())];
-  });
+      return [FuriganaPart(word, reading.toNullable())];
+    });
 
 Option<Conversion> _parseConversion(Element element) => Option.Do(($) {
       final split = element.text.trim().split(" is ");
