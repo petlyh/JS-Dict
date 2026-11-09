@@ -65,7 +65,7 @@ void main() {
       (await client.search<Word>("ありふれた世界"))
           .zenEntries
           .map((e) => e.text)
-          .toList(), //
+          .toList(),
       const ["ありふれた", "世界"],
     ),
   );
