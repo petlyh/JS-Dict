@@ -1,13 +1,29 @@
 import "package:flutter/material.dart";
 import "package:jsdict/jp_text.dart";
+import "package:jsdict/models/models.dart";
+import "package:jsdict/packages/furigana_ruby.dart";
+import "package:ruby_text/ruby_text.dart";
 
 class InfoChip extends StatelessWidget {
-  const InfoChip(this.text, {this.color, this.onTap, this.icon});
+  const InfoChip(this.text, {this.color, this.onTap, this.icon})
+  : furigana = null;
 
-  final String text;
+  const InfoChip.furigana(Furigana this.furigana, {this.color, this.onTap, this.icon})
+    : text = null;
+
+  final String? text;
+  final Furigana? furigana;
   final Color? color;
   final void Function()? onTap;
   final IconData? icon;
+
+  Widget get _label => furigana != null
+    ? RubyText(
+        furigana!.rubyData,
+        style: jpTextStyle,
+        rubyStyle: const TextStyle(fontSize: 10).jp(),
+      )
+    : JpText(text!);
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +42,10 @@ class InfoChip extends StatelessWidget {
                   children: [
                     Icon(icon, size: 16),
                     const SizedBox(width: 2),
-                    JpText(text),
+                    _label,
                   ],
                 )
-              : JpText(text),
+              : _label,
         ),
       ),
     );

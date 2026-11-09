@@ -116,7 +116,7 @@ class _ResultPageContent<T extends ResultType> extends HookConsumerWidget {
               zenIndex.value = index;
               future.value = cache.value.containsKey(index)
                   ? SynchronousFuture(cache.value[index]!)
-                  : client.search<T>(zenEntries[index]);
+                  : client.search<T>(zenEntries[index].text);
             },
           ),
         if (snapshot.data case final data?)
@@ -127,7 +127,7 @@ class _ResultPageContent<T extends ResultType> extends HookConsumerWidget {
               error: error,
               stackTrace: snapshot.stackTrace,
               onRetry: () => future.value = client.search<T>(
-                zenEntries[zenIndex.value],
+                zenEntries[zenIndex.value].text,
               ),
             ),
           )
@@ -208,7 +208,7 @@ class _ZenBar extends StatelessWidget {
     required this.onSelect,
   });
 
-  final List<String> entries;
+  final List<Furigana> entries;
   final int selectedIndex;
   final void Function(int index) onSelect;
 
@@ -216,11 +216,12 @@ class _ZenBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return _paddedSliverAdapter(
       child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.end,
         alignment: WrapAlignment.center,
         children: entries.mapIndexed((index, entry) {
           final isSelected = index == selectedIndex;
 
-          return InfoChip(
+          return InfoChip.furigana(
             entry,
             icon: isSelected ? Icons.check : null,
             onTap: !isSelected ? () => onSelect(index) : null,

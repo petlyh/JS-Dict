@@ -7,11 +7,11 @@ SearchResponse<T> parseSearch<T extends ResultType>(Document document) {
 
   final zenEntries = document
       .querySelectorAll("#zen_bar .japanese_word__text_wrapper > a")
-      .map((e) => e.attributes.extract<String>("data-word"))
+      .map(_parseZenEntry)
       .whereSome()
       .toList();
 
-  final limitedZenEntries = zenEntries.length > 1 ? zenEntries : <String>[];
+  final limitedZenEntries = zenEntries.length > 1 ? zenEntries : <Furigana>[];
 
   final noMatchesFor = document
       .queryOption("#no-matches")
@@ -81,6 +81,17 @@ List<T> _collectResults<T extends ResultType>(
   Option<T> Function(Element) handler,
 ) =>
     document.querySelectorAll(selector).map(handler).whereSome().toList();
+
+Option<Furigana> _parseZenEntry(Element link) => Option.Do(($) {
+    final word = $(link.attributes.extract<String>("data-word"));
+
+    final reading = Option.fromNullable(link.parent?.parent)
+        .flatMap((e) => e.queryOption(".japanese_word__furigana"))
+        .map((e) => e.text.trim())
+        .flatMap((text) => Option.fromPredicate(text, (t) => t.isNotEmpty));
+
+    return [FuriganaPart(word, reading.toNullable())];
+  });
 
 Option<Conversion> _parseConversion(Element element) => Option.Do(($) {
       final split = element.text.trim().split(" is ");
